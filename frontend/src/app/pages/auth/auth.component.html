@@ -1,0 +1,35 @@
+<div class="auth-layout" [class.is-mobile]="platformService.isMobile()">
+    <div class="auth-layout-header">
+        <lucide-icon class="auth-layout-header-icon" [img]="layoutGrid" [size]="20"></lucide-icon>
+        <h4 class="auth-layout-header-title">TaskFlow</h4>
+        <button class="theme-toggle-button" (click)="themeService.toggleTheme()">
+            @if (theme() === 'light') {
+                <lucide-icon class="theme-toggle-icon" [img]="sun" [size]="20"></lucide-icon>
+            } @else {
+                <lucide-icon class="theme-toggle-icon" [img]="moon" [size]="20"></lucide-icon>
+            }
+        </button>
+    </div>
+    <div class="auth-layout-content">
+        @switch (currentMode()) {
+            @case ('LOGIN') {
+                <app-login
+                    (navigateToRegister)="currentMode.set('REGISTER')" 
+                    (navigateToForgotPassword)="currentMode.set('FORGOT_PASSWORD')">
+                </app-login>
+            }
+            @case ('REGISTER') {
+                <app-register 
+                    (navigateToSignIn)="currentMode.set('LOGIN')"
+                    (navigateToForgotPassword)="currentMode.set('FORGOT_PASSWORD')">
+                </app-register>
+            }
+            @case ('FORGOT_PASSWORD') {
+                <app-forgot-password
+                    (navigateToSignIn)="currentMode.set('LOGIN')" 
+                    (navigateToRegister)="currentMode.set('REGISTER')">
+                </app-forgot-password>
+            }
+        }
+    </div>
+</div>
