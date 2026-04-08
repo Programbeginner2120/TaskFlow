@@ -1,18 +1,12 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
-
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
+# ============================================
+# Root-level shared patterns
+# ============================================
 
 # IDEs and editors
 .idea/
+*.iws
+*.iml
+*.ipr
 .project
 .classpath
 .c9/
@@ -26,60 +20,118 @@ yarn-error.log
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/mcp.json
-.history/*
-
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-__screenshots__/
+.vscode/.history/
 
 # System files
 .DS_Store
 Thumbs.db
 
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Root-level build artifacts (if any)
+/tmp
+/coverage
+__screenshots__/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+# ============================================
+# Backend (Java/Gradle) patterns
+# ============================================
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+# Gradle
+backend/.gradle
+backend/build/
+!backend/gradle/wrapper/gradle-wrapper.jar
+!backend/**/src/main/**/build/
+!backend/**/src/test/**/build/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# STS (Spring Tool Suite)
+backend/.apt_generated
+backend/.classpath
+backend/.factorypath
+backend/.project
+backend/.settings
+backend/.springBeans
+backend/.sts4-cache
+backend/bin/
+!backend/**/src/main/**/bin/
+!backend/**/src/test/**/bin/
 
-### VS Code ###
+# IntelliJ IDEA (backend-specific)
+backend/*.iws
+backend/*.iml
+backend/*.ipr
+backend/out/
+!backend/**/src/main/**/out/
+!backend/**/src/test/**/out/
+
+# NetBeans (backend-specific)
+backend/nbproject/private/
+backend/nbbuild/
+backend/nbdist/
+backend/.nb-gradle/
+
+# Java build artifacts
+backend/*.class
+backend/*.jar
+backend/*.war
+backend/*.ear
+
+# VS Code
 .vscode/
 
-### ENV ###
-/.env
+# MCPs
+.playwright-mcp/
+
+
+# ============================================
+# Frontend (Angular/Node.js) patterns
+# ============================================
+
+# Node modules
+frontend/node_modules/
+frontend/frontend/node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json.backup
+
+# Angular build outputs
+frontend/dist/
+frontend/frontend/dist/
+frontend/.angular/cache
+frontend/frontend/.angular/cache
+frontend/out-tsc/
+frontend/frontend/out-tsc/
+
+# Frontend build artifacts
+frontend/tmp/
+frontend/frontend/tmp/
+frontend/coverage/
+frontend/frontend/coverage/
+frontend/.sass-cache/
+frontend/frontend/.sass-cache/
+frontend/connect.lock
+frontend/frontend/connect.lock
+frontend/libpeerconnection.log
+frontend/frontend/libpeerconnection.log
+frontend/testem.log
+frontend/frontend/testem.log
+frontend/typings/
+frontend/frontend/typings/
+frontend/__screenshots__/
+frontend/frontend/__screenshots__/
+
+# Bazel (if used)
+frontend/bazel-out/
+frontend/frontend/bazel-out/
+
+# ============================================
+# Environment-specific configuration
+# ============================================
+backend/src/main/resources/application-local.yaml
+backend/src/main/resources/generator.properties
+
+# ============================================
+# Documentation
+# ============================================
+HELP.md
+
+# env files
+*.env

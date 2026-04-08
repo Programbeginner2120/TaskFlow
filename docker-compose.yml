@@ -31,6 +31,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-taskflow}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-taskflow}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:?MAIL_USERNAME must be set}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:?MAIL_PASSWORD must be set}
+      MAIL_FROM: ${MAIL_FROM:-noreply@taskflow.com}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost}
     ports:
       - "8080:8080"
 
