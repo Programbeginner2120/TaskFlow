@@ -80,3 +80,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### ENV ###
+/.env
