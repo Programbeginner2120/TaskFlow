@@ -4,15 +4,16 @@ import { ThemeService } from "../../services/theme.service";
 import { PlatformService } from "../../services/platform.service";
 import { Theme } from "../../interfaces/theme.interface";
 import { AuthMode } from "../../interfaces/auth.interface";
-import { LoginComponent } from "../../components/login/login.component";
-import { RegisterComponent } from "../../components/register/register.component";
-import { ForgotPasswordComponent } from "../../components/forgot-password/forgot-password.component";
+import { LoginComponent } from "../../components/auth/login/login.component";
+import { RegisterComponent } from "../../components/auth/register/register.component";
+import { ForgotPasswordComponent } from "../../components/auth/forgot-password/forgot-password.component";
+import { HeaderComponent } from "../../components/header/header.component";
 
 @Component({
     selector: 'app-auth-layout',
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.scss'],
-    imports: [LucideAngularModule, LoginComponent, RegisterComponent, ForgotPasswordComponent]
+    imports: [LucideAngularModule, LoginComponent, RegisterComponent, ForgotPasswordComponent, HeaderComponent]
 })
 export class AuthComponent {
 

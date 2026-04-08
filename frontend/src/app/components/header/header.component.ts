@@ -1,0 +1,23 @@
+import { Component, computed, inject, input } from "@angular/core";
+import { ThemeService } from "../../services/theme.service";
+import { LayoutGrid, LucideAngularModule, Moon, Sun } from "lucide-angular";
+
+@Component({
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    imports: [LucideAngularModule]
+})
+export class HeaderComponent {
+
+    readonly themeService = inject(ThemeService);
+
+    readonly headerTitle = input.required<string>();
+
+    readonly theme = computed(() => this.themeService.theme());
+
+    readonly layoutGrid = LayoutGrid;
+    readonly sun = Sun;
+    readonly moon = Moon;
+
+}

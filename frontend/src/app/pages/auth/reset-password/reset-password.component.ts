@@ -3,11 +3,12 @@ import { AuthService } from "../../../services/auth.service";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { ButtonComponent } from "../../../shared/components/button/button.component";
 import { InputComponent } from "../../../shared/components/input/input.component";
+import { HeaderComponent } from "../../../components/header/header.component";
 
 @Component({
     templateUrl: './reset-password.component.html',
     styleUrls: ['./reset-password.component.scss', '../../../shared/common-styles/auth-common-styles.scss'],
-    imports: [ButtonComponent, InputComponent, RouterLink]
+    imports: [ButtonComponent, InputComponent, RouterLink, HeaderComponent]
 })
 export class ResetPasswordComponent {
     private readonly authService = inject(AuthService);

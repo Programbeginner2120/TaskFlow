@@ -1,13 +1,13 @@
 import { Component, computed, inject, output, signal } from "@angular/core";
 import { Router } from "@angular/router";
-import { InputComponent } from "../../shared/components/input/input.component";
-import { ButtonComponent } from "../../shared/components/button/button.component";
-import { AuthService } from "../../services/auth.service";
+import { InputComponent } from "../../../shared/components/input/input.component";
+import { ButtonComponent } from "../../../shared/components/button/button.component";
+import { AuthService } from "../../../services/auth.service";
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss', '../../shared/common-styles/auth-common-styles.scss'],
+    styleUrls: ['./login.component.scss', '../../../shared/common-styles/auth-common-styles.scss'],
     imports: [InputComponent, ButtonComponent]
 })
 export class LoginComponent {

@@ -1,12 +1,12 @@
 import { Component, computed, inject, output, signal, WritableSignal } from "@angular/core";
-import { InputComponent } from "../../shared/components/input/input.component";
-import { ButtonComponent } from "../../shared/components/button/button.component";
-import { AuthService } from "../../services/auth.service";
+import { InputComponent } from "../../../shared/components/input/input.component";
+import { ButtonComponent } from "../../../shared/components/button/button.component";
+import { AuthService } from "../../../services/auth.service";
 
 @Component({
     selector: 'app-forgot-password',
     templateUrl: './forgot-password.component.html',
-    styleUrls: ['./forgot-password.component.scss', '../../shared/common-styles/auth-common-styles.scss'],
+    styleUrls: ['./forgot-password.component.scss', '../../../shared/common-styles/auth-common-styles.scss'],
     imports: [InputComponent, ButtonComponent]
 })
 export class ForgotPasswordComponent {

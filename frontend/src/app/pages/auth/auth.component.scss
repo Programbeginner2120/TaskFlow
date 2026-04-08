@@ -11,31 +11,6 @@
     padding: var(--space-8);
 }
 
-.auth-layout-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.auth-layout-header-icon {
-    border-radius: 10px;
-    padding: 8px;
-    background-color: var(--color-primary);
-}
-
-.auth-layout-header-title {
-    flex: 1;
-}
-
-.theme-toggle-button {
-    border-radius: 10px;
-    padding: 2px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    color: var(--color-text-primary);
-}
-
 .auth-layout-content {
     flex: 1;
     display: flex;

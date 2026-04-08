@@ -1,0 +1,11 @@
+<div class="header-container">
+    <lucide-icon class="header-icon" [img]="layoutGrid" [size]="20"></lucide-icon>
+    <h4 class="header-title">{{ headerTitle() }}</h4>
+    <button class="theme-toggle-button" (click)="themeService.toggleTheme()">
+        @if (theme() === 'light') {
+            <lucide-icon class="theme-toggle-icon" [img]="sun" [size]="20"></lucide-icon>
+        } @else {
+            <lucide-icon class="theme-toggle-icon" [img]="moon" [size]="20"></lucide-icon>
+        }
+    </button>
+</div>
