@@ -32,7 +32,7 @@ public class EmailService {
     public void sendVerificationEmail(String toEmail, String rawToken) {
         String link = String.format("%s/verify-email?token=%s", baseUrl, rawToken);
         String body = """
-                Welcome from Operations Analytics Dashboard! Please verify your email address by clicking the link below.
+                Welcome from TaskFlow! Please verify your email address by clicking the link below.
                 This link will expire in 24 hours.
 
                 %s
@@ -52,7 +52,7 @@ public class EmailService {
     public void sendPasswordResetEmail(String toEmail, String rawToken) {
         String link = String.format("%s/reset-password?token=%s", baseUrl, rawToken);
         String body = """
-                Hello from Operations Analytics Dashboard! We received a request to reset your password.
+                Hello from TaskFlow! We received a request to reset your password.
                 Click the link below to set a new password. This link expires in 1 hour.
 
                 %s
