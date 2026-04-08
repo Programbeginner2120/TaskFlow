@@ -1,27 +1,29 @@
-<app-header headerTitle="TaskFlow"></app-header>
-<div class="auth-card">
-    @switch(status()) {
-        @case ('verifying') {
-            <div class="auth-card-header">
-                <p>Verifying your email address...</p>
-            </div>
+<div class="verify-email-container">
+    <app-header headerTitle="TaskFlow"></app-header>
+    <div class="auth-card verify-email-card">
+        @switch(status()) {
+            @case ('verifying') {
+                <div class="auth-card-header">
+                    <p>Verifying your email address...</p>
+                </div>
+            }
+            @case ('success') {
+                <div class="auth-card-header">
+                    <h2>Email Verified!</h2>
+                </div>
+                <div class="auth-card-footer">
+                    <p>Your email is active. <a class="auth-card-toggle" [routerLink]="['/login']">Sign in</a></p>
+                </div>
+            }
+            @case ('error') {
+                <div class="auth-card-header">
+                    <h2>Verification Failed</h2>
+                </div>
+                <div class="auth-card-footer">
+                    <p>The link may have expired or already been used.</p>
+                    <a class="auth-card-toggle" [routerLink]="['/login']">Back to login</a>
+                </div>
+            }
         }
-        @case ('success') {
-            <div class="auth-card-header">
-                <h2>Email Verified!</h2>
-            </div>
-            <div class="auth-card-footer">
-                <p>Your email is active. <a class="auth-card-toggle" [routerLink]="['/login']">Sign in</a></p>
-            </div>
-        }
-        @case ('error') {
-            <div class="auth-card-header">
-                <h2>Verification Failed</h2>
-            </div>
-            <div class="auth-card-footer">
-                <p>The link may have expired or already been used.</p>
-                <a class="auth-card-toggle" [routerLink]="['/login']">Back to login</a>
-            </div>
-        }
-    }
+    </div>
 </div>
