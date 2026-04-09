@@ -1,3 +1,21 @@
+# ---- Dev Stage (hot reload via Spring DevTools + volume-mounted source) ----
+FROM eclipse-temurin:25-jdk-alpine AS dev
+WORKDIR /app
+
+# Copy Gradle wrapper and build config to pre-download dependencies into the image layer.
+# The full source tree will be supplied at runtime via a Docker volume mount.
+COPY gradlew gradlew.bat settings.gradle build.gradle ./
+COPY gradle gradle/
+
+RUN chmod +x gradlew && ./gradlew dependencies --no-daemon
+
+EXPOSE 8080
+
+# chmod ensures gradlew is executable even when volume-mounted from a Windows host.
+# Spring DevTools (already on classpath via developmentOnly) will restart the app
+# whenever compiled .class files change.
+ENTRYPOINT ["sh", "-c", "chmod +x gradlew && ./gradlew bootRun --no-daemon"]
+
 # ---- Build Stage ----
 FROM eclipse-temurin:25-jdk-alpine AS builder
 WORKDIR /app
