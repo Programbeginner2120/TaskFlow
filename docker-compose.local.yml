@@ -30,7 +30,5 @@ services:
     ports:
       - "4200:4200"
     volumes:
-      # Mount source for hot reload
-      - ./frontend/src:/app/src
-      # Preserve node_modules installed inside the image (must not be overridden by the src mount)
+      - ./frontend:/app
       - /app/node_modules

@@ -43,11 +43,7 @@ jwt:
 # App-level config
 app:
   cors:
-    allowed-origins:
-      - http://localhost:4200
-      - http://127.0.0.1:4200
-      - http://localhost
-      - http://127.0.0.1
+    allowed-origins: "http://localhost:4200,http://127.0.0.1:4200,http://localhost,http://127.0.0.1"
   email:
     from-address: ${MAIL_FROM:noreply@taskflow.com}
     base-url: ${APP_BASE_URL:http://localhost:4200}
