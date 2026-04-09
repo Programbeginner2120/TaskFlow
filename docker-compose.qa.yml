@@ -1,0 +1,14 @@
+# QA / test environment override for Docker Compose.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.qa.yml up --build
+
+services:
+  backend:
+    environment:
+      SPRING_PROFILES_ACTIVE: qa
+
+  frontend:
+    build:
+      args:
+        NG_CONFIG: qa

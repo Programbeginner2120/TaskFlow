@@ -28,6 +28,7 @@ services:
       db:
         condition: service_healthy
     environment:
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-taskflow}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-taskflow}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
@@ -37,7 +38,7 @@ services:
       MAIL_USERNAME: ${MAIL_USERNAME:?MAIL_USERNAME must be set}
       MAIL_PASSWORD: ${MAIL_PASSWORD:?MAIL_PASSWORD must be set}
       MAIL_FROM: ${MAIL_FROM:-noreply@taskflow.com}
-      APP_BASE_URL: ${APP_BASE_URL:-http://localhost}
+      APP_BASE_URL: ${APP_BASE_URL:-https://taskflow.com}
     ports:
       - "8080:8080"
 
@@ -45,6 +46,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NG_CONFIG: production
     container_name: taskflow-frontend
     restart: unless-stopped
     depends_on:
