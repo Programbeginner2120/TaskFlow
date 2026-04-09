@@ -8,7 +8,6 @@
 #   - Volume-mounts backend source so Spring DevTools can hot-restart on class changes
 #   - Builds the frontend using the 'dev' Dockerfile stage (runs ng serve)
 #   - Volume-mounts frontend src for Angular hot module reload on port 4200
-#   - Relaxes required env vars (mail, base-url) so the stack starts without secrets
 
 services:
   backend:
@@ -16,10 +15,8 @@ services:
       target: dev
     environment:
       SPRING_PROFILES_ACTIVE: local
-      # Relax mail secrets — app starts without real credentials in local dev.
-      # Set real values in a .env file if you need to test email flows locally.
-      MAIL_USERNAME: ${MAIL_USERNAME:-local@taskflow.local}
-      MAIL_PASSWORD: ${MAIL_PASSWORD:-fake-password}
+      MAIL_USERNAME: ${MAIL_USERNAME:?MAIL_USERNAME must be set}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:?MAIL_PASSWORD must be set}
       APP_BASE_URL: ${APP_BASE_URL:-http://localhost:4200}
     volumes:
       - ./backend:/app
