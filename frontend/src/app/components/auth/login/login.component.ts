@@ -34,6 +34,7 @@ export class LoginComponent {
     readonly forgotPasswordNavigationLabel = computed(() => "Forgot your password? Click here to reset it");
 
     handleLogin(): void {
+        this.isLoading.set(true);
         this.authService.login({ email: this.email(), password: this.password() }).subscribe({
             next: () => {
                 this.authService.loadCurrentUser().subscribe({

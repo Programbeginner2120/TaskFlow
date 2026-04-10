@@ -1,13 +1,13 @@
 import { Component, inject, signal } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { AuthService } from "../../../services/auth.service";
-import { HeaderComponent } from "../../../components/header/header.component";
+import { AuthHeaderComponent } from "../../../components/headers/auth-header/auth-header.component";
 
 @Component({
     selector: 'app-verify-email',
     templateUrl: './verify-email.component.html',
     styleUrls: ['./verify-email.component.scss', '../../../shared/common-styles/auth-common-styles.scss'],
-    imports: [RouterLink, HeaderComponent]
+    imports: [RouterLink, AuthHeaderComponent]
 })
 export class VerifyEmailComponent {
     private readonly authService = inject(AuthService);

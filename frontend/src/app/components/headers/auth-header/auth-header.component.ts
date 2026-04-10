@@ -1,14 +1,14 @@
 import { Component, computed, inject, input } from "@angular/core";
-import { ThemeService } from "../../services/theme.service";
+import { ThemeService } from "../../../services/theme.service";
 import { LayoutGrid, LucideAngularModule, Moon, Sun } from "lucide-angular";
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'],
+    selector: 'app-auth-header',
+    templateUrl: './auth-header.component.html',
+    styleUrls: ['./auth-header.component.scss'],
     imports: [LucideAngularModule]
 })
-export class HeaderComponent {
+export class AuthHeaderComponent {
 
     readonly themeService = inject(ThemeService);
 

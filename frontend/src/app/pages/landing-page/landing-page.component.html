@@ -1,0 +1,25 @@
+<div class="landing-page-container">
+    <app-sidebar
+        sidebarTitle="TaskFlow"
+        [navItems]="navItems()"
+        [collapsible]="true"
+        [initialllyExpanded]="true">
+        <div class="lists-container" sidebar-content>
+            <div class="list-title">Lists</div>
+            <ul class="list-items-container">
+                @for (listItem of listItems(); track listItem.title) {
+                    <div class="list-item-container">
+                        <div class="list-item-circle" [style.backgroundColor]="listItem.color"></div>
+                        <div class="list-item-title">{{ listItem.title }}</div>
+                        <div class="list-item-num-items">{{ listItem.numItems }}</div>
+                        <lucide-icon class="list-item-edit-icon" [img]="ellipsis" [size]="20"></lucide-icon>
+                    </div>
+                }
+            </ul>
+            <div class="add-list-item-container">
+                <lucide-icon class="add-list-item-icon" [img]="plus" [size]="20"></lucide-icon>
+                <div class="add-list-item-text">New List</div>
+            </div>
+        </div>
+    </app-sidebar>
+</div>

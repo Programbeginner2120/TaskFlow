@@ -7,13 +7,13 @@ import { AuthMode } from "../../interfaces/auth.interface";
 import { LoginComponent } from "../../components/auth/login/login.component";
 import { RegisterComponent } from "../../components/auth/register/register.component";
 import { ForgotPasswordComponent } from "../../components/auth/forgot-password/forgot-password.component";
-import { HeaderComponent } from "../../components/header/header.component";
+import { AuthHeaderComponent } from "../../components/headers/auth-header/auth-header.component";
 
 @Component({
     selector: 'app-auth-layout',
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.scss'],
-    imports: [LucideAngularModule, LoginComponent, RegisterComponent, ForgotPasswordComponent, HeaderComponent]
+    imports: [LucideAngularModule, LoginComponent, RegisterComponent, ForgotPasswordComponent, AuthHeaderComponent]
 })
 export class AuthComponent {
 
