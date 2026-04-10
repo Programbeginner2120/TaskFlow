@@ -1,124 +1,55 @@
-import { Component, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
 import { Calendar, Clock, Sun, LucideAngularModule, Plus, Ellipsis } from "lucide-angular";
+import { Task } from "../../shared/interfaces/task.interface";
+import { TaskListService } from "../../services/task-list.service";
+import { LandingPageHeaderComponent } from "../../components/headers/landing-page-header/landing-page-header.component";
+import { TaskDetailsPanelComponent } from "../../shared/components/task-details-panel/task-details-panel.component";
+import { MyDayComponent } from "../my-day/my-day.component";
 
-export interface ListItem {
-    title: string;
-    color: string;
-    numItems: number;
-}
+export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
 
 @Component({
     selector: 'app-landing-page',
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.scss'],
-    imports: [SidebarComponent, LucideAngularModule]
+    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent]
 })
 export class LandingPageComponent {
-    
-    navItems = signal<NavItem[]>([
+
+    private readonly taskListService = inject(TaskListService);
+
+    readonly lists = this.taskListService.lists;
+
+    currentView = signal<AppView>('my-day');
+    selectedListId = signal<number | null>(null);
+    searchQuery = signal<string>('');
+    selectedTask = signal<Task | null>(null);
+
+    navItems = computed<NavItem[]>(() => [
         {
             navItemLabel: 'My Day',
             navItemIcon: Sun,
-            navItemRouteFn: () => {}
+            navItemRouteFn: () => this.currentView.set('my-day')
         },
         {
             navItemLabel: 'Upcoming',
             navItemIcon: Clock,
-            navItemRouteFn: () => {}
+            navItemRouteFn: () => this.currentView.set('upcoming')
         },
         {
             navItemLabel: 'Calendar',
             navItemIcon: Calendar,
-            navItemRouteFn: () => {}
+            navItemRouteFn: () => this.currentView.set('calendar')
         }
-    ]);
-
-    listItems = signal<ListItem[]>([
-        {
-            title: 'Work',
-            color: 'blue',
-            numItems: 4
-        },
-        {
-            title: 'Personal',
-            color: 'green',
-            numItems: 3
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
-        {
-            title: 'Shopping',
-            color: 'orange',
-            numItems: 2
-        },
     ]);
 
     readonly plus = Plus;
     readonly ellipsis = Ellipsis;
 
+    selectListView(listId: number): void {
+        this.selectedListId.set(listId);
+        this.currentView.set('list');
+    }
 }

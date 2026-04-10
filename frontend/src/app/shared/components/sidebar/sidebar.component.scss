@@ -1,7 +1,7 @@
 :host {
     display: block;
     height: 100%;
-    width: 100%;
+    // width: 100%;
 }
 
 .sidebar-container {
@@ -86,7 +86,7 @@
 .sidebar-toggle-container {
     position: absolute;
     top: 2.5%;
-    left: calc(var(--sidebar-width) - 1.5%);
+    left: calc(var(--sidebar-width) - 16px);
     border-radius: var(--radius-lg);
     border: 1px solid var(--color-border);
     background: var(--color-bg-primary);
@@ -107,7 +107,7 @@
 }
 
 .sidebar-toggle-container.collapsed {
-    left: -1.5%;
+    left: -16px;
 }
 
 .expand-icon {

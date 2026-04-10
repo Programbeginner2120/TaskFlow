@@ -1,0 +1,28 @@
+<div class="search-bar">
+    <lucide-icon
+        class="search-icon"
+        [img]="searchIcon"
+        [size]="18"
+        aria-hidden="true">
+    </lucide-icon>
+    <input
+        class="search-input"
+        type="search"
+        role="searchbox"
+        [placeholder]="placeholder()"
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)"
+        (keydown.escape)="clear()"
+        aria-label="Search tasks"
+        autocomplete="off"
+    />
+    @if (searchQuery()) {
+        <button
+            class="clear-btn"
+            type="button"
+            aria-label="Clear search"
+            (click)="clear()">
+            <lucide-icon [img]="clearIcon" [size]="16" aria-hidden="true"></lucide-icon>
+        </button>
+    }
+</div>

@@ -1,0 +1,209 @@
+:host {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.my-day {
+    max-width: 720px;
+    padding: var(--space-8) var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+/* Page header */
+.page-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+
+/* Add task bar */
+.add-task-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus-within {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+}
+
+.add-task-plus {
+    color: var(--color-text-muted);
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.add-task-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--color-text-primary);
+
+    &::placeholder {
+        color: var(--color-text-muted);
+    }
+}
+
+.add-task-calendar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: not-allowed;
+    color: var(--color-text-muted);
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    opacity: 0.5;
+}
+
+/* Task list */
+.task-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Task row */
+.task-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    transition: opacity 0.2s ease;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &.completed {
+        opacity: 0.55;
+    }
+}
+
+/* Completion toggle */
+.task-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    padding: var(--space-1);
+    border-radius: 50%;
+    transition: color 0.15s ease;
+
+    &:hover {
+        color: var(--color-primary);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+
+    .task-row.completed & {
+        color: var(--color-primary);
+    }
+}
+
+/* Task content button */
+.task-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+    min-width: 0;
+
+    &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+        border-radius: var(--radius-sm);
+    }
+}
+
+.task-title {
+    font-size: 15px;
+    color: var(--color-text-primary);
+    font-family: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+
+    &.completed-title {
+        text-decoration: line-through;
+        color: var(--color-text-muted);
+    }
+}
+
+/* Task meta row */
+.task-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: 12px;
+    color: var(--color-primary);
+}
+
+.task-meta-today {
+    color: var(--color-primary);
+}
+
+.task-meta-separator {
+    color: var(--color-text-muted);
+}
+
+.task-meta-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.task-meta-list {
+    color: var(--color-primary);
+}
+
+.task-meta-progress {
+    color: var(--color-text-muted);
+}
+
+/* Chevron */
+.task-chevron {
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+}

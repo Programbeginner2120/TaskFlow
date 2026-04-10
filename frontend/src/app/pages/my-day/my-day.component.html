@@ -1,0 +1,95 @@
+<div class="my-day">
+
+    <!-- Page header -->
+    <div class="page-header">
+        <h1 class="page-title">My Day</h1>
+        <p class="page-subtitle" aria-live="polite">
+            {{ incompleteCount() }} {{ incompleteCount() === 1 ? 'task' : 'tasks' }} remaining
+        </p>
+    </div>
+
+    <!-- Add task bar -->
+    <div class="add-task-bar" role="group" aria-label="Add a new task">
+        <span class="add-task-plus" aria-hidden="true">+</span>
+        <input
+            class="add-task-input"
+            type="text"
+            placeholder="Add a task..."
+            [value]="newTaskTitle()"
+            (input)="newTaskTitle.set($any($event.target).value)"
+            (keydown)="onAddTaskKeydown($event)"
+            aria-label="New task title"
+        />
+        <button
+            class="add-task-calendar-btn"
+            type="button"
+            aria-label="Set due date (coming soon)"
+            disabled>
+            <lucide-icon [img]="calendarIcon" [size]="18" aria-hidden="true"></lucide-icon>
+        </button>
+    </div>
+
+    <!-- Task list -->
+    <ul class="task-list" aria-label="Today's tasks">
+        @for (task of sortedTasks(); track task.id) {
+            @let list = getListForTask(task.listId);
+            @let progress = getSubtaskProgress(task);
+
+            <li class="task-row" [class.completed]="task.completed">
+
+                <!-- Completion toggle -->
+                <button
+                    class="task-toggle"
+                    type="button"
+                    [attr.aria-label]="task.completed ? 'Mark ' + task.title + ' as incomplete' : 'Mark ' + task.title + ' as complete'"
+                    [attr.aria-pressed]="task.completed"
+                    (click)="toggleTask(task.id)">
+                    @if (task.completed) {
+                        <lucide-icon [img]="checkCircleIcon" [size]="20" aria-hidden="true"></lucide-icon>
+                    } @else {
+                        <lucide-icon [img]="circleIcon" [size]="20" aria-hidden="true"></lucide-icon>
+                    }
+                </button>
+
+                <!-- Task content -->
+                <button
+                    class="task-content"
+                    type="button"
+                    [attr.aria-label]="'Open details for ' + task.title"
+                    (click)="openDetails(task)">
+                    <span class="task-title" [class.completed-title]="task.completed">
+                        {{ task.title }}
+                    </span>
+                    <span class="task-meta">
+                        <span class="task-meta-today">Today</span>
+                        @if (list) {
+                            <span class="task-meta-separator" aria-hidden="true">•</span>
+                            <span
+                                class="task-meta-dot"
+                                [style.backgroundColor]="list.color"
+                                aria-hidden="true">
+                            </span>
+                            <span class="task-meta-list">{{ list.name }}</span>
+                        }
+                        @if (progress) {
+                            <span class="task-meta-separator" aria-hidden="true">•</span>
+                            <span class="task-meta-progress" [attr.aria-label]="progress + ' subtasks completed'">
+                                {{ progress }}
+                            </span>
+                        }
+                    </span>
+                </button>
+
+                <!-- Chevron -->
+                <lucide-icon
+                    class="task-chevron"
+                    [img]="chevronRightIcon"
+                    [size]="16"
+                    aria-hidden="true">
+                </lucide-icon>
+
+            </li>
+        }
+    </ul>
+
+</div>

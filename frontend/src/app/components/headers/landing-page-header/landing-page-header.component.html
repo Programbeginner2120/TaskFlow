@@ -1,0 +1,70 @@
+<header class="app-header" role="banner">
+    <div class="header-search">
+        <app-search-bar [(searchQuery)]="searchQuery"></app-search-bar>
+    </div>
+
+    @if (!platformService.isMobile()) {
+        <div class="header-actions">
+            <button
+                class="header-icon-btn"
+                type="button"
+                aria-label="Quick add task">
+                <lucide-icon [img]="plusIcon" [size]="20" aria-hidden="true"></lucide-icon>
+            </button>
+
+            <button
+                class="header-icon-btn"
+                type="button"
+                [attr.aria-label]="theme() === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
+                (click)="toggleTheme()">
+                @if (theme() === 'light') {
+                    <lucide-icon [img]="moonIcon" [size]="20" aria-hidden="true"></lucide-icon>
+                } @else {
+                    <lucide-icon [img]="sunIcon" [size]="20" aria-hidden="true"></lucide-icon>
+                }
+            </button>
+
+            <button
+                class="header-icon-btn"
+                type="button"
+                [attr.aria-label]="'User menu for ' + (currentUser()?.displayName ?? 'user') + '. Click to log out'"
+                (click)="logout()">
+                <lucide-icon [img]="userIcon" [size]="20" aria-hidden="true"></lucide-icon>
+            </button>
+        </div>
+    } @else {
+        <app-hamburger-menu>
+            <div class="header-actions--mobile">
+                <button
+                    class="header-icon-btn"
+                    type="button"
+                    aria-label="Quick add task"
+                    [class.--mobile]="platformService.isMobile()">
+                    <lucide-icon [img]="plusIcon" [size]="20" aria-hidden="true"></lucide-icon>
+                </button>
+
+                <button
+                    class="header-icon-btn"
+                    type="button"
+                    [attr.aria-label]="theme() === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
+                    [class.--mobile]="platformService.isMobile()"
+                    (click)="toggleTheme()">
+                    @if (theme() === 'light') {
+                        <lucide-icon [img]="moonIcon" [size]="20" aria-hidden="true"></lucide-icon>
+                    } @else {
+                        <lucide-icon [img]="sunIcon" [size]="20" aria-hidden="true"></lucide-icon>
+                    }
+                </button>
+
+                <button
+                    class="header-icon-btn"
+                    type="button"
+                    [attr.aria-label]="'User menu for ' + (currentUser()?.displayName ?? 'user') + '. Click to log out'"
+                    [class.--mobile]="platformService.isMobile()"
+                    (click)="logout()">
+                    <lucide-icon [img]="userIcon" [size]="20" aria-hidden="true"></lucide-icon>
+                </button>
+            </div>
+        </app-hamburger-menu>
+    }
+</header>
