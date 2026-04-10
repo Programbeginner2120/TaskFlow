@@ -48,6 +48,11 @@
     --color-warning: #F59E0B;
     --color-error: #EF4444;
     --color-info: #3B82F6;
+
+    /* Sidebar */
+    --sidebar-width: 260px;
+    --sidebar-title-height: 60px;
+    --color-nav-item-hover: rgba(99, 102, 241, 0.12);
   }
   
   [data-theme="dark"] {

@@ -6,25 +6,26 @@
 
 .sidebar-container {
     height: 100%;
+    position: relative;
 }
 
 .sidebar-content-container {
     background-color: var(--color-bg-primary);
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    max-width: 20%;
+    gap: var(--space-4);
+    width: var(--sidebar-width);
     overflow: hidden;
-    transition: max-width 0.3s ease;
+    transition: width 0.3s ease;
     height: 100%;
-    border: 1px solid lightgray;
-    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
     z-index: 1;
     position: relative;
 }
 
 .sidebar-content-container.collapsed {
-    max-width: 0;
+    width: 0;
     padding: 0;
 }
 
@@ -32,14 +33,14 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid lightgray;
-    height: 10%;
+    gap: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+    height: var(--sidebar-title-height);
     padding: var(--space-4);
 }
 
 .list-icon {
-    margin-top: 4px;
+    margin-top: var(--space-1);
 }
 
 .nav-items-container {
@@ -52,39 +53,63 @@
 
 .nav-item {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: var(--space-2);
     width: 100%;
     padding: var(--space-2) 0;
-    border-radius: 10px;
-}
-
-.nav-item:hover {
+    border-radius: var(--radius-lg);
+    background: none;
+    border: none;
+    font: inherit;
+    color: var(--color-text-primary);
+    text-align: left;
     cursor: pointer;
-    background-color: rgba(0, 203, 255, 50%);
+    white-space: nowrap;
+
+    &:hover {
+        background-color: var(--color-nav-item-hover);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
 }
 
 .dynamic-content-container {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .sidebar-toggle-container {
     position: absolute;
     top: 2.5%;
-    left: 18.75%;
-    border-radius: 10px;
-    border: 1px solid lightgray;
+    left: calc(var(--sidebar-width) - 12px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-primary);
     width: fit-content;
     padding: var(--space-2);
     padding-left: var(--space-6);
     transition: left 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+        border-color: var(--color-border-hover);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
 }
 
 .sidebar-toggle-container.collapsed {
-    left: -1.25%;
+    left: -1.5%;
 }
 
-.sidebar-toggle-container:hover {
-    cursor: pointer;
+.expand-icon {
+    color: var(--color-primary);
 }

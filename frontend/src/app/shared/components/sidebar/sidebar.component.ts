@@ -1,25 +1,23 @@
-import { Component, input, NgModule, signal, WritableSignal } from "@angular/core";
+import { Component, input, linkedSignal } from "@angular/core";
 import { NavItem } from "../../interfaces/sidebar.interface";
-import { PanelRight, LucideAngularModule, List, ArrowRightFromLine, ArrowLeftFromLine } from "lucide-angular";
-import { CommonModule } from "@angular/common";
+import { LucideAngularModule, List, ArrowRightFromLine, ArrowLeftFromLine } from "lucide-angular";
 
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
-    imports: [LucideAngularModule, CommonModule]
+    imports: [LucideAngularModule]
 })
 export class SidebarComponent {
 
     sidebarTitle = input<string>('');
     navItems = input<NavItem[]>([]);
     collapsible = input<boolean>(false);
-    initialllyExpanded = input<boolean>(true);
+    initiallyExpanded = input<boolean>(true);
 
-    isExpanded: WritableSignal<boolean> = signal<boolean>(this.initialllyExpanded());
+    isExpanded = linkedSignal(() => this.initiallyExpanded());
 
     readonly list = List;
-    readonly panelRight = PanelRight;
     readonly arrowRightFromLine = ArrowRightFromLine;
     readonly arrowLeftFromLine = ArrowLeftFromLine;
 
