@@ -86,7 +86,7 @@
 .sidebar-toggle-container {
     position: absolute;
     top: 2.5%;
-    left: calc(var(--sidebar-width) - 12px);
+    left: calc(var(--sidebar-width) - 1.5%);
     border-radius: var(--radius-lg);
     border: 1px solid var(--color-border);
     background: var(--color-bg-primary);
