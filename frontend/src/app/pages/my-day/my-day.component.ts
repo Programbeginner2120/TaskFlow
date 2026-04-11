@@ -60,7 +60,10 @@ export class MyDayComponent {
         this.filteredTasks().filter(t => !t.completed).length
     );
 
-    getListForTask(listId: number) {
+    getListForTask(listId: number | null) {
+        if (listId === null) {
+            return null;
+        }
         return this.taskListService.lists().find(l => l.id === listId);
     }
 
