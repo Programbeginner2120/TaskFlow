@@ -1,30 +1,32 @@
-@if (task(); as t) {
-    <div
-        class="panel-backdrop"
-        role="presentation"
-        (click)="onBackdropClick($event)">
+<div
+    class="panel-backdrop"
+    [class.open]="task() !== null"
+    role="presentation"
+    (click)="onBackdropClick($event)">
+</div>
+
+<aside
+    class="panel"
+    [class.open]="task() !== null"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="panel-title"
+    [class.--mobile]="platformService.isMobile()">
+
+    <!-- Header -->
+    <div class="panel-header">
+        <h2 class="panel-title" id="panel-title">Task Details</h2>
+        <button
+            class="close-btn"
+            type="button"
+            aria-label="Close task details"
+            (click)="close.emit()">
+            <lucide-icon [img]="closeIcon" [size]="20" aria-hidden="true"></lucide-icon>
+        </button>
     </div>
 
-    <aside
-        class="panel"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="panel-title"
-        [class.--mobile]="platformService.isMobile()">
-
-        <!-- Header -->
-        <div class="panel-header">
-            <h2 class="panel-title" id="panel-title">Task Details</h2>
-            <button
-                class="close-btn"
-                type="button"
-                aria-label="Close task details"
-                (click)="close.emit()">
-                <lucide-icon [img]="closeIcon" [size]="20" aria-hidden="true"></lucide-icon>
-            </button>
-        </div>
-
-        <div class="panel-body">
+    @if (task(); as t) {
+    <div class="panel-body">
 
             <!-- Task Title -->
             <div class="field">
@@ -116,5 +118,5 @@
             </div>
 
         </div>
-    </aside>
-}
+    }
+</aside>

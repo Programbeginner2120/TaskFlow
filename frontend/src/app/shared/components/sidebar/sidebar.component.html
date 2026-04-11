@@ -1,3 +1,4 @@
+<div class="sidebar-backdrop" [class.open]="collapsible() && isExpanded()"></div>
 <div class="sidebar-container" (click)="$event.stopPropagation()">
     <div class="sidebar-content-container" [class.collapsed]="!isExpanded()">
         <div class="sidebar-title-container">
