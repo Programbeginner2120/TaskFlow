@@ -6,7 +6,9 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { UrlInterceptor } from './interceptors/url-interceptor';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
 import { AuthService } from './services/auth.service';
-import { firstValueFrom } from 'rxjs';
+import { TaskService } from './services/task.service';
+import { TaskListService } from './services/task-list.service';
+import { firstValueFrom, forkJoin, of, switchMap } from 'rxjs';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,7 +18,21 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([UrlInterceptor, AuthInterceptor])),
     provideAppInitializer(() => {
       const authService = inject(AuthService);
-      return firstValueFrom(authService.loadCurrentUser());
-    })
+      const taskService = inject(TaskService);
+      const taskListService = inject(TaskListService);
+
+      return firstValueFrom(
+        authService.loadCurrentUser().pipe(
+          switchMap(user => {
+            if (!user) return of(null);
+            return forkJoin([
+              taskService.loadAll(),
+              taskListService.loadAll(),
+            ]);
+          })
+        )
+      );
+    }),
   ]
 };
+

@@ -25,7 +25,7 @@ export class MyDayComponent {
     newTaskTitle = signal<string>('');
     newTaskDueDate = signal<Date | null>(null);
 
-    private readonly today = new Date(2026, 3, 10); // April 10, 2026
+    private readonly today = new Date();
 
     private isSameDay(a: Date, b: Date): boolean {
         return (
@@ -70,7 +70,7 @@ export class MyDayComponent {
     }
 
     toggleTask(taskId: number): void {
-        this.taskService.toggleCompletion(taskId);
+        this.taskService.toggleCompletion(taskId).subscribe();
     }
 
     openDetails(task: Task): void {
@@ -80,7 +80,7 @@ export class MyDayComponent {
     addTask(): void {
         const title = this.newTaskTitle().trim();
         if (!title) return;
-        this.taskService.addTask(title, this.newTaskDueDate() ?? new Date(this.today));
+        this.taskService.addTask(title, this.newTaskDueDate() ?? new Date()).subscribe();
         this.newTaskTitle.set('');
         this.newTaskDueDate.set(null);
     }

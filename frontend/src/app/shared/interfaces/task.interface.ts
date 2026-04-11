@@ -13,7 +13,7 @@ export interface Task {
     title: string;
     completed: boolean;
     dueDate: Date | null;
-    listId: number;
+    listId: number | null;
     notes: string;
     subtasks: Subtask[];
     createdAt: Date;

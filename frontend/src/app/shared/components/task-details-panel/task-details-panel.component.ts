@@ -93,7 +93,7 @@ export class TaskDetailsPanelComponent implements OnDestroy {
                 (date === null && current !== null) ||
                 (date !== null && (current === null || date.getTime() !== current.getTime()));
             if (changed) {
-                this.taskService.updateTask(t.id, { dueDate: date });
+                this.taskService.updateTask(t.id, { dueDate: date }).subscribe();
             }
         });
     }
@@ -113,7 +113,7 @@ export class TaskDetailsPanelComponent implements OnDestroy {
         if (!t) return;
         const value = (event.target as HTMLInputElement).value.trim();
         if (value) {
-            this.taskService.updateTask(t.id, { title: value });
+            this.taskService.updateTask(t.id, { title: value }).subscribe();
         }
     }
 
@@ -121,27 +121,28 @@ export class TaskDetailsPanelComponent implements OnDestroy {
         const t = this.task();
         if (!t) return;
         const value = (event.target as HTMLTextAreaElement).value;
-        this.taskService.updateTask(t.id, { notes: value });
+        this.taskService.updateTask(t.id, { notes: value }).subscribe();
     }
 
     onListChange(value: string | number | null): void {
         const t = this.task();
         if (!t || value === null) return;
-        this.taskService.updateTask(t.id, { listId: value as number });
+        this.taskService.updateTask(t.id, { listId: value as number }).subscribe();
     }
 
     toggleSubtask(subtaskId: number): void {
         const t = this.task();
         if (!t) return;
-        this.taskService.toggleSubtaskCompletion(t.id, subtaskId);
+        this.taskService.toggleSubtaskCompletion(t.id, subtaskId).subscribe();
     }
 
     addSubtask(): void {
         const t = this.task();
         const title = this.newSubtaskTitle().trim();
         if (!t || !title) return;
-        this.taskService.addSubtask(t.id, title);
-        this.newSubtaskTitle.set('');
+        this.taskService.addSubtask(t.id, title).subscribe(() => {
+            this.newSubtaskTitle.set('');
+        });
     }
 
     onSubtaskKeydown(event: KeyboardEvent): void {

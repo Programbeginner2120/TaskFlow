@@ -1,40 +1,56 @@
-import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { map, Observable, tap } from 'rxjs';
 import { TaskList } from '../shared/interfaces/task.interface';
+import { TaskListApiResponse } from '../shared/interfaces/api-response.interface';
+import { toTaskList } from './task-list.mapper';
 
-let nextListId = 3;
-
-const MOCK_LISTS: TaskList[] = [
-    { id: 1, userId: 1, name: 'Work', color: '#6366F1' },
-    { id: 2, userId: 1, name: 'Personal', color: '#10B981' },
-];
-
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class TaskListService {
-    private readonly _lists = signal<TaskList[]>(MOCK_LISTS);
+
+    private readonly http = inject(HttpClient);
+    private readonly API = '/task-lists';
+
+    private readonly _lists = signal<TaskList[]>([]);
+    private readonly _loading = signal(false);
 
     readonly lists = this._lists.asReadonly();
+    readonly loading = this._loading.asReadonly();
 
-    addList(name: string): void {
-        const colors = ['#6366F1', '#10B981', '#F59E0B', '#EF4444', '#3B82F6', '#A855F7', '#F97316'];
-        const color = colors[(nextListId - 1) % colors.length];
-        const newList: TaskList = {
-            id: nextListId++,
-            userId: 1,
-            name: name.trim(),
-            color,
-        };
-        this._lists.update(lists => [...lists, newList]);
-    }
-
-    updateList(id: number, partial: Partial<Pick<TaskList, 'name' | 'color'>>): void {
-        this._lists.update(lists =>
-            lists.map(l => l.id === id ? { ...l, ...partial } : l)
+    loadAll(): Observable<void> {
+        this._loading.set(true);
+        return this.http.get<TaskListApiResponse[]>(this.API).pipe(
+            tap(raw => {
+                this._lists.set(raw.map(toTaskList));
+                this._loading.set(false);
+            }),
+            map(() => void 0)
         );
     }
 
-    deleteList(id: number): void {
-        this._lists.update(lists => lists.filter(l => l.id !== id));
+    addList(name: string, color?: string): Observable<TaskList> {
+        return this.http.post<TaskListApiResponse>(this.API, { name, color }).pipe(
+            tap(raw => this._lists.update(ls => [...ls, toTaskList(raw)])),
+            map(raw => toTaskList(raw))
+        );
+    }
+
+    updateList(id: number, partial: Partial<Pick<TaskList, 'name' | 'color'>>): Observable<TaskList> {
+        const existing = this._lists().find(l => l.id === id);
+        const body = { name: existing?.name, color: existing?.color, ...partial };
+        return this.http.put<TaskListApiResponse>(`${this.API}/${id}`, body).pipe(
+            tap(raw => {
+                const updated = toTaskList(raw);
+                this._lists.update(ls => ls.map(l => l.id === id ? updated : l));
+            }),
+            map(raw => toTaskList(raw))
+        );
+    }
+
+    deleteList(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.API}/${id}`).pipe(
+            tap(() => this._lists.update(ls => ls.filter(l => l.id !== id)))
+        );
     }
 }
+
