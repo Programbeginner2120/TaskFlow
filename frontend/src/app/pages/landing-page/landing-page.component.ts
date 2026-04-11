@@ -36,16 +36,16 @@ export class LandingPageComponent {
             navItemIcon: Sun,
             navItemRouteFn: () => this.currentView.set('my-day')
         },
-        {
-            navItemLabel: 'Upcoming',
-            navItemIcon: Clock,
-            navItemRouteFn: () => this.currentView.set('upcoming')
-        },
-        {
-            navItemLabel: 'Calendar',
-            navItemIcon: Calendar,
-            navItemRouteFn: () => this.currentView.set('calendar')
-        }
+        // {
+        //     navItemLabel: 'Upcoming',
+        //     navItemIcon: Clock,
+        //     navItemRouteFn: () => this.currentView.set('upcoming')
+        // },
+        // {
+        //     navItemLabel: 'Calendar',
+        //     navItemIcon: Calendar,
+        //     navItemRouteFn: () => this.currentView.set('calendar')
+        // }
     ]);
 
     readonly sidebarComponent = viewChild.required<SidebarComponent>('sidebar');
