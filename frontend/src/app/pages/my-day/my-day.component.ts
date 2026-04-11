@@ -1,9 +1,10 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { LucideAngularModule, Circle, CheckCircle2, ChevronRight } from 'lucide-angular';
 import { Task } from '../../shared/interfaces/task.interface';
-import { TaskService } from '../../services/task.service';
-import { TaskListService } from '../../services/task-list.service';
+import { TaskStateService } from '../../services/task-state.service';
+import { TaskListStateService } from '../../services/task-list-state.service';
 import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
+import { toLocalDateString } from '../../utils/date.utils';
 
 @Component({
     selector: 'app-my-day',
@@ -16,8 +17,8 @@ export class MyDayComponent {
     readonly checkCircleIcon = CheckCircle2;
     readonly chevronRightIcon = ChevronRight;
 
-    private readonly taskService = inject(TaskService);
-    private readonly taskListService = inject(TaskListService);
+    private readonly taskService = inject(TaskStateService);
+    private readonly taskListService = inject(TaskListStateService);
 
     searchQuery = input<string>('');
     taskSelected = output<Task>();
@@ -25,7 +26,7 @@ export class MyDayComponent {
     newTaskTitle = signal<string>('');
     newTaskDueDate = signal<Date | null>(null);
 
-    private readonly today = new Date(2026, 3, 10); // April 10, 2026
+    private readonly today = new Date();
 
     private isSameDay(a: Date, b: Date): boolean {
         return (
@@ -59,7 +60,10 @@ export class MyDayComponent {
         this.filteredTasks().filter(t => !t.completed).length
     );
 
-    getListForTask(listId: number) {
+    getListForTask(listId: number | null) {
+        if (listId === null) {
+            return null;
+        }
         return this.taskListService.lists().find(l => l.id === listId);
     }
 
@@ -70,7 +74,15 @@ export class MyDayComponent {
     }
 
     toggleTask(taskId: number): void {
-        this.taskService.toggleCompletion(taskId);
+        const task = this.taskService.tasks().find(t => t.id === taskId);
+        if (!task) return;
+        this.taskService.updateTask(taskId, {
+            title: task.title,
+            notes: task.notes,
+            dueDate: task.dueDate ? toLocalDateString(task.dueDate) : null,
+            listId: task.listId,
+            completed: !task.completed,
+        });
     }
 
     openDetails(task: Task): void {
@@ -80,7 +92,8 @@ export class MyDayComponent {
     addTask(): void {
         const title = this.newTaskTitle().trim();
         if (!title) return;
-        this.taskService.addTask(title, this.newTaskDueDate() ?? new Date(this.today));
+        const dueDate = this.newTaskDueDate() ?? new Date();
+        this.taskService.addTask({ title, dueDate: toLocalDateString(dueDate) });
         this.newTaskTitle.set('');
         this.newTaskDueDate.set(null);
     }

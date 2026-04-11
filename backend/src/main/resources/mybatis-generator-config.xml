@@ -79,5 +79,20 @@
 
     </table>
 
+    <!-- Task Lists Table -->
+    <table tableName="task_lists" domainObjectName="TaskListDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+    </table>
+
+    <!-- Tasks Table -->
+    <table tableName="tasks" domainObjectName="TaskDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+    </table>
+
+    <!-- Subtasks Table -->
+    <table tableName="subtasks" domainObjectName="SubtaskDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+    </table>
+
   </context>
 </generatorConfiguration>

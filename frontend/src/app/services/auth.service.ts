@@ -3,6 +3,7 @@ import { computed, inject, Injectable, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, tap, catchError, of, Subject, throwError } from "rxjs";
 import { LoginRequest, LoginResponse, RegisterRequest, UserResponse } from "../interfaces/auth.interface";
+import { isTokenExpired } from '../utils/jwt.utils';
 
 @Injectable({
     providedIn: 'root'
@@ -23,7 +24,7 @@ export class AuthService {
     readonly isAuthenticated = computed(() => {
         const token = this._token();
         if (!token) return false;
-        return !this.isTokenExpired(token);
+        return !isTokenExpired(token);
     });
 
     private logoutSubject = new Subject<void>();
@@ -98,13 +99,4 @@ export class AuthService {
         this._token.set(null);
     }
 
-    private isTokenExpired(token: string): boolean {
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const expirationMs = payload.exp * 1000;
-            return Date.now() >= expirationMs;
-        } catch {
-            return true;
-        }
-    }
 }

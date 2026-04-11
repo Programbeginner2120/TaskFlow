@@ -39,6 +39,8 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD:?MAIL_PASSWORD must be set}
       MAIL_FROM: ${MAIL_FROM:-noreply@taskflow.com}
       APP_BASE_URL: ${APP_BASE_URL:-https://taskflow.com}
+      ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD:?ENCRYPTION_PASSWORD must be set}
+      ENCRYPTION_SALT: ${ENCRYPTION_SALT:?ENCRYPTION_SALT must be set}
     ports:
       - "8080:8080"
 

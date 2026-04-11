@@ -18,6 +18,8 @@ services:
       MAIL_USERNAME: ${MAIL_USERNAME:?MAIL_USERNAME must be set}
       MAIL_PASSWORD: ${MAIL_PASSWORD:?MAIL_PASSWORD must be set}
       APP_BASE_URL: ${APP_BASE_URL:-http://localhost:4200}
+      ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD:?ENCRYPTION_PASSWORD must be set}
+      ENCRYPTION_SALT: ${ENCRYPTION_SALT:?ENCRYPTION_SALT must be set}
     volumes:
       - ./backend:/app
     # Keep stdin open so Gradle's interactive output works correctly
