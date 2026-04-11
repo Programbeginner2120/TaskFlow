@@ -1,13 +1,6 @@
 import { Component, computed, ElementRef, HostListener, inject, input, model, signal, viewChild } from '@angular/core';
 import { LucideAngularModule, Calendar, ChevronLeft, ChevronRight } from 'lucide-angular';
-
-export interface CalendarDay {
-    date: Date;
-    inMonth: boolean;
-    isToday: boolean;
-    isSelected: boolean;
-    isDisabled: boolean;
-}
+import { CalendarDay } from '../../interfaces/datepicker.interface';
 
 @Component({
     selector: 'app-datepicker',
