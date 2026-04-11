@@ -48,6 +48,9 @@ app:
     from-address: ${MAIL_FROM:noreply@taskflow.com}
     base-url: ${APP_BASE_URL:http://localhost:4200}
     verification-token-ttl-hours: 24
+  encryption:
+    password: ${ENCRYPTION_PASSWORD}
+    salt: ${ENCRYPTION_SALT}
     reset-token-ttl-hours: 1
 
 logging:

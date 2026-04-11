@@ -1,0 +1,89 @@
+package com.killeen.taskflow.components.tasklist.service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
+
+import com.killeen.taskflow.components.tasklist.exception.TaskListNotFoundException;
+import com.killeen.taskflow.components.tasklist.model.CreateTaskListRequest;
+import com.killeen.taskflow.components.tasklist.model.TaskList;
+import com.killeen.taskflow.components.tasklist.model.UpdateTaskListRequest;
+import com.killeen.taskflow.components.tasklist.repository.TaskListRepository;
+import com.killeen.taskflow.config.EncryptionService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class TaskListService {
+
+    private final TaskListRepository taskListRepository;
+    private final EncryptionService  encryptionService;
+    private final Environment        env;
+
+    public List<TaskList> getAllTaskLists(Long userId) {
+        return taskListRepository.findAllByUserId(userId).stream()
+                .map(this::decrypt)
+                .toList();
+    }
+
+    public TaskList createTaskList(Long userId, CreateTaskListRequest request) {
+        LocalDateTime now = LocalDateTime.now();
+        TaskList plaintext = TaskList.builder()
+                .userId(userId)
+                .name(request.getName())
+                .color(request.getColor() != null ? request.getColor() : "#6366f1")
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        Long id = taskListRepository.save(encrypt(plaintext));
+        plaintext.setId(id);
+        log.info("Created task list {} for user {}", id, userId);
+        return plaintext;
+    }
+
+    public TaskList updateTaskList(Long userId, Long taskListId, UpdateTaskListRequest request) {
+        TaskList existing = taskListRepository.findByIdAndUserId(taskListId, userId)
+                .map(this::decrypt)
+                .orElseThrow(() -> new TaskListNotFoundException(
+                        env.getProperty("task.list.not.found")));
+
+        existing.setName(request.getName());
+        existing.setColor(request.getColor() != null ? request.getColor() : existing.getColor());
+        existing.setUpdatedAt(LocalDateTime.now());
+
+        taskListRepository.update(encrypt(existing));
+        log.info("Updated task list {} for user {}", taskListId, userId);
+        return existing;
+    }
+
+    public void deleteTaskList(Long userId, Long taskListId) {
+        taskListRepository.findByIdAndUserId(taskListId, userId)
+                .orElseThrow(() -> new TaskListNotFoundException(
+                        env.getProperty("task.list.not.found")));
+
+        taskListRepository.deleteById(taskListId);
+        log.info("Deleted task list {} for user {}", taskListId, userId);
+    }
+
+    // -------------------------------------------------------------------------
+    // Encryption helpers — the repository always persists encrypted values
+    // -------------------------------------------------------------------------
+
+    private TaskList encrypt(TaskList list) {
+        return list.toBuilder()
+                .name(encryptionService.encrypt(list.getName()))
+                .build();
+    }
+
+    private TaskList decrypt(TaskList list) {
+        return list.toBuilder()
+                .name(encryptionService.decrypt(list.getName()))
+                .build();
+    }
+}
