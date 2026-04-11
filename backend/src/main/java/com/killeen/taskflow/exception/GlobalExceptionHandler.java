@@ -2,6 +2,7 @@ package com.killeen.taskflow.exception;
 
 import java.util.stream.Collectors;
 
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,11 +19,15 @@ import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException
 import com.killeen.taskflow.components.user.exception.UserNotFoundException;
 import com.killeen.taskflow.config.EncryptionException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final Environment env;
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException ex) {
@@ -75,7 +80,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EncryptionException.class)
     public ResponseEntity<ErrorResponse> handleEncryption(EncryptionException ex) {
         log.error("Encryption error", ex);
-        return response(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred processing your data");
+        return response(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("encryption.failed"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
