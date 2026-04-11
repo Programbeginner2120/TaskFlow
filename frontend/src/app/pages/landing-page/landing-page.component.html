@@ -1,0 +1,59 @@
+<div class="layout">
+
+    <app-landing-page-header [(searchQuery)]="searchQuery"></app-landing-page-header>
+
+    <div class="layout-body">
+
+        <app-sidebar
+            sidebarTitle="TaskFlow"
+            [navItems]="navItems()"
+            [collapsible]="true"
+            [initiallyExpanded]="true">
+            <div class="lists-container" sidebar-content>
+                <div class="list-section-title">Lists</div>
+                <ul class="list-items" aria-label="Task lists">
+                    @for (list of lists(); track list.id) {
+                        <li>
+                            <button
+                                class="list-item"
+                                type="button"
+                                [attr.aria-label]="'View ' + list.name + ' list'"
+                                (click)="selectListView(list.id)">
+                                <span class="list-item-dot" [style.backgroundColor]="list.color" aria-hidden="true"></span>
+                                <span class="list-item-name">{{ list.name }}</span>
+                                <lucide-icon class="list-item-ellipsis" [img]="ellipsis" [size]="16" aria-hidden="true"></lucide-icon>
+                            </button>
+                        </li>
+                    }
+                </ul>
+                <button class="add-list-btn" type="button" aria-label="Add new list">
+                    <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
+                    <span>New List</span>
+                </button>
+            </div>
+        </app-sidebar>
+
+        <main class="main-content" id="main-content" aria-live="polite">
+            @switch (currentView()) {
+                @case ('my-day') {
+                    <app-my-day
+                        [searchQuery]="searchQuery()"
+                        (taskSelected)="selectedTask.set($any($event))">
+                    </app-my-day>
+                }
+                @default {
+                    <div class="coming-soon">
+                        <p>Coming soon</p>
+                    </div>
+                }
+            }
+        </main>
+
+    </div>
+
+    <app-task-details-panel
+        [task]="selectedTask()"
+        (close)="selectedTask.set(null)">
+    </app-task-details-panel>
+
+</div>

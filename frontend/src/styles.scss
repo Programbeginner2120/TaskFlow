@@ -48,6 +48,11 @@
     --color-warning: #F59E0B;
     --color-error: #EF4444;
     --color-info: #3B82F6;
+
+    /* Sidebar */
+    --sidebar-width: 260px;
+    --sidebar-title-height: 60px;
+    --color-nav-item-hover: rgba(99, 102, 241, 0.12);
   }
   
   [data-theme="dark"] {
@@ -100,6 +105,32 @@
     display: block;
     height: 100%;
     width: 100%;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-sm);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-hover);
+    border-radius: var(--radius-sm);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
   }
 
   /* Custom component styles */

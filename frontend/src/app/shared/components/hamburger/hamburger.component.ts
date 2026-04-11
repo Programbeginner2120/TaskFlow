@@ -1,6 +1,5 @@
 import { Component, signal } from "@angular/core";
 import { LucideAngularModule, Menu, X } from "lucide-angular";
-import { ɵEmptyOutletComponent } from "@angular/router";
 
 @Component({
     selector: 'app-hamburger-menu',

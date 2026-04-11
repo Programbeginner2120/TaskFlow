@@ -5,8 +5,8 @@ export type DevicePlatform = 'phone' | 'tablet' | 'laptop' | 'desktop';
 @Injectable({ providedIn: 'root' })
 export class PlatformService {
 
-    private readonly phoneQuery = window.matchMedia('(max-width: 767px');
-    private readonly tabletQuery = window.matchMedia('(max-width: 768px) and (max-width: 1023px)');
+    private readonly phoneQuery = window.matchMedia('(max-width: 767px)');
+    private readonly tabletQuery = window.matchMedia('(min-width: 768px) and (max-width: 1023px)');
     private readonly laptopQuery = window.matchMedia('(min-width: 1024px) and (max-width: 1439px)');
 
     private readonly _platform = signal<DevicePlatform>(this.detectPlatform());

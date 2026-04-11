@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     {
@@ -20,4 +21,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/auth/reset-password/reset-password.component')
             .then(m => m.ResetPasswordComponent)
     },
+    {
+        path: 'landing-page',
+        loadComponent: () => import('./pages/landing-page/landing-page.component')
+            .then(m => m.LandingPageComponent),
+        canActivate: [authGuard]
+    }
 ];

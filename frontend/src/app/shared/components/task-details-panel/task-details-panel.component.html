@@ -1,0 +1,122 @@
+<div
+    class="panel-backdrop"
+    [class.open]="task() !== null"
+    role="presentation"
+    (click)="onBackdropClick($event)">
+</div>
+
+<aside
+    class="panel"
+    [class.open]="task() !== null"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="panel-title"
+    [class.--mobile]="platformService.isMobile()">
+
+    <!-- Header -->
+    <div class="panel-header">
+        <h2 class="panel-title" id="panel-title">Task Details</h2>
+        <button
+            class="close-btn"
+            type="button"
+            aria-label="Close task details"
+            (click)="close.emit()">
+            <lucide-icon [img]="closeIcon" [size]="20" aria-hidden="true"></lucide-icon>
+        </button>
+    </div>
+
+    @if (task(); as t) {
+    <div class="panel-body">
+
+            <!-- Task Title -->
+            <div class="field">
+                <input
+                    class="title-input"
+                    type="text"
+                    [value]="t.title"
+                    (blur)="onTitleChange($event)"
+                    (keydown.enter)="$any($event.target).blur()"
+                    aria-label="Task title"
+                />
+            </div>
+
+            <!-- Due Date -->
+            <div class="field">
+                <span class="field-label">DUE DATE</span>
+                <div class="due-date-display">
+                    <lucide-icon [img]="calendarIcon" [size]="16" aria-hidden="true"></lucide-icon>
+                    <span>{{ formattedDueDate() }}</span>
+                </div>
+            </div>
+
+            <!-- List -->
+            <div class="field">
+                <span class="field-label">LIST</span>
+                <app-select
+                    [options]="listOptions()"
+                    [value]="selectedListId()"
+                    (valueChange)="onListChange($event)"
+                    aria-label="Task list">
+                </app-select>
+            </div>
+
+            <!-- Notes -->
+            <div class="field">
+                <span class="field-label">NOTES</span>
+                <textarea
+                    class="notes-textarea"
+                    [value]="t.notes"
+                    (blur)="onNotesChange($event)"
+                    placeholder="Add a note..."
+                    aria-label="Task notes"
+                    rows="3">
+                </textarea>
+            </div>
+
+            <!-- Subtasks -->
+            <div class="field">
+                <span class="field-label">
+                    SUBTASKS
+                    @if (subtaskProgress(); as progress) {
+                        <span class="subtask-progress" aria-label="{{ progress }} subtasks completed">({{ progress }})</span>
+                    }
+                </span>
+
+                <ul class="subtask-list" aria-label="Subtasks">
+                    @for (subtask of t.subtasks; track subtask.id) {
+                        <li class="subtask-item">
+                            <input
+                                type="checkbox"
+                                class="subtask-checkbox"
+                                [id]="'subtask-' + subtask.id"
+                                [checked]="subtask.completed"
+                                (change)="toggleSubtask(subtask.id)"
+                                [attr.aria-label]="subtask.title"
+                            />
+                            <label
+                                [for]="'subtask-' + subtask.id"
+                                class="subtask-label"
+                                [class.completed]="subtask.completed">
+                                {{ subtask.title }}
+                            </label>
+                        </li>
+                    }
+                </ul>
+
+                <div class="add-subtask-row">
+                    <span class="add-subtask-plus" aria-hidden="true">+</span>
+                    <input
+                        class="add-subtask-input"
+                        type="text"
+                        placeholder="Add subtask..."
+                        [value]="newSubtaskTitle()"
+                        (input)="newSubtaskTitle.set($any($event.target).value)"
+                        (keydown)="onSubtaskKeydown($event)"
+                        aria-label="New subtask title"
+                    />
+                </div>
+            </div>
+
+        </div>
+    }
+</aside>

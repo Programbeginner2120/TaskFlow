@@ -1,0 +1,37 @@
+<div class="sidebar-backdrop" [class.open]="collapsible() && isExpanded()"></div>
+<div class="sidebar-container" (click)="$event.stopPropagation()">
+    <div class="sidebar-content-container" [class.collapsed]="!isExpanded()">
+        <div class="sidebar-title-container">
+            <lucide-icon class="list-icon" [img]="list" [size]="20" aria-hidden="true"></lucide-icon>
+            <h2 class="sidebar-title">{{ sidebarTitle() }}</h2>
+        </div>
+        <nav class="nav-items-container" aria-label="Sidebar navigation">
+            @for (navItem of navItems(); track navItem.navItemLabel) {
+                <button class="nav-item" (click)="onNavItemClick(navItem)" [attr.aria-label]="navItem.navItemLabel">
+                    @if (navItem.navItemIcon) {
+                        <lucide-icon class="nav-item-icon" [img]="navItem.navItemIcon" [size]="20" aria-hidden="true"></lucide-icon>
+                    }
+                    <span class="nav-item-label">{{ navItem.navItemLabel }}</span>
+                </button>
+            }
+        </nav>
+        <div class="dynamic-content-container">
+            <ng-content select="[sidebar-content]"></ng-content>
+        </div>
+    </div>
+    @if (collapsible()) {
+        <button
+            class="sidebar-toggle-container"
+            [class.collapsed]="!isExpanded()"
+            [attr.aria-expanded]="isExpanded()"
+            [attr.aria-label]="isExpanded() ? 'Collapse sidebar' : 'Expand sidebar'"
+            (click)="isExpanded.set(!isExpanded())"
+        >
+            @if (isExpanded()) {
+                <lucide-icon class="expand-icon" [img]="arrowLeftFromLine" [size]="20" aria-hidden="true"></lucide-icon>
+            } @else {
+                <lucide-icon class="expand-icon" [img]="arrowRightFromLine" [size]="20" aria-hidden="true"></lucide-icon>
+            }
+        </button>
+    }
+</div>
