@@ -16,6 +16,7 @@ import { TaskService } from '../../../services/task.service';
 import { TaskListService } from '../../../services/task-list.service';
 import { SelectComponent } from '../select/select.component';
 import { SelectOption } from '../../interfaces/select.interface';
+import { PlatformService } from '../../../services/platform.service';
 
 @Component({
     selector: 'app-task-details-panel',
@@ -30,7 +31,7 @@ export class TaskDetailsPanelComponent implements OnDestroy {
 
     private readonly taskService = inject(TaskService);
     private readonly taskListService = inject(TaskListService);
-    private readonly elementRef = inject(ElementRef);
+    readonly platformService = inject(PlatformService);
 
     task = input.required<Task | null>();
     close = output<void>();

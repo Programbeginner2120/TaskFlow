@@ -22,6 +22,10 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+
+    &.--mobile {
+        width: 100%;
+    }
 }
 
 /* Header */
