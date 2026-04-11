@@ -20,13 +20,7 @@
             (keydown)="onAddTaskKeydown($event)"
             aria-label="New task title"
         />
-        <button
-            class="add-task-calendar-btn"
-            type="button"
-            aria-label="Set due date (coming soon)"
-            disabled>
-            <lucide-icon [img]="calendarIcon" [size]="18" aria-hidden="true"></lucide-icon>
-        </button>
+        <app-datepicker [(value)]="newTaskDueDate"></app-datepicker>
     </div>
 
     <!-- Task list -->

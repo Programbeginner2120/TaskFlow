@@ -44,7 +44,7 @@
             <div class="field">
                 <span class="field-label">DUE DATE</span>
                 <div class="due-date-display">
-                    <lucide-icon [img]="calendarIcon" [size]="16" aria-hidden="true"></lucide-icon>
+                    <app-datepicker [(value)]="dueDate"></app-datepicker>
                     <span>{{ formattedDueDate() }}</span>
                 </div>
             </div>

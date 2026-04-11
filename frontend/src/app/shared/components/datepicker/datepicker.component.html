@@ -1,0 +1,89 @@
+<div class="datepicker-container">
+
+    <!-- Trigger button -->
+    <button
+        #trigger
+        class="datepicker-trigger"
+        type="button"
+        [class.is-active]="isOpen()"
+        [class.is-selected]="value() !== null"
+        [disabled]="disabled()"
+        [attr.aria-label]="value() !== null ? 'Change due date' : 'Set due date'"
+        [attr.aria-expanded]="isOpen()"
+        [attr.aria-haspopup]="'dialog'"
+        (click)="toggle($event)">
+        <lucide-icon [img]="calendarIcon" [size]="18" aria-hidden="true"></lucide-icon>
+    </button>
+
+    <!-- Popup -->
+    @if (isOpen()) {
+        <div
+            class="datepicker-popup"
+            [class.datepicker-popup--above]="popupPosition().vertical === 'above'"
+            [class.datepicker-popup--start]="popupPosition().horizontal === 'start'"
+            role="dialog"
+            aria-label="Date picker">
+
+            <!-- Month navigation -->
+            <div class="dp-nav">
+                <button
+                    class="dp-nav-btn"
+                    type="button"
+                    aria-label="Previous month"
+                    (click)="prevMonth($event)">
+                    <lucide-icon [img]="chevronLeftIcon" [size]="16" aria-hidden="true"></lucide-icon>
+                </button>
+                <span class="dp-nav-label" aria-live="polite">{{ headerLabel() }}</span>
+                <button
+                    class="dp-nav-btn"
+                    type="button"
+                    aria-label="Next month"
+                    (click)="nextMonth($event)">
+                    <lucide-icon [img]="chevronRightIcon" [size]="16" aria-hidden="true"></lucide-icon>
+                </button>
+            </div>
+
+            <!-- Day-of-week headers -->
+            <div class="dp-weekdays" role="row">
+                @for (day of ['Su','Mo','Tu','We','Th','Fr','Sa']; track day) {
+                    <span class="dp-weekday" role="columnheader" aria-label="{{ day }}">{{ day }}</span>
+                }
+            </div>
+
+            <!-- Calendar grid -->
+            <div class="dp-grid" role="grid">
+                @for (day of calendarDays(); track day.date.toISOString()) {
+                    <button
+                        class="dp-day"
+                        type="button"
+                        role="gridcell"
+                        [class.dp-day--in-month]="day.inMonth"
+                        [class.dp-day--today]="day.isToday"
+                        [class.dp-day--selected]="day.isSelected"
+                        [class.dp-day--out-of-month]="!day.inMonth"
+                        [disabled]="!day.inMonth"
+                        [attr.aria-label]="day.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })"
+                        [attr.aria-pressed]="day.isSelected"
+                        [attr.aria-current]="day.isToday ? 'date' : null"
+                        (click)="selectDate(day, $event)">
+                        {{ day.date.getDate() }}
+                    </button>
+                }
+            </div>
+
+            <!-- Clear -->
+            @if (value() !== null) {
+                <div class="dp-actions">
+                    <button
+                        class="dp-clear-btn"
+                        type="button"
+                        (click)="clearDate($event)">
+                        Clear
+                    </button>
+                </div>
+            }
+
+        </div>
+    }
+
+</div>

@@ -1,20 +1,20 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { LucideAngularModule, Circle, CheckCircle2, ChevronRight, Calendar } from 'lucide-angular';
+import { LucideAngularModule, Circle, CheckCircle2, ChevronRight } from 'lucide-angular';
 import { Task } from '../../shared/interfaces/task.interface';
 import { TaskService } from '../../services/task.service';
 import { TaskListService } from '../../services/task-list.service';
+import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
 
 @Component({
     selector: 'app-my-day',
     templateUrl: './my-day.component.html',
     styleUrls: ['./my-day.component.scss'],
-    imports: [LucideAngularModule],
+    imports: [LucideAngularModule, DatepickerComponent],
 })
 export class MyDayComponent {
     readonly circleIcon = Circle;
     readonly checkCircleIcon = CheckCircle2;
     readonly chevronRightIcon = ChevronRight;
-    readonly calendarIcon = Calendar;
 
     private readonly taskService = inject(TaskService);
     private readonly taskListService = inject(TaskListService);
@@ -23,6 +23,7 @@ export class MyDayComponent {
     taskSelected = output<Task>();
 
     newTaskTitle = signal<string>('');
+    newTaskDueDate = signal<Date | null>(null);
 
     private readonly today = new Date(2026, 3, 10); // April 10, 2026
 
@@ -79,8 +80,9 @@ export class MyDayComponent {
     addTask(): void {
         const title = this.newTaskTitle().trim();
         if (!title) return;
-        this.taskService.addTask(title, new Date(this.today));
+        this.taskService.addTask(title, this.newTaskDueDate() ?? new Date(this.today));
         this.newTaskTitle.set('');
+        this.newTaskDueDate.set(null);
     }
 
     onAddTaskKeydown(event: KeyboardEvent): void {
