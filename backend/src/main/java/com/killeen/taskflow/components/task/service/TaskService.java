@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.killeen.taskflow.components.task.TaskEncryptionHelper;
 import com.killeen.taskflow.components.task.exception.SubtaskNotFoundException;
 import com.killeen.taskflow.components.task.exception.TaskNotFoundException;
 import com.killeen.taskflow.components.task.model.CreateSubtaskRequest;
@@ -18,7 +19,6 @@ import com.killeen.taskflow.components.task.repository.SubtaskRepository;
 import com.killeen.taskflow.components.task.repository.TaskRepository;
 import com.killeen.taskflow.components.tasklist.exception.TaskListNotFoundException;
 import com.killeen.taskflow.components.tasklist.repository.TaskListRepository;
-import com.killeen.taskflow.config.EncryptionService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class TaskService {
 
-    private final TaskRepository     taskRepository;
-    private final SubtaskRepository  subtaskRepository;
-    private final TaskListRepository taskListRepository;
-    private final EncryptionService  encryptionService;
-    private final Environment        env;
+    private final TaskRepository       taskRepository;
+    private final SubtaskRepository    subtaskRepository;
+    private final TaskListRepository   taskListRepository;
+    private final TaskEncryptionHelper encryptionHelper;
+    private final Environment          env;
 
     // -------------------------------------------------------------------------
     // Tasks
@@ -40,7 +40,7 @@ public class TaskService {
 
     public List<Task> getAllTasks(Long userId) {
         return taskRepository.findAllByUserId(userId).stream()
-                .map(this::decryptTask)
+                .map(encryptionHelper::decryptTask)
                 .toList();
     }
 
@@ -64,7 +64,7 @@ public class TaskService {
                 .updatedAt(now)
                 .build();
 
-        Long id = taskRepository.save(encryptTask(plaintext));
+        Long id = taskRepository.save(encryptionHelper.encryptTask(plaintext));
         plaintext.setId(id);
         log.info("Created task {} for user {}", id, userId);
         return plaintext;
@@ -72,7 +72,7 @@ public class TaskService {
 
     public Task updateTask(Long userId, Long taskId, UpdateTaskRequest request) {
         Task existing = taskRepository.findByIdAndUserId(taskId, userId)
-                .map(this::decryptTask)
+                .map(encryptionHelper::decryptTask)
                 .orElseThrow(() -> new TaskNotFoundException(
                         env.getProperty("task.not.found")));
 
@@ -89,7 +89,7 @@ public class TaskService {
         existing.setCompleted(request.isCompleted());
         existing.setUpdatedAt(LocalDateTime.now());
 
-        taskRepository.update(encryptTask(existing));
+        taskRepository.update(encryptionHelper.encryptTask(existing));
         log.info("Updated task {} for user {}", taskId, userId);
         return existing;
     }
@@ -121,7 +121,7 @@ public class TaskService {
                 .updatedAt(now)
                 .build();
 
-        Long id = subtaskRepository.save(encryptSubtask(plaintext));
+        Long id = subtaskRepository.save(encryptionHelper.encryptSubtask(plaintext));
         plaintext.setId(id);
         log.info("Created subtask {} on task {}", id, taskId);
         return plaintext;
@@ -134,7 +134,7 @@ public class TaskService {
                         env.getProperty("task.not.found")));
 
         Subtask existing = subtaskRepository.findByIdAndTaskId(subtaskId, taskId)
-                .map(this::decryptSubtask)
+                .map(encryptionHelper::decryptSubtask)
                 .orElseThrow(() -> new SubtaskNotFoundException(
                         env.getProperty("subtask.not.found")));
 
@@ -142,7 +142,7 @@ public class TaskService {
         existing.setCompleted(request.isCompleted());
         existing.setUpdatedAt(LocalDateTime.now());
 
-        subtaskRepository.update(encryptSubtask(existing));
+        subtaskRepository.update(encryptionHelper.encryptSubtask(existing));
         log.info("Updated subtask {} on task {}", subtaskId, taskId);
         return existing;
     }
@@ -161,35 +161,6 @@ public class TaskService {
     }
 
     // -------------------------------------------------------------------------
-    // Encryption helpers
+    // (Encryption helpers delegated to TaskEncryptionHelper bean)
     // -------------------------------------------------------------------------
-
-    private Task encryptTask(Task task) {
-        return task.toBuilder()
-                .title(encryptionService.encrypt(task.getTitle()))
-                .notes(encryptionService.encrypt(task.getNotes()))
-                .build();
-    }
-
-    private Task decryptTask(Task task) {
-        return task.toBuilder()
-                .title(encryptionService.decrypt(task.getTitle()))
-                .notes(encryptionService.decrypt(task.getNotes()))
-                .subtasks(task.getSubtasks().stream()
-                        .map(this::decryptSubtask)
-                        .toList())
-                .build();
-    }
-
-    private Subtask encryptSubtask(Subtask subtask) {
-        return subtask.toBuilder()
-                .title(encryptionService.encrypt(subtask.getTitle()))
-                .build();
-    }
-
-    private Subtask decryptSubtask(Subtask subtask) {
-        return subtask.toBuilder()
-                .title(encryptionService.decrypt(subtask.getTitle()))
-                .build();
-    }
 }

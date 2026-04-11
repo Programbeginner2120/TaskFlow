@@ -2,8 +2,6 @@ package com.killeen.taskflow.components.user.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +18,7 @@ import com.killeen.taskflow.components.user.model.ResetPasswordRequest;
 import com.killeen.taskflow.components.user.model.User;
 import com.killeen.taskflow.components.user.model.UserResponse;
 import com.killeen.taskflow.components.user.service.UserService;
+import com.killeen.taskflow.util.AuthUtils;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +56,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = (Long) authentication.getPrincipal();
+        Long userId = AuthUtils.getAuthenticatedUserId();
         User user = userService.getUserById(userId);
 
         UserResponse response = UserResponse.builder()
