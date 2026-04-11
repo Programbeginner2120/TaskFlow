@@ -12,12 +12,13 @@ import {
 } from '@angular/core';
 import { LucideAngularModule, X, Calendar, Check } from 'lucide-angular';
 import { Task } from '../../interfaces/task.interface';
-import { TaskService } from '../../../services/task.service';
-import { TaskListService } from '../../../services/task-list.service';
+import { TaskStateService } from '../../../services/task-state.service';
+import { TaskListStateService } from '../../../services/task-list-state.service';
 import { SelectComponent } from '../select/select.component';
 import { DatepickerComponent } from '../datepicker/datepicker.component';
 import { SelectOption } from '../../interfaces/select.interface';
 import { PlatformService } from '../../../services/platform.service';
+import { toLocalDateString } from '../../../utils/date.utils';
 
 @Component({
     selector: 'app-task-details-panel',
@@ -30,8 +31,8 @@ export class TaskDetailsPanelComponent implements OnDestroy {
     readonly calendarIcon = Calendar;
     readonly checkIcon = Check;
 
-    private readonly taskService = inject(TaskService);
-    private readonly taskListService = inject(TaskListService);
+    private readonly taskService = inject(TaskStateService);
+    private readonly taskListService = inject(TaskListStateService);
     readonly platformService = inject(PlatformService);
 
     task = input.required<Task | null>();
@@ -93,7 +94,13 @@ export class TaskDetailsPanelComponent implements OnDestroy {
                 (date === null && current !== null) ||
                 (date !== null && (current === null || date.getTime() !== current.getTime()));
             if (changed) {
-                this.taskService.updateTask(t.id, { dueDate: date }).subscribe();
+                this.taskService.updateTask(t.id, {
+                    title: t.title,
+                    notes: t.notes,
+                    dueDate: date ? toLocalDateString(date) : null,
+                    listId: t.listId,
+                    completed: t.completed,
+                });
             }
         });
     }
@@ -112,37 +119,58 @@ export class TaskDetailsPanelComponent implements OnDestroy {
         const t = this.task();
         if (!t) return;
         const value = (event.target as HTMLInputElement).value.trim();
-        if (value) {
-            this.taskService.updateTask(t.id, { title: value }).subscribe();
-        }
+        if (!value) return;
+        this.taskService.updateTask(t.id, {
+            title: value,
+            notes: t.notes,
+            dueDate: t.dueDate ? toLocalDateString(t.dueDate) : null,
+            listId: t.listId,
+            completed: t.completed,
+        });
     }
 
     onNotesChange(event: Event): void {
         const t = this.task();
         if (!t) return;
         const value = (event.target as HTMLTextAreaElement).value;
-        this.taskService.updateTask(t.id, { notes: value }).subscribe();
+        this.taskService.updateTask(t.id, {
+            title: t.title,
+            notes: value,
+            dueDate: t.dueDate ? toLocalDateString(t.dueDate) : null,
+            listId: t.listId,
+            completed: t.completed,
+        });
     }
 
     onListChange(value: string | number | null): void {
         const t = this.task();
         if (!t || value === null) return;
-        this.taskService.updateTask(t.id, { listId: value as number }).subscribe();
+        this.taskService.updateTask(t.id, {
+            title: t.title,
+            notes: t.notes,
+            dueDate: t.dueDate ? toLocalDateString(t.dueDate) : null,
+            listId: value as number,
+            completed: t.completed,
+        });
     }
 
     toggleSubtask(subtaskId: number): void {
         const t = this.task();
         if (!t) return;
-        this.taskService.toggleSubtaskCompletion(t.id, subtaskId).subscribe();
+        const subtask = t.subtasks.find(s => s.id === subtaskId);
+        if (!subtask) return;
+        this.taskService.updateSubtask(t.id, subtaskId, {
+            title: subtask.title,
+            completed: !subtask.completed,
+        });
     }
 
     addSubtask(): void {
         const t = this.task();
         const title = this.newSubtaskTitle().trim();
         if (!t || !title) return;
-        this.taskService.addSubtask(t.id, title).subscribe(() => {
-            this.newSubtaskTitle.set('');
-        });
+        this.newSubtaskTitle.set('');
+        this.taskService.addSubtask(t.id, { title });
     }
 
     onSubtaskKeydown(event: KeyboardEvent): void {

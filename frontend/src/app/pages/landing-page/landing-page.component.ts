@@ -3,7 +3,7 @@ import { SidebarComponent } from "../../shared/components/sidebar/sidebar.compon
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
 import { Calendar, Clock, Sun, LucideAngularModule, Plus, Ellipsis } from "lucide-angular";
 import { Task } from "../../shared/interfaces/task.interface";
-import { TaskListService } from "../../services/task-list.service";
+import { TaskListStateService } from '../../services/task-list-state.service';
 import { LandingPageHeaderComponent } from "../../components/headers/landing-page-header/landing-page-header.component";
 import { TaskDetailsPanelComponent } from "../../shared/components/task-details-panel/task-details-panel.component";
 import { MyDayComponent } from "../my-day/my-day.component";
@@ -18,7 +18,7 @@ export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
 })
 export class LandingPageComponent {
 
-    private readonly taskListService = inject(TaskListService);
+    private readonly taskListService = inject(TaskListStateService);
 
     readonly lists = this.taskListService.lists;
 
