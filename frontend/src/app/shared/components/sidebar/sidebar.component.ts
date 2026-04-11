@@ -1,4 +1,4 @@
-import { Component, input, linkedSignal } from "@angular/core";
+import { Component, HostListener, input, linkedSignal } from "@angular/core";
 import { NavItem } from "../../interfaces/sidebar.interface";
 import { LucideAngularModule, List, ArrowRightFromLine, ArrowLeftFromLine } from "lucide-angular";
 
@@ -20,5 +20,19 @@ export class SidebarComponent {
     readonly list = List;
     readonly arrowRightFromLine = ArrowRightFromLine;
     readonly arrowLeftFromLine = ArrowLeftFromLine;
+
+    @HostListener('document:click')
+    onDocumentClick(): void {
+        if (this.collapsible()) {
+            this.isExpanded.set(false);
+        }
+    }
+
+    onNavItemClick(navItem: NavItem): void {
+        navItem.navItemRouteFn();
+        if (this.collapsible()) {
+            this.isExpanded.set(false);
+        }
+    }
 
 }

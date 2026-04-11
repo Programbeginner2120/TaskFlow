@@ -1,4 +1,4 @@
-<div class="sidebar-container">
+<div class="sidebar-container" (click)="$event.stopPropagation()">
     <div class="sidebar-content-container" [class.collapsed]="!isExpanded()">
         <div class="sidebar-title-container">
             <lucide-icon class="list-icon" [img]="list" [size]="20" aria-hidden="true"></lucide-icon>
@@ -6,7 +6,7 @@
         </div>
         <nav class="nav-items-container" aria-label="Sidebar navigation">
             @for (navItem of navItems(); track navItem.navItemLabel) {
-                <button class="nav-item" (click)="navItem.navItemRouteFn()" [attr.aria-label]="navItem.navItemLabel">
+                <button class="nav-item" (click)="onNavItemClick(navItem)" [attr.aria-label]="navItem.navItemLabel">
                     @if (navItem.navItemIcon) {
                         <lucide-icon class="nav-item-icon" [img]="navItem.navItemIcon" [size]="20" aria-hidden="true"></lucide-icon>
                     }
