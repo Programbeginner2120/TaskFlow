@@ -41,6 +41,11 @@ export class TaskDetailsPanelComponent implements OnDestroy {
     newSubtaskTitle = signal<string>('');
     dueDate = signal<Date | null>(null);
 
+    // Local draft state — buffered until the panel closes
+    private readonly localTitle = signal<string>('');
+    private readonly localNotes = signal<string | null>(null);
+    private readonly localListId = signal<number | null>(null);
+
     readonly listOptions = computed<SelectOption[]>(() =>
         this.taskListService.lists().map(l => ({ value: l.id, label: l.name }))
     );
@@ -52,10 +57,7 @@ export class TaskDetailsPanelComponent implements OnDestroy {
         return `${done}/${t.subtasks.length}`;
     });
 
-    readonly selectedListId = computed<number | null>(() => {
-        const t = this.task();
-        return t ? t.listId : null;
-    });
+    readonly selectedListId = computed<number | null>(() => this.localListId());
 
     readonly formattedDueDate = computed(() => {
         const date = this.dueDate();
@@ -69,7 +71,7 @@ export class TaskDetailsPanelComponent implements OnDestroy {
 
     private keydownHandler = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
-            this.close.emit();
+            this.handleClose();
         }
     };
 
@@ -78,29 +80,12 @@ export class TaskDetailsPanelComponent implements OnDestroy {
             const t = this.task();
             if (t) {
                 document.addEventListener('keydown', this.keydownHandler);
+                this.localTitle.set(t.title);
+                this.localNotes.set(t.notes ?? null);
+                this.localListId.set(t.listId);
                 this.dueDate.set(t.dueDate);
             } else {
                 document.removeEventListener('keydown', this.keydownHandler);
-            }
-        });
-
-        effect(() => {
-            const t = this.task();
-            if (!t) return;
-            const date = this.dueDate();
-            // Only write back when value differs from the current task state
-            const current = t.dueDate;
-            const changed =
-                (date === null && current !== null) ||
-                (date !== null && (current === null || date.getTime() !== current.getTime()));
-            if (changed) {
-                this.taskService.updateTask(t.id, {
-                    title: t.title,
-                    notes: t.notes,
-                    dueDate: date ? toLocalDateString(date) : null,
-                    listId: t.listId,
-                    completed: t.completed,
-                });
             }
         });
     }
@@ -109,49 +94,54 @@ export class TaskDetailsPanelComponent implements OnDestroy {
         document.removeEventListener('keydown', this.keydownHandler);
     }
 
+    handleClose(): void {
+        // Blur the active element so any focused input's (blur) fires before we read local state
+        (document.activeElement as HTMLElement)?.blur();
+        this.saveIfChanged();
+        this.close.emit();
+    }
+
+    private saveIfChanged(): void {
+        const t = this.task();
+        if (!t) return;
+
+        const title = this.localTitle();
+        const notes = this.localNotes();
+        const listId = this.localListId();
+        const dueDate = this.dueDate();
+
+        const dueDateChanged =
+            (dueDate === null && t.dueDate !== null) ||
+            (dueDate !== null && (t.dueDate === null || dueDate.getTime() !== t.dueDate.getTime()));
+
+        if (title !== t.title || notes !== t.notes || listId !== t.listId || dueDateChanged) {
+            this.taskService.updateTask(t.id, {
+                title,
+                notes,
+                dueDate: dueDate ? toLocalDateString(dueDate) : null,
+                listId,
+                completed: t.completed,
+            });
+        }
+    }
+
     onBackdropClick(event: MouseEvent): void {
         if (event.target === event.currentTarget) {
-            this.close.emit();
+            this.handleClose();
         }
     }
 
     onTitleChange(event: Event): void {
-        const t = this.task();
-        if (!t) return;
         const value = (event.target as HTMLInputElement).value.trim();
-        if (!value) return;
-        this.taskService.updateTask(t.id, {
-            title: value,
-            notes: t.notes,
-            dueDate: t.dueDate ? toLocalDateString(t.dueDate) : null,
-            listId: t.listId,
-            completed: t.completed,
-        });
+        if (value) this.localTitle.set(value);
     }
 
     onNotesChange(event: Event): void {
-        const t = this.task();
-        if (!t) return;
-        const value = (event.target as HTMLTextAreaElement).value;
-        this.taskService.updateTask(t.id, {
-            title: t.title,
-            notes: value,
-            dueDate: t.dueDate ? toLocalDateString(t.dueDate) : null,
-            listId: t.listId,
-            completed: t.completed,
-        });
+        this.localNotes.set((event.target as HTMLTextAreaElement).value);
     }
 
     onListChange(value: string | number | null): void {
-        const t = this.task();
-        if (!t || value === null) return;
-        this.taskService.updateTask(t.id, {
-            title: t.title,
-            notes: t.notes,
-            dueDate: t.dueDate ? toLocalDateString(t.dueDate) : null,
-            listId: value as number,
-            completed: t.completed,
-        });
+        this.localListId.set(value as number | null);
     }
 
     toggleSubtask(subtaskId: number): void {
