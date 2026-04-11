@@ -7,6 +7,8 @@ import { TaskListStateService } from '../../services/task-list-state.service';
 import { LandingPageHeaderComponent } from "../../components/headers/landing-page-header/landing-page-header.component";
 import { TaskDetailsPanelComponent } from "../../shared/components/task-details-panel/task-details-panel.component";
 import { MyDayComponent } from "../my-day/my-day.component";
+import { ListViewComponent } from "../list-view/list-view.component";
+import { AutoFocusDirective } from "../../shared/directives/auto-focus.directive";
 
 export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
 
@@ -14,7 +16,7 @@ export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
     selector: 'app-landing-page',
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.scss'],
-    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent]
+    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, AutoFocusDirective]
 })
 export class LandingPageComponent {
 
@@ -26,6 +28,7 @@ export class LandingPageComponent {
     selectedListId = signal<number | null>(null);
     searchQuery = signal<string>('');
     selectedTask = signal<Task | null>(null);
+    addingList = signal(false);
 
     navItems = computed<NavItem[]>(() => [
         {
@@ -51,5 +54,21 @@ export class LandingPageComponent {
     selectListView(listId: number): void {
         this.selectedListId.set(listId);
         this.currentView.set('list');
+    }
+
+    startAddingList(): void {
+        this.addingList.set(true);
+    }
+
+    confirmAddList(name: string): void {
+        const trimmed = name.trim();
+        if (trimmed) {
+            this.taskListService.addList({ name: trimmed });
+        }
+        this.addingList.set(false);
+    }
+
+    cancelAddList(): void {
+        this.addingList.set(false);
     }
 }

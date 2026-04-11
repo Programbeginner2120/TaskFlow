@@ -5,33 +5,25 @@ import { TaskListStateService } from '../../services/task-list-state.service';
 import { TaskListViewComponent } from '../../shared/components/task-list-view/task-list-view.component';
 
 @Component({
-    selector: 'app-my-day',
-    templateUrl: './my-day.component.html',
-    styleUrls: ['./my-day.component.scss'],
+    selector: 'app-list-view',
+    templateUrl: './list-view.component.html',
     imports: [TaskListViewComponent],
 })
-export class MyDayComponent {
+export class ListViewComponent {
     private readonly taskService = inject(TaskStateService);
     private readonly taskListService = inject(TaskListStateService);
 
+    listId = input.required<number>();
     searchQuery = input<string>('');
     taskSelected = output<Task>();
 
-    readonly today = new Date();
     readonly lists = this.taskListService.lists;
 
-    private isSameDay(a: Date, b: Date): boolean {
-        return (
-            a.getFullYear() === b.getFullYear() &&
-            a.getMonth() === b.getMonth() &&
-            a.getDate() === b.getDate()
-        );
-    }
-
-    readonly todaysTasks = computed(() =>
-        this.taskService.tasks().filter(
-            t => t.dueDate !== null && this.isSameDay(t.dueDate, this.today)
-        )
+    readonly list = computed(() =>
+        this.taskListService.lists().find(l => l.id === this.listId())
     );
 
+    readonly listTasks = computed(() =>
+        this.taskService.tasks().filter(t => t.listId === this.listId())
+    );
 }

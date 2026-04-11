@@ -1,8 +1,8 @@
 <app-task-list-view
-    title="My Day"
-    [tasks]="todaysTasks()"
+    [title]="list()?.name ?? ''"
+    [tasks]="listTasks()"
     [lists]="lists()"
     [searchQuery]="searchQuery()"
-    [defaultDueDate]="today"
+    [defaultListId]="listId()"
     (taskSelected)="taskSelected.emit($event)">
 </app-task-list-view>
