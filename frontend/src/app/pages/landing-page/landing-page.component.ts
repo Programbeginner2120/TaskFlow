@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from "@angular/core";
+import { Component, computed, inject, signal, viewChild } from "@angular/core";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
 import { Calendar, Clock, Sun, LucideAngularModule, Plus, Ellipsis } from "lucide-angular";
@@ -48,12 +48,15 @@ export class LandingPageComponent {
         }
     ]);
 
+    readonly sidebarComponent = viewChild.required<SidebarComponent>('sidebar');
+
     readonly plus = Plus;
     readonly ellipsis = Ellipsis;
 
     selectListView(listId: number): void {
         this.selectedListId.set(listId);
         this.currentView.set('list');
+        this.sidebarComponent().isExpanded.set(false);
     }
 
     startAddingList(): void {

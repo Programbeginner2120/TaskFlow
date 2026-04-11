@@ -21,13 +21,6 @@ export class SidebarComponent {
     readonly arrowRightFromLine = ArrowRightFromLine;
     readonly arrowLeftFromLine = ArrowLeftFromLine;
 
-    @HostListener('document:click')
-    onDocumentClick(): void {
-        if (this.collapsible()) {
-            this.isExpanded.set(false);
-        }
-    }
-
     onNavItemClick(navItem: NavItem): void {
         navItem.navItemRouteFn();
         if (this.collapsible()) {
