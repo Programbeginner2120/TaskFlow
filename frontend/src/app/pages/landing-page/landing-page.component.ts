@@ -6,8 +6,8 @@ import { Task } from "../../shared/interfaces/task.interface";
 import { TaskListStateService } from '../../services/task-list-state.service';
 import { LandingPageHeaderComponent } from "../../components/headers/landing-page-header/landing-page-header.component";
 import { TaskDetailsPanelComponent } from "../../shared/components/task-details-panel/task-details-panel.component";
-import { MyDayComponent } from "../my-day/my-day.component";
-import { ListViewComponent } from "../list-view/list-view.component";
+import { MyDayComponent } from "../../components/my-day/my-day.component";
+import { ListViewComponent } from "../../components/list-view/list-view.component";
 import { AutoFocusDirective } from "../../shared/directives/auto-focus.directive";
 
 export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
