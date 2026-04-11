@@ -3,6 +3,8 @@ export interface Subtask {
     taskId: number;
     title: string;
     completed: boolean;
+    createdAt: Date;
+    updatedAt: Date | null;
 }
 
 export interface Task {
@@ -15,6 +17,7 @@ export interface Task {
     notes: string;
     subtasks: Subtask[];
     createdAt: Date;
+    updatedAt: Date | null;
 }
 
 export interface TaskList {
@@ -22,4 +25,6 @@ export interface TaskList {
     userId: number;
     name: string;
     color: string;
+    createdAt: Date;
+    updatedAt: Date | null;
 }
