@@ -6,6 +6,7 @@ export interface CalendarDay {
     inMonth: boolean;
     isToday: boolean;
     isSelected: boolean;
+    isDisabled: boolean;
 }
 
 @Component({
@@ -23,6 +24,8 @@ export class DatepickerComponent {
 
     value = model<Date | null>(null);
     disabled = input<boolean>(false);
+    minDate = input<Date | null>(null);
+    maxDate = input<Date | null>(null);
 
     private readonly triggerRef = viewChild<ElementRef<HTMLButtonElement>>('trigger');
 
@@ -61,7 +64,7 @@ export class DatepickerComponent {
         // Padding days from previous month
         for (let i = startPad - 1; i >= 0; i--) {
             const date = new Date(year, month, -i);
-            days.push({ date, inMonth: false, isToday: false, isSelected: false });
+            days.push({ date, inMonth: false, isToday: false, isSelected: false, isDisabled: false });
         }
 
         // Days in current month
@@ -72,13 +75,14 @@ export class DatepickerComponent {
                 inMonth: true,
                 isToday: this.isSameDay(date, today),
                 isSelected: selected !== null && this.isSameDay(date, selected),
+                isDisabled: this.isDateDisabled(date),
             });
         }
 
         // Padding days from next month
         for (let i = 1; i <= endPad; i++) {
             const date = new Date(year, month + 1, i);
-            days.push({ date, inMonth: false, isToday: false, isSelected: false });
+            days.push({ date, inMonth: false, isToday: false, isSelected: false, isDisabled: false });
         }
 
         return days;
@@ -90,6 +94,21 @@ export class DatepickerComponent {
             a.getMonth() === b.getMonth() &&
             a.getDate() === b.getDate()
         );
+    }
+
+    /** Returns true only if `date` is strictly before `bound` at day granularity. */
+    private isDayBefore(date: Date, bound: Date): boolean {
+        if (date.getFullYear() !== bound.getFullYear()) return date.getFullYear() < bound.getFullYear();
+        if (date.getMonth() !== bound.getMonth()) return date.getMonth() < bound.getMonth();
+        return date.getDate() < bound.getDate();
+    }
+
+    private isDateDisabled(date: Date): boolean {
+        const min = this.minDate();
+        const max = this.maxDate();
+        if (min !== null && this.isDayBefore(date, min)) return true;
+        if (max !== null && this.isDayBefore(max, date)) return true;
+        return false;
     }
 
     toggle(event: Event): void {
@@ -149,7 +168,7 @@ export class DatepickerComponent {
 
     selectDate(day: CalendarDay, event: Event): void {
         event.stopPropagation();
-        if (!day.inMonth) return;
+        if (!day.inMonth || day.isDisabled) return;
         this.value.set(new Date(day.date));
         this.isOpen.set(false);
     }

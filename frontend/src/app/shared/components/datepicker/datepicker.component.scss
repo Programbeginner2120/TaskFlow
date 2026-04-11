@@ -183,6 +183,15 @@
             background-color: var(--color-primary);
         }
     }
+
+    &--disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+
+        &:hover {
+            background-color: transparent;
+        }
+    }
 }
 
 /* ─── Actions ─────────────────────────────────────────────── */
