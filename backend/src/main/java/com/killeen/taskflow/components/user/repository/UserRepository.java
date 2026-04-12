@@ -1,6 +1,7 @@
 package com.killeen.taskflow.components.user.repository;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +53,7 @@ public class UserRepository {
         UserDb update = new UserDb();
         update.setId(userId);
         update.setEmailVerified(verified);
-        update.setUpdatedAt(LocalDateTime.now());
+        update.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         userDbMapper.updateByPrimaryKeySelective(update);
     }
 
@@ -60,7 +61,7 @@ public class UserRepository {
         UserDb update = new UserDb();
         update.setId(userId);
         update.setPasswordHash(newPasswordHash);
-        update.setUpdatedAt(LocalDateTime.now());
+        update.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         userDbMapper.updateByPrimaryKeySelective(update);
     }
 }

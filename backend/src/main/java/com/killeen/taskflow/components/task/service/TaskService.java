@@ -1,6 +1,7 @@
 package com.killeen.taskflow.components.task.service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.springframework.core.env.Environment;
@@ -51,7 +52,7 @@ public class TaskService {
                             env.getProperty("task.list.not.found")));
         }
 
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         Task plaintext = Task.builder()
                 .userId(userId)
                 .listId(request.getListId())
@@ -87,7 +88,7 @@ public class TaskService {
         existing.setDueDate(request.getDueDate());
         existing.setListId(request.getListId());
         existing.setCompleted(request.isCompleted());
-        existing.setUpdatedAt(LocalDateTime.now());
+        existing.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         taskRepository.update(encryptionHelper.encryptTask(existing));
         log.info("Updated task {} for user {}", taskId, userId);
@@ -112,7 +113,7 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(
                         env.getProperty("task.not.found")));
 
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         Subtask plaintext = Subtask.builder()
                 .taskId(taskId)
                 .title(request.getTitle())
@@ -140,7 +141,7 @@ public class TaskService {
 
         existing.setTitle(request.getTitle());
         existing.setCompleted(request.isCompleted());
-        existing.setUpdatedAt(LocalDateTime.now());
+        existing.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         subtaskRepository.update(encryptionHelper.encryptSubtask(existing));
         log.info("Updated subtask {} on task {}", subtaskId, taskId);

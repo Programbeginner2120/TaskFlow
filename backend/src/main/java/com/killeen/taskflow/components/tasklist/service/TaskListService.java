@@ -1,6 +1,7 @@
 package com.killeen.taskflow.components.tasklist.service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.springframework.core.env.Environment;
@@ -32,7 +33,7 @@ public class TaskListService {
     }
 
     public TaskList createTaskList(Long userId, CreateTaskListRequest request) {
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         TaskList plaintext = TaskList.builder()
                 .userId(userId)
                 .name(request.getName())
@@ -55,7 +56,7 @@ public class TaskListService {
 
         existing.setName(request.getName());
         existing.setColor(request.getColor() != null ? request.getColor() : existing.getColor());
-        existing.setUpdatedAt(LocalDateTime.now());
+        existing.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         taskListRepository.update(encryptionHelper.encrypt(existing));
         log.info("Updated task list {} for user {}", taskListId, userId);

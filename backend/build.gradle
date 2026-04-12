@@ -32,6 +32,8 @@ dependencies {
 	implementation 'org.springframework.retry:spring-retry:2.0.12'
 	implementation 'org.springframework.boot:spring-boot-starter-aop:4.0.0-M2'
 
+	implementation 'org.mnode.ical4j:ical4j:4.2.5'
+
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'

@@ -1,6 +1,7 @@
 package com.killeen.taskflow.components.user.service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class UserService {
             throw new UserAlreadyExistsException(env.getProperty("user.email.already.exists"));
         }
 
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         User user = User.builder()
                 .email(email.toLowerCase().trim())
                 .passwordHash(passwordEncoder.encode(password))

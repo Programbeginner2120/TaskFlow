@@ -1,6 +1,6 @@
 package com.killeen.taskflow.components.task.model;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +16,6 @@ public class Subtask {
     private Long          taskId;
     private String        title;
     private boolean       completed;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
 }
