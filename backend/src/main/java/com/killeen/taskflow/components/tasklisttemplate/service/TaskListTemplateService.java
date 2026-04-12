@@ -1,10 +1,7 @@
 package com.killeen.taskflow.components.tasklisttemplate.service;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,14 +9,6 @@ import java.util.stream.Collectors;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import com.killeen.taskflow.components.task.TaskEncryptionHelper;
-import com.killeen.taskflow.components.task.model.Subtask;
-import com.killeen.taskflow.components.task.model.Task;
-import com.killeen.taskflow.components.task.repository.SubtaskRepository;
-import com.killeen.taskflow.components.task.repository.TaskRepository;
-import com.killeen.taskflow.components.tasklist.TaskListEncryptionHelper;
-import com.killeen.taskflow.components.tasklist.model.TaskList;
-import com.killeen.taskflow.components.tasklist.repository.TaskListRepository;
 import com.killeen.taskflow.components.tasklisttemplate.TaskListTemplateEncryptionHelper;
 import com.killeen.taskflow.components.tasklisttemplate.exception.TaskListTemplateNotFoundException;
 import com.killeen.taskflow.components.tasklisttemplate.model.CreateSubtaskTemplateRequest;
@@ -35,23 +24,20 @@ import com.killeen.taskflow.components.tasklisttemplate.repository.TaskTemplateR
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.fortuna.ical4j.model.Recur;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class TaskListTemplateService {
 
-    private final TaskListTemplateRepository   templateRepository;
-    private final TaskTemplateRepository       taskTemplateRepository;
-    private final SubtaskTemplateRepository    subtaskTemplateRepository;
+    private final TaskListTemplateRepository       templateRepository;
+    private final TaskTemplateRepository           taskTemplateRepository;
+    private final SubtaskTemplateRepository        subtaskTemplateRepository;
     private final TaskListTemplateEncryptionHelper encryptionHelper;
-
-    private final TaskListRepository           taskListRepository;
-    private final TaskRepository               taskRepository;
-    private final SubtaskRepository            subtaskRepository;
-    private final TaskListEncryptionHelper     taskListEncryptionHelper;
-    private final TaskEncryptionHelper         taskEncryptionHelper;
+    private final RruleService                     rruleService;
+    private final TemplateGeneratorService         templateGeneratorService;
 
     private final Environment env;
 
@@ -66,10 +52,11 @@ public class TaskListTemplateService {
                 .toList();
     }
 
+    @Transactional
     public TaskListTemplate createTemplate(Long userId, CreateTaskListTemplateRequest request) {
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         String timezone = request.getTimezone() != null ? request.getTimezone() : "UTC";
-        OffsetDateTime nextGenerate = computeNextGenerate(request.getRrule(), timezone);
+        OffsetDateTime nextGenerate = rruleService.computeNextGenerate(request.getRrule(), timezone);
 
         TaskListTemplate plaintext = TaskListTemplate.builder()
                 .userId(userId)
@@ -98,6 +85,7 @@ public class TaskListTemplateService {
         return plaintext;
     }
 
+    @Transactional
     public TaskListTemplate updateTemplate(Long userId, Long id, UpdateTaskListTemplateRequest request) {
         TaskListTemplate existing = templateRepository.findByIdAndUserId(id, userId)
                 .map(encryptionHelper::decrypt)
@@ -113,7 +101,7 @@ public class TaskListTemplateService {
                 .color(request.getColor() != null ? request.getColor()  : existing.getColor())
                 .rrule(rrule)
                 .timezone(timezone)
-                .nextGenerate(scheduleChanged ? computeNextGenerate(rrule, timezone) : existing.getNextGenerate())
+                .nextGenerate(scheduleChanged ? rruleService.computeNextGenerate(rrule, timezone) : existing.getNextGenerate())
                 .updatedAt(OffsetDateTime.now(ZoneOffset.UTC))
                 .build();
 
@@ -151,7 +139,8 @@ public class TaskListTemplateService {
                 OffsetDateTime.now(ZoneOffset.UTC));
         for (TaskListTemplate template : due) {
             try {
-                generateFromTemplate(template);
+                templateGeneratorService.generateFromTemplate(
+                        attachTaskTemplates(encryptionHelper.decrypt(template)));
             } catch (Exception e) {
                 log.error("Failed to generate from template {}: {}", template.getId(), e.getMessage(), e);
             }
@@ -226,77 +215,5 @@ public class TaskListTemplateService {
 
         Long id = subtaskTemplateRepository.save(encryptionHelper.encrypt(plaintext));
         return plaintext.toBuilder().id(id).build();
-    }
-
-    private void generateFromTemplate(TaskListTemplate encryptedTemplate) {
-        TaskListTemplate template = encryptionHelper.decrypt(encryptedTemplate);
-        template = attachTaskTemplates(template);
-
-        OffsetDateTime now    = OffsetDateTime.now(ZoneOffset.UTC);
-        LocalDate      today  = now.toLocalDate();
-
-        TaskList taskList = TaskList.builder()
-                .userId(template.getUserId())
-                .name(template.getName())
-                .color(template.getColor())
-                .createdAt(now)
-                .updatedAt(now)
-                .build();
-
-        Long listId = taskListRepository.save(taskListEncryptionHelper.encrypt(taskList));
-
-        for (TaskTemplate taskTemplate : template.getTaskTemplates()) {
-            LocalDate dueDate = taskTemplate.getDueDateOffset() != null
-                    ? today.plusDays(taskTemplate.getDueDateOffset())
-                    : null;
-
-            Task task = Task.builder()
-                    .userId(template.getUserId())
-                    .listId(listId)
-                    .title(taskTemplate.getTitle())
-                    .notes(taskTemplate.getNotes())
-                    .completed(false)
-                    .dueDate(dueDate)
-                    .subtasks(List.of())
-                    .createdAt(now)
-                    .updatedAt(now)
-                    .build();
-
-            Long taskId = taskRepository.save(taskEncryptionHelper.encryptTask(task));
-
-            for (SubtaskTemplate subtaskTemplate : taskTemplate.getSubtaskTemplates()) {
-                Subtask subtask = Subtask.builder()
-                        .taskId(taskId)
-                        .title(subtaskTemplate.getTitle())
-                        .completed(false)
-                        .createdAt(now)
-                        .updatedAt(now)
-                        .build();
-                subtaskRepository.save(taskEncryptionHelper.encryptSubtask(subtask));
-            }
-        }
-
-        OffsetDateTime nextGenerate = computeNextGenerate(template.getRrule(), template.getTimezone());
-        templateRepository.updateSchedule(template.getId(), now, nextGenerate);
-
-        log.info("Generated task list {} from template {} for user {}",
-                listId, template.getId(), template.getUserId());
-    }
-
-    private OffsetDateTime computeNextGenerate(String rrule, String timezone) {
-        try {
-            Recur<ZonedDateTime> recur = new Recur<>(rrule);
-            ZonedDateTime now  = ZonedDateTime.now(ZoneId.of(timezone));
-            ZonedDateTime next = recur.getNextDate(now, now);
-            if (next == null) {
-                log.warn("RRULE '{}' produced no next date, defaulting to +1 day", rrule);
-                return OffsetDateTime.now(ZoneOffset.UTC).plusDays(1);
-            }
-            return next.toOffsetDateTime();
-        } catch (Exception e) {
-            log.warn("Failed to compute next generate from rrule='{}', timezone='{}': {}",
-                    rrule, timezone, e.getMessage());
-            return OffsetDateTime.now(ZoneOffset.UTC).plusDays(1);
-        }
     }
 }
