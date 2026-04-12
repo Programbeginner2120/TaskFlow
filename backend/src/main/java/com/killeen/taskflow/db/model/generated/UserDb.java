@@ -1,6 +1,6 @@
 package com.killeen.taskflow.db.model.generated;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class UserDb {
     private Long id;
@@ -11,9 +11,9 @@ public class UserDb {
 
     private String displayName;
 
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     private Boolean emailVerified;
 
@@ -49,19 +49,19 @@ public class UserDb {
         this.displayName = displayName == null ? null : displayName.trim();
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

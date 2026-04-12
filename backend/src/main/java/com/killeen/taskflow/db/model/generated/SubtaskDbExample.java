@@ -1,6 +1,6 @@
 package com.killeen.taskflow.db.model.generated;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -365,52 +365,52 @@ public class SubtaskDbExample {
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtEqualTo(LocalDateTime value) {
+        public Criteria andCreatedAtEqualTo(OffsetDateTime value) {
             addCriterion("created_at =", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtNotEqualTo(LocalDateTime value) {
+        public Criteria andCreatedAtNotEqualTo(OffsetDateTime value) {
             addCriterion("created_at <>", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtGreaterThan(LocalDateTime value) {
+        public Criteria andCreatedAtGreaterThan(OffsetDateTime value) {
             addCriterion("created_at >", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtGreaterThanOrEqualTo(LocalDateTime value) {
+        public Criteria andCreatedAtGreaterThanOrEqualTo(OffsetDateTime value) {
             addCriterion("created_at >=", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtLessThan(LocalDateTime value) {
+        public Criteria andCreatedAtLessThan(OffsetDateTime value) {
             addCriterion("created_at <", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtLessThanOrEqualTo(LocalDateTime value) {
+        public Criteria andCreatedAtLessThanOrEqualTo(OffsetDateTime value) {
             addCriterion("created_at <=", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtIn(List<LocalDateTime> values) {
+        public Criteria andCreatedAtIn(List<OffsetDateTime> values) {
             addCriterion("created_at in", values, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtNotIn(List<LocalDateTime> values) {
+        public Criteria andCreatedAtNotIn(List<OffsetDateTime> values) {
             addCriterion("created_at not in", values, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andCreatedAtBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("created_at between", value1, value2, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtNotBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andCreatedAtNotBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("created_at not between", value1, value2, "createdAt");
             return (Criteria) this;
         }
@@ -425,52 +425,52 @@ public class SubtaskDbExample {
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtEqualTo(LocalDateTime value) {
+        public Criteria andUpdatedAtEqualTo(OffsetDateTime value) {
             addCriterion("updated_at =", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtNotEqualTo(LocalDateTime value) {
+        public Criteria andUpdatedAtNotEqualTo(OffsetDateTime value) {
             addCriterion("updated_at <>", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtGreaterThan(LocalDateTime value) {
+        public Criteria andUpdatedAtGreaterThan(OffsetDateTime value) {
             addCriterion("updated_at >", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtGreaterThanOrEqualTo(LocalDateTime value) {
+        public Criteria andUpdatedAtGreaterThanOrEqualTo(OffsetDateTime value) {
             addCriterion("updated_at >=", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtLessThan(LocalDateTime value) {
+        public Criteria andUpdatedAtLessThan(OffsetDateTime value) {
             addCriterion("updated_at <", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtLessThanOrEqualTo(LocalDateTime value) {
+        public Criteria andUpdatedAtLessThanOrEqualTo(OffsetDateTime value) {
             addCriterion("updated_at <=", value, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtIn(List<LocalDateTime> values) {
+        public Criteria andUpdatedAtIn(List<OffsetDateTime> values) {
             addCriterion("updated_at in", values, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtNotIn(List<LocalDateTime> values) {
+        public Criteria andUpdatedAtNotIn(List<OffsetDateTime> values) {
             addCriterion("updated_at not in", values, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andUpdatedAtBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("updated_at between", value1, value2, "updatedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatedAtNotBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andUpdatedAtNotBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("updated_at not between", value1, value2, "updatedAt");
             return (Criteria) this;
         }

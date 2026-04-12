@@ -1,6 +1,6 @@
 package com.killeen.taskflow.db.model.generated;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class EmailTokenDb {
     private Long id;
@@ -11,11 +11,11 @@ public class EmailTokenDb {
 
     private String tokenType;
 
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    private LocalDateTime expiresAt;
+    private OffsetDateTime expiresAt;
 
-    private LocalDateTime usedAt;
+    private OffsetDateTime usedAt;
 
     public Long getId() {
         return id;
@@ -49,27 +49,27 @@ public class EmailTokenDb {
         this.tokenType = tokenType == null ? null : tokenType.trim();
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getExpiresAt() {
+    public OffsetDateTime getExpiresAt() {
         return expiresAt;
     }
 
-    public void setExpiresAt(LocalDateTime expiresAt) {
+    public void setExpiresAt(OffsetDateTime expiresAt) {
         this.expiresAt = expiresAt;
     }
 
-    public LocalDateTime getUsedAt() {
+    public OffsetDateTime getUsedAt() {
         return usedAt;
     }
 
-    public void setUsedAt(LocalDateTime usedAt) {
+    public void setUsedAt(OffsetDateTime usedAt) {
         this.usedAt = usedAt;
     }
 }
