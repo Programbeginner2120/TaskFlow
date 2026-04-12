@@ -6,8 +6,8 @@ CREATE TABLE task_lists (
     user_id     BIGINT    NOT NULL,
     name        TEXT      NOT NULL,
     color       VARCHAR(7) NOT NULL DEFAULT '#6366f1',
-    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- name is AES-256-GCM encrypted and base64-encoded at the application layer.
