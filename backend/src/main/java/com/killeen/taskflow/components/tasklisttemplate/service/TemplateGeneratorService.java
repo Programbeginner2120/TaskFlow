@@ -40,6 +40,11 @@ public class TemplateGeneratorService {
 
     @Transactional
     public void generateFromTemplate(TaskListTemplate template) {
+        if (!templateRepository.claimIfStillDue(template.getId(), template.getNextGenerate())) {
+            log.info("Template {} already claimed by another instance, skipping", template.getId());
+            return;
+        }
+
         OffsetDateTime now   = OffsetDateTime.now(ZoneOffset.UTC);
         LocalDate      today = now.toLocalDate();
 

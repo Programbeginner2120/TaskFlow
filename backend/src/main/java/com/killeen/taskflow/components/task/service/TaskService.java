@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.killeen.taskflow.components.task.TaskEncryptionHelper;
 import com.killeen.taskflow.components.task.exception.SubtaskNotFoundException;
@@ -71,6 +72,7 @@ public class TaskService {
         return plaintext;
     }
 
+    @Transactional
     public Task updateTask(Long userId, Long taskId, UpdateTaskRequest request) {
         Task existing = taskRepository.findByIdAndUserId(taskId, userId)
                 .map(encryptionHelper::decryptTask)
@@ -128,6 +130,7 @@ public class TaskService {
         return plaintext;
     }
 
+    @Transactional
     public Subtask updateSubtask(Long userId, Long taskId, Long subtaskId,
                                   UpdateSubtaskRequest request) {
         taskRepository.findByIdAndUserId(taskId, userId)

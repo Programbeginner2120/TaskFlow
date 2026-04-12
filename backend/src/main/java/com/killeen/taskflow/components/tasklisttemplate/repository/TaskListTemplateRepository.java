@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.killeen.taskflow.components.tasklisttemplate.converter.TaskListTemplateConverter;
 import com.killeen.taskflow.components.tasklisttemplate.model.TaskListTemplate;
+import com.killeen.taskflow.db.mapper.custom.TaskListTemplateDbCustomMapper;
 import com.killeen.taskflow.db.mapper.generated.TaskListTemplateDbMapper;
 import com.killeen.taskflow.db.model.generated.TaskListTemplateDb;
 import com.killeen.taskflow.db.model.generated.TaskListTemplateDbExample;
@@ -18,8 +19,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TaskListTemplateRepository {
 
-    private final TaskListTemplateDbMapper    taskListTemplateDbMapper;
-    private final TaskListTemplateConverter   taskListTemplateConverter;
+    private final TaskListTemplateDbMapper       taskListTemplateDbMapper;
+    private final TaskListTemplateDbCustomMapper taskListTemplateDbCustomMapper;
+    private final TaskListTemplateConverter      taskListTemplateConverter;
 
     public List<TaskListTemplate> findAllByUserId(Long userId) {
         TaskListTemplateDbExample example = new TaskListTemplateDbExample();
@@ -46,6 +48,26 @@ public class TaskListTemplateRepository {
         return taskListTemplateDbMapper.selectByExample(example).stream()
                 .map(taskListTemplateConverter::toDto)
                 .toList();
+    }
+
+    /**
+     * Attempts to acquire an exclusive row-level lock on a specific template
+     * whose {@code next_generate} still matches the expected value.
+     *
+     * <p>{@code FOR UPDATE SKIP LOCKED} ensures that a concurrent caller already
+     * holding the lock (or one arriving after {@code updateSchedule} has advanced
+     * {@code next_generate}) will receive {@code false} instead of blocking or
+     * re-processing the template.
+     *
+     * <p>Must be called inside an active {@code @Transactional} method so the lock
+     * is held for the entire generation unit of work.
+     *
+     * @return {@code true} if the lock was acquired, {@code false} if the row was
+     *         already locked or its {@code next_generate} has been advanced.
+     */
+    public boolean claimIfStillDue(Long id, OffsetDateTime nextGenerate) {
+        return taskListTemplateDbCustomMapper
+                .findByIdAndNextGenerateForUpdateSkipLocked(id, nextGenerate) != null;
     }
 
     public Long save(TaskListTemplate taskListTemplate) {

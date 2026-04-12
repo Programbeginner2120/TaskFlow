@@ -25,5 +25,6 @@ public class RegisterRequest {
     )
     private String password;
 
+    @NotBlank(message = "Display name is required")
     private String displayName;
 }

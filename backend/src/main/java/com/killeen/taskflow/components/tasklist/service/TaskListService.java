@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.killeen.taskflow.components.tasklist.TaskListEncryptionHelper;
 import com.killeen.taskflow.components.tasklist.exception.TaskListNotFoundException;
@@ -48,6 +49,7 @@ public class TaskListService {
         return plaintext;
     }
 
+    @Transactional
     public TaskList updateTaskList(Long userId, Long taskListId, UpdateTaskListRequest request) {
         TaskList existing = taskListRepository.findByIdAndUserId(taskListId, userId)
                 .map(encryptionHelper::decrypt)
