@@ -104,5 +104,28 @@
       <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
     </table>
 
+    <!-- Task List Templates Table -->
+    <table tableName="task_list_templates" domainObjectName="TaskListTemplateDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="last_generated"  javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="next_generate"   javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="created_at"      javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at"      javaType="java.time.OffsetDateTime"/>
+    </table>
+
+    <!-- Task Templates Table -->
+    <table tableName="task_templates" domainObjectName="TaskTemplateDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
+    </table>
+
+    <!-- Subtask Templates Table -->
+    <table tableName="subtask_templates" domainObjectName="SubtaskTemplateDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
+    </table>
+
   </context>
 </generatorConfiguration>
