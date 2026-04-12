@@ -52,6 +52,8 @@ app:
   encryption:
     password: ${ENCRYPTION_PASSWORD}
     salt: ${ENCRYPTION_SALT}
+  cron:
+    secret: ${CRON_SECRET}
 
 logging:
   level:

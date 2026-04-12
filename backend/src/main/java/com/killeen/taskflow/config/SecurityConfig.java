@@ -38,6 +38,7 @@ public class SecurityConfig {
                     "/auth/reset-password"
                 ).permitAll()
                 .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/internal/generate-templates").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
