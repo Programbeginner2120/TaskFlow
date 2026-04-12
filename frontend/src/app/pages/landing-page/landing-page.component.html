@@ -8,7 +8,8 @@
             sidebarTitle="TaskFlow"
             [navItems]="navItems()"
             [collapsible]="true"
-            [initiallyExpanded]="false">
+            [initiallyExpanded]="false"
+            #sidebar>
             <div class="lists-container" sidebar-content>
                 <div class="list-section-title">Lists</div>
                 <ul class="list-items" aria-label="Task lists">
@@ -26,10 +27,25 @@
                         </li>
                     }
                 </ul>
-                <button class="add-list-btn" type="button" aria-label="Add new list">
-                    <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
-                    <span>New List</span>
-                </button>
+                @if (addingList()) {
+                    <div class="new-list-input-wrapper">
+                        <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
+                        <input autoFocus
+                            type="text"
+                            class="new-list-input"
+                            placeholder="List name"
+                            autocomplete="off"
+                            (keydown.enter)="confirmAddList($any($event.target).value)"
+                            (keydown.escape)="cancelAddList()"
+                            (blur)="cancelAddList()">
+                    </div>
+                } @else {
+                    <button class="add-list-btn" type="button" aria-label="Add new list"
+                        (click)="startAddingList()">
+                        <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
+                        <span>New List</span>
+                    </button>
+                }
             </div>
         </app-sidebar>
 
@@ -40,6 +56,15 @@
                         [searchQuery]="searchQuery()"
                         (taskSelected)="selectedTask.set($any($event))">
                     </app-my-day>
+                }
+                @case ('list') {
+                    @if (selectedListId(); as listId) {
+                        <app-list-view
+                            [listId]="listId"
+                            [searchQuery]="searchQuery()"
+                            (taskSelected)="selectedTask.set($event)">
+                        </app-list-view>
+                    }
                 }
                 @default {
                     <div class="coming-soon">

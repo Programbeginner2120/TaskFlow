@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, HostListener, inject, input, model, signal } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, inject, input, model, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, ChevronDown, Check } from 'lucide-angular';
 import { SelectOption } from '../../interfaces/select.interface';
@@ -24,7 +24,6 @@ export class SelectComponent {
   placeholder = input<string>('Select an option');
   disabled = input<boolean>(false);
   label = input<string | undefined>(undefined);
-  clearInvalidSelection = input<boolean>(true);
 
   // Internal state
   isOpen = signal<boolean>(false);
@@ -44,32 +43,7 @@ export class SelectComponent {
     return this.options().filter(opt => !opt.disabled);
   });
 
-  constructor() {
-    // Handle options changes
-    effect(() => {
-      const opts = this.options();
-      
-      // Reset highlighted index when options change
-      this.highlightedIndex.set(-1);
-      
-      // Check if current selection is still valid
-      const currentValue = this.value();
-      if (currentValue !== null && this.clearInvalidSelection()) {
-        const stillValid = opts.some(opt => opt.value === currentValue);
-        if (!stillValid) {
-          console.warn('Selected value no longer exists in options, clearing selection');
-          this.value.set(null);
-        }
-      }
-    });
-
-    // Handle disabled state changes
-    effect(() => {
-      if (this.disabled() && this.isOpen()) {
-        this.closeDropdown();
-      }
-    });
-  }
+  readonly isDropdownVisible = computed(() => this.isOpen() && !this.disabled());
 
   toggleDropdown(event: Event): void {
     event.stopPropagation();

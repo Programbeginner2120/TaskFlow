@@ -1,51 +1,39 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { LucideAngularModule, Circle, CheckCircle2, ChevronRight } from 'lucide-angular';
-import { Task } from '../../shared/interfaces/task.interface';
-import { TaskStateService } from '../../services/task-state.service';
-import { TaskListStateService } from '../../services/task-list-state.service';
-import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
-import { toLocalDateString } from '../../utils/date.utils';
+import { Task, TaskList } from '../../interfaces/task.interface';
+import { TaskStateService } from '../../../services/task-state.service';
+import { DatepickerComponent } from '../datepicker/datepicker.component';
+import { toLocalDateString, formatDisplayDate } from '../../../utils/date.utils';
 
 @Component({
-    selector: 'app-my-day',
-    templateUrl: './my-day.component.html',
-    styleUrls: ['./my-day.component.scss'],
+    selector: 'app-task-list-view',
+    templateUrl: './task-list-view.component.html',
+    styleUrls: ['./task-list-view.component.scss'],
     imports: [LucideAngularModule, DatepickerComponent],
 })
-export class MyDayComponent {
+export class TaskListViewComponent {
     readonly circleIcon = Circle;
     readonly checkCircleIcon = CheckCircle2;
     readonly chevronRightIcon = ChevronRight;
 
     private readonly taskService = inject(TaskStateService);
-    private readonly taskListService = inject(TaskListStateService);
 
+    title = input.required<string>();
+    tasks = input.required<Task[]>();
+    lists = input.required<TaskList[]>();
     searchQuery = input<string>('');
+    defaultListId = input<number | null>(null);
+    defaultDueDate = input<Date | null>(null);
+
     taskSelected = output<Task>();
 
     newTaskTitle = signal<string>('');
     newTaskDueDate = signal<Date | null>(null);
 
-    private readonly today = new Date();
-
-    private isSameDay(a: Date, b: Date): boolean {
-        return (
-            a.getFullYear() === b.getFullYear() &&
-            a.getMonth() === b.getMonth() &&
-            a.getDate() === b.getDate()
-        );
-    }
-
-    readonly todaysTasks = computed(() =>
-        this.taskService.tasks().filter(
-            t => t.dueDate !== null && this.isSameDay(t.dueDate, this.today)
-        )
-    );
-
     readonly filteredTasks = computed(() => {
         const query = this.searchQuery().trim().toLowerCase();
-        if (!query) return this.todaysTasks();
-        return this.todaysTasks().filter(t => t.title.toLowerCase().includes(query));
+        if (!query) return this.tasks();
+        return this.tasks().filter(t => t.title.toLowerCase().includes(query));
     });
 
     readonly sortedTasks = computed(() => {
@@ -60,17 +48,19 @@ export class MyDayComponent {
         this.filteredTasks().filter(t => !t.completed).length
     );
 
-    getListForTask(listId: number | null) {
-        if (listId === null) {
-            return null;
-        }
-        return this.taskListService.lists().find(l => l.id === listId);
+    getListForTask(listId: number | null): TaskList | undefined | null {
+        if (listId === null) return null;
+        return this.lists().find(l => l.id === listId);
     }
 
     getSubtaskProgress(task: Task): string | null {
         if (task.subtasks.length === 0) return null;
         const done = task.subtasks.filter(s => s.completed).length;
         return `${done}/${task.subtasks.length}`;
+    }
+
+    formatDate(date: Date): string {
+        return formatDisplayDate(date);
     }
 
     toggleTask(taskId: number): void {
@@ -92,8 +82,12 @@ export class MyDayComponent {
     addTask(): void {
         const title = this.newTaskTitle().trim();
         if (!title) return;
-        const dueDate = this.newTaskDueDate() ?? new Date();
-        this.taskService.addTask({ title, dueDate: toLocalDateString(dueDate) });
+        const dueDate = this.newTaskDueDate() ?? this.defaultDueDate();
+        this.taskService.addTask({
+            title,
+            dueDate: dueDate ? toLocalDateString(dueDate) : null,
+            listId: this.defaultListId(),
+        });
         this.newTaskTitle.set('');
         this.newTaskDueDate.set(null);
     }

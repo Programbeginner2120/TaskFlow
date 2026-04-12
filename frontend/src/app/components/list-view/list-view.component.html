@@ -1,0 +1,8 @@
+<app-task-list-view
+    [title]="list()?.name ?? ''"
+    [tasks]="listTasks()"
+    [lists]="lists()"
+    [searchQuery]="searchQuery()"
+    [defaultListId]="listId()"
+    (taskSelected)="taskSelected.emit($event)">
+</app-task-list-view>

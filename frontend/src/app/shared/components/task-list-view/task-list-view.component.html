@@ -1,8 +1,8 @@
-<div class="my-day">
+<div class="task-list-view">
 
     <!-- Page header -->
     <div class="page-header">
-        <h1 class="page-title">My Day</h1>
+        <h1 class="page-title">{{ title() }}</h1>
         <p class="page-subtitle" aria-live="polite">
             {{ incompleteCount() }} {{ incompleteCount() === 1 ? 'task' : 'tasks' }} remaining
         </p>
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Task list -->
-    <ul class="task-list" aria-label="Today's tasks">
+    <ul class="task-list" aria-label="Tasks">
         @for (task of sortedTasks(); track task.id) {
             @let list = getListForTask(task.listId);
             @let progress = getSubtaskProgress(task);
@@ -55,9 +55,13 @@
                         {{ task.title }}
                     </span>
                     <span class="task-meta">
-                        <span class="task-meta-today">Today</span>
+                        @if (task.dueDate) {
+                            <span class="task-meta-date">{{ formatDate(task.dueDate) }}</span>
+                        }
                         @if (list) {
-                            <span class="task-meta-separator" aria-hidden="true">•</span>
+                            @if (task.dueDate) {
+                                <span class="task-meta-separator" aria-hidden="true">•</span>
+                            }
                             <span
                                 class="task-meta-dot"
                                 [style.backgroundColor]="list.color"
@@ -66,7 +70,9 @@
                             <span class="task-meta-list">{{ list.name }}</span>
                         }
                         @if (progress) {
-                            <span class="task-meta-separator" aria-hidden="true">•</span>
+                            @if (task.dueDate || list) {
+                                <span class="task-meta-separator" aria-hidden="true">•</span>
+                            }
                             <span class="task-meta-progress" [attr.aria-label]="progress + ' subtasks completed'">
                                 {{ progress }}
                             </span>

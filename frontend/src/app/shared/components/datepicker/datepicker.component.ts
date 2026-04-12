@@ -130,9 +130,8 @@ export class DatepickerComponent {
         const vertical =
             spaceBelow >= this.POPUP_HEIGHT || spaceBelow >= spaceAbove ? 'below' : 'above';
 
-        // Default (end) aligns popup right edge to trigger right edge, extending left (256px).
-        // Flip to start (left: 0) when there isn't enough space to the left.
-        const horizontal = rect.right >= this.POPUP_WIDTH ? 'end' : 'start';
+        const spaceToRight = window.innerWidth - rect.left;
+        const horizontal = spaceToRight >= this.POPUP_WIDTH ? 'start' : 'end';
 
         this.popupPosition.set({ vertical, horizontal });
     }

@@ -5,11 +5,11 @@
   
   <div 
     class="select-trigger"
-    [class.select-trigger--open]="isOpen()"
+    [class.select-trigger--open]="isDropdownVisible()"
     [class.select-trigger--disabled]="disabled()"
     (click)="toggleDropdown($event)"
     role="combobox"
-    [attr.aria-expanded]="isOpen()"
+    [attr.aria-expanded]="isDropdownVisible()"
     [attr.aria-disabled]="disabled()"
     [attr.aria-haspopup]="'listbox'"
     tabindex="0">
@@ -20,13 +20,13 @@
     
     <lucide-icon 
       class="select-trigger-icon" 
-      [class.select-trigger-icon--open]="isOpen()"
+      [class.select-trigger-icon--open]="isDropdownVisible()"
       [img]="chevronDown" 
       [size]="20">
     </lucide-icon>
   </div>
 
-  @if (isOpen()) {
+  @if (isDropdownVisible()) {
     <div class="select-dropdown" role="listbox">
       @for (option of options(); track option.value; let idx = $index) {
         <div
