@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.5'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
 }
 
 group = 'com.killeen'
@@ -70,3 +71,12 @@ task mybatisGenerator(type: JavaExec) {
     args = ['-configfile', 'src/main/resources/mybatis-generator-config.xml', '-overwrite']
 }
 
+jacocoTestReport {
+	reports {
+		html.required = true
+	}
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
