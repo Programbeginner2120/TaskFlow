@@ -61,3 +61,53 @@ export interface TaskListApiResponse {
     createdAt: string;
     updatedAt: string | null;
 }
+
+export interface TaskTemplate {
+    id: number;
+    listTemplateId: number;
+    title: string;
+    notes: string | null;
+    dueDateOffset: number | null;
+    createdAt: Date;
+    updatedAt: Date | null;
+    subtaskTemplates: { id: number; title: string }[];
+}
+
+export interface TaskListTemplate {
+    id: number;
+    userId: number;
+    name: string;
+    color: string;
+    rrule: string;
+    timezone: string;
+    lastGenerated: Date | null;
+    nextGenerate: Date | null;
+    createdAt: Date;
+    updatedAt: Date | null;
+    taskTemplates: TaskTemplate[];
+}
+
+export interface TaskTemplateApiResponse {
+    id: number;
+    listTemplateId: number;
+    title: string;
+    notes: string | null;
+    dueDateOffset: number | null;
+    createdAt: string;
+    updatedAt: string | null;
+    subtaskTemplates: { id: number; title: string }[];
+}
+
+export interface TaskListTemplateApiResponse {
+    id: number;
+    userId: number;
+    name: string;
+    color: string;
+    rrule: string;
+    timezone: string;
+    lastGenerated: string | null;
+    nextGenerate: string | null;
+    createdAt: string;
+    updatedAt: string | null;
+    taskTemplates: TaskTemplateApiResponse[];
+}

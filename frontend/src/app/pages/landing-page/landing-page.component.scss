@@ -48,8 +48,8 @@ app-sidebar {
     font-size: 16px;
 }
 
-/* Sidebar list content */
-.lists-container {
+/* Sidebar projected item content */
+.projected-items-container {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
@@ -57,7 +57,7 @@ app-sidebar {
     width: 100%;
 }
 
-.list-section-title {
+.project-items-section-title {
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -66,14 +66,14 @@ app-sidebar {
     padding: var(--space-2) var(--space-2) 0;
 }
 
-.list-items {
+.projected-items {
     list-style: none;
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-.list-item {
+.projected-item {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -93,7 +93,7 @@ app-sidebar {
     &:hover {
         background-color: var(--color-nav-item-hover);
 
-        .list-item-ellipsis {
+        .projected-item-ellipsis {
             opacity: 1;
         }
     }
@@ -104,28 +104,33 @@ app-sidebar {
     }
 }
 
-.list-item-dot {
+.projected-item-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     flex-shrink: 0;
 }
 
-.list-item-name {
+.projected-item-name {
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.list-item-ellipsis {
+.projected-item-ellipsis {
     opacity: 0;
     color: var(--color-text-muted);
     flex-shrink: 0;
     transition: opacity 0.15s ease;
 }
 
-/* Add list button */
-.add-list-btn {
+.no-projected-items-label {
+    font-size: 12;
+    color: var(--color-text-muted);
+}
+
+/* Add projected item button */
+.add-projected-item-btn {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -152,8 +157,8 @@ app-sidebar {
     }
 }
 
-/* Inline new-list input */
-.new-list-input-wrapper {
+/* Inline new projected item input */
+.new-projected-item-input-wrapper {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -168,7 +173,7 @@ app-sidebar {
     }
 }
 
-.new-list-input {
+.new-projected-item-input {
     flex: 1;
     min-width: 0;
     border: none;
