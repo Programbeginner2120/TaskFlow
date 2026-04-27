@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { TaskList } from '../shared/interfaces/task.interface';
+import { TaskList } from '../interfaces/task.interface';
 import { toTaskList } from '../mappers/task-list.mapper';
 import { TaskListService } from './task-list.service';
 

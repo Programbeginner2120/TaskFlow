@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TaskApiResponse, SubtaskApiResponse } from '../shared/interfaces/api-response.interface';
+import { TaskApiResponse, SubtaskApiResponse } from '../interfaces/task.interface';
 
 export interface TaskRequestBody {
     title: string;

@@ -1,9 +1,9 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { LucideAngularModule, Circle, CheckCircle2, ChevronRight } from 'lucide-angular';
 import { Task, TaskList } from '../../interfaces/task.interface';
-import { TaskStateService } from '../../../services/task-state.service';
-import { DatepickerComponent } from '../datepicker/datepicker.component';
-import { toLocalDateString, formatDisplayDate } from '../../../utils/date.utils';
+import { TaskStateService } from '../../services/task-state.service';
+import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
+import { toLocalDateString, formatDisplayDate } from '../../utils/date.utils';
 
 @Component({
     selector: 'app-task-list-view',

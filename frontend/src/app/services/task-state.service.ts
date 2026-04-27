@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { Task } from '../shared/interfaces/task.interface';
+import { Task } from '../interfaces/task.interface';
 import { toTask, toSubtask } from '../mappers/task.mapper';
 import { TaskService, TaskRequestBody } from './task.service';
 

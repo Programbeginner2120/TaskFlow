@@ -1,5 +1,5 @@
-import { Task, Subtask } from '../shared/interfaces/task.interface';
-import { TaskApiResponse, SubtaskApiResponse } from '../shared/interfaces/api-response.interface';
+import { Task, Subtask } from '../interfaces/task.interface';
+import { TaskApiResponse, SubtaskApiResponse } from '../interfaces/task.interface';
 
 export function toSubtask(raw: SubtaskApiResponse): Subtask {
     return {

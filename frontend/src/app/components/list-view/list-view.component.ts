@@ -1,8 +1,8 @@
 import { Component, computed, inject, input, output } from '@angular/core';
-import { Task } from '../../shared/interfaces/task.interface';
+import { Task } from '../../interfaces/task.interface';
 import { TaskStateService } from '../../services/task-state.service';
 import { TaskListStateService } from '../../services/task-list-state.service';
-import { TaskListViewComponent } from '../../shared/components/task-list-view/task-list-view.component';
+import { TaskListViewComponent } from '../task-list-view/task-list-view.component';
 
 @Component({
     selector: 'app-list-view',

@@ -1,5 +1,5 @@
-import { TaskList } from '../shared/interfaces/task.interface';
-import { TaskListApiResponse } from '../shared/interfaces/api-response.interface';
+import { TaskList } from '../interfaces/task.interface';
+import { TaskListApiResponse } from '../interfaces/task.interface';
 
 export function toTaskList(raw: TaskListApiResponse): TaskList {
     return {
