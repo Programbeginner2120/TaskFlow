@@ -1,6 +1,6 @@
 package com.killeen.taskflow.components.email.model;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,7 @@ public class EmailToken {
     private Long userId;
     private String token;          // SHA-256 hex stored in DB
     private EmailTokenType tokenType;
-    private LocalDateTime createdAt;
-    private LocalDateTime expiresAt;
-    private LocalDateTime usedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime expiresAt;
+    private OffsetDateTime usedAt;
 }

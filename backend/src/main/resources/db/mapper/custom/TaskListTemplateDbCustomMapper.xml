@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.killeen.taskflow.db.mapper.custom.TaskListTemplateDbCustomMapper">
+
+    <!--
+        Atomically claims a due template row for exclusive processing.
+
+        The WHERE clause checks both 'id' and 'next_generate' so that:
+          - concurrent callers locked on the same row are skipped (SKIP LOCKED),
+          - callers that arrive after the row has already been processed get no result
+            (next_generate has been advanced by updateSchedule and no longer matches).
+
+        Must be executed within an active Spring @Transactional method.
+        The auto-mapping relies on mybatis.configuration.map-underscore-to-camel-case=true.
+    -->
+    <select id="findByIdAndNextGenerateForUpdateSkipLocked"
+            resultType="com.killeen.taskflow.db.model.generated.TaskListTemplateDb">
+        SELECT *
+        FROM task_list_templates
+        WHERE id           = #{id}
+          AND next_generate = #{nextGenerate}
+        FOR UPDATE SKIP LOCKED
+    </select>
+
+</mapper>

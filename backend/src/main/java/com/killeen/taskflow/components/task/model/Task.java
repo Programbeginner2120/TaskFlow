@@ -1,7 +1,7 @@
 package com.killeen.taskflow.components.task.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +22,6 @@ public class Task {
     private boolean       completed;
     private LocalDate     dueDate;
     private List<Subtask> subtasks;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
 }

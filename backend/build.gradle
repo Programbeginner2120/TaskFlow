@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.5'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
 }
 
 group = 'com.killeen'
@@ -31,6 +32,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.retry:spring-retry:2.0.12'
 	implementation 'org.springframework.boot:spring-boot-starter-aop:4.0.0-M2'
+
+	implementation 'org.mnode.ical4j:ical4j:4.2.5'
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
@@ -68,3 +71,12 @@ task mybatisGenerator(type: JavaExec) {
     args = ['-configfile', 'src/main/resources/mybatis-generator-config.xml', '-overwrite']
 }
 
+jacocoTestReport {
+	reports {
+		html.required = true
+	}
+}
+
+test {
+	finalizedBy jacocoTestReport
+}

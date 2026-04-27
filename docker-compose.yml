@@ -5,6 +5,7 @@ services:
     container_name: taskflow-db
     restart: unless-stopped
     environment:
+      TZ: UTC
       POSTGRES_DB: ${POSTGRES_DB:-taskflow}
       POSTGRES_USER: ${POSTGRES_USER:-taskflow}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
@@ -28,6 +29,7 @@ services:
       db:
         condition: service_healthy
     environment:
+      TZ: UTC
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-taskflow}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-taskflow}
@@ -41,6 +43,7 @@ services:
       APP_BASE_URL: ${APP_BASE_URL:-https://taskflow.com}
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD:?ENCRYPTION_PASSWORD must be set}
       ENCRYPTION_SALT: ${ENCRYPTION_SALT:?ENCRYPTION_SALT must be set}
+      CRON_SECRET: ${CRON_SECRET:?CRON_SECRET must be set}
     ports:
       - "8080:8080"
 

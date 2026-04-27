@@ -3,7 +3,8 @@ package com.killeen.taskflow.components.email.service;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.HexFormat;
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ public class EmailTokenService {
         String hashedToken = sha256(rawToken);
         int ttlHours = type == EmailTokenType.VERIFY_EMAIL ? verificationTtlHours : resetTtlHours;
 
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         EmailToken token = EmailToken.builder()
                 .userId(userId)
                 .token(hashedToken)
@@ -75,7 +76,7 @@ public class EmailTokenService {
             throw new InvalidTokenException(env.getProperty("email.token.already.been.used"));
         }
 
-        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
+        if (token.getExpiresAt().isBefore(OffsetDateTime.now(ZoneOffset.UTC))) {
             throw new InvalidTokenException(env.getProperty("email.token.has.expired"));
         }
 

@@ -14,6 +14,7 @@ import com.killeen.taskflow.components.email.exception.InvalidTokenException;
 import com.killeen.taskflow.components.task.exception.SubtaskNotFoundException;
 import com.killeen.taskflow.components.task.exception.TaskNotFoundException;
 import com.killeen.taskflow.components.tasklist.exception.TaskListNotFoundException;
+import com.killeen.taskflow.components.tasklisttemplate.exception.InvalidRruleException;
 import com.killeen.taskflow.components.user.exception.InvalidCredentialsException;
 import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException;
 import com.killeen.taskflow.components.user.exception.UserNotFoundException;
@@ -56,6 +57,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ErrorResponse> handleInvalidToken(InvalidTokenException ex) {
         log.warn("Invalid token: {}", ex.getMessage());
+        return response(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidRruleException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRrule(InvalidRruleException ex) {
+        log.warn("Invalid RRULE: {}", ex.getMessage());
         return response(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 

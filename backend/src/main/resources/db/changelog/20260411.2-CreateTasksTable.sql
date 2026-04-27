@@ -9,8 +9,8 @@ CREATE TABLE tasks (
     notes       TEXT,
     completed   BOOLEAN   NOT NULL DEFAULT FALSE,
     due_date    DATE,
-    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- title and notes are AES-256-GCM encrypted and base64-encoded at the application layer.

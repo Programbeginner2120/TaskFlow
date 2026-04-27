@@ -6,8 +6,8 @@ CREATE TABLE subtasks (
     task_id     BIGINT    NOT NULL,
     title       TEXT      NOT NULL,
     completed   BOOLEAN   NOT NULL DEFAULT FALSE,
-    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- title is AES-256-GCM encrypted and base64-encoded at the application layer.

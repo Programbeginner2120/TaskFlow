@@ -6,6 +6,6 @@ CREATE TABLE users (
     email character varying(255) NOT NULL UNIQUE,
     password_hash character varying(255) NOT NULL,
     display_name character varying(255),
-    created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

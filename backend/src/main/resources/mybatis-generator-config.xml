@@ -63,6 +63,8 @@
     <table tableName="users" 
            domainObjectName="UserDb">
       <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
     </table>
 
     <!-- Email Tokens Table-->
@@ -76,22 +78,53 @@
       <columnOverride column="token_type"
                       javaType="java.lang.String"
                       typeHandler="com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler" />
-
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="expires_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="used_at" javaType="java.time.OffsetDateTime"/>
     </table>
 
     <!-- Task Lists Table -->
     <table tableName="task_lists" domainObjectName="TaskListDb">
       <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
     </table>
 
     <!-- Tasks Table -->
     <table tableName="tasks" domainObjectName="TaskDb">
       <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
     </table>
 
     <!-- Subtasks Table -->
     <table tableName="subtasks" domainObjectName="SubtaskDb">
       <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
+    </table>
+
+    <!-- Task List Templates Table -->
+    <table tableName="task_list_templates" domainObjectName="TaskListTemplateDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="last_generated"  javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="next_generate"   javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="created_at"      javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at"      javaType="java.time.OffsetDateTime"/>
+    </table>
+
+    <!-- Task Templates Table -->
+    <table tableName="task_templates" domainObjectName="TaskTemplateDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
+    </table>
+
+    <!-- Subtask Templates Table -->
+    <table tableName="subtask_templates" domainObjectName="SubtaskTemplateDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
     </table>
 
   </context>

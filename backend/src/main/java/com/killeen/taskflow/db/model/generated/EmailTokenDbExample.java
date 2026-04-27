@@ -1,6 +1,6 @@
 package com.killeen.taskflow.db.model.generated;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -409,52 +409,52 @@ public class EmailTokenDbExample {
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtEqualTo(LocalDateTime value) {
+        public Criteria andCreatedAtEqualTo(OffsetDateTime value) {
             addCriterion("created_at =", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtNotEqualTo(LocalDateTime value) {
+        public Criteria andCreatedAtNotEqualTo(OffsetDateTime value) {
             addCriterion("created_at <>", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtGreaterThan(LocalDateTime value) {
+        public Criteria andCreatedAtGreaterThan(OffsetDateTime value) {
             addCriterion("created_at >", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtGreaterThanOrEqualTo(LocalDateTime value) {
+        public Criteria andCreatedAtGreaterThanOrEqualTo(OffsetDateTime value) {
             addCriterion("created_at >=", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtLessThan(LocalDateTime value) {
+        public Criteria andCreatedAtLessThan(OffsetDateTime value) {
             addCriterion("created_at <", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtLessThanOrEqualTo(LocalDateTime value) {
+        public Criteria andCreatedAtLessThanOrEqualTo(OffsetDateTime value) {
             addCriterion("created_at <=", value, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtIn(List<LocalDateTime> values) {
+        public Criteria andCreatedAtIn(List<OffsetDateTime> values) {
             addCriterion("created_at in", values, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtNotIn(List<LocalDateTime> values) {
+        public Criteria andCreatedAtNotIn(List<OffsetDateTime> values) {
             addCriterion("created_at not in", values, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andCreatedAtBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("created_at between", value1, value2, "createdAt");
             return (Criteria) this;
         }
 
-        public Criteria andCreatedAtNotBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andCreatedAtNotBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("created_at not between", value1, value2, "createdAt");
             return (Criteria) this;
         }
@@ -469,52 +469,52 @@ public class EmailTokenDbExample {
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtEqualTo(LocalDateTime value) {
+        public Criteria andExpiresAtEqualTo(OffsetDateTime value) {
             addCriterion("expires_at =", value, "expiresAt");
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtNotEqualTo(LocalDateTime value) {
+        public Criteria andExpiresAtNotEqualTo(OffsetDateTime value) {
             addCriterion("expires_at <>", value, "expiresAt");
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtGreaterThan(LocalDateTime value) {
+        public Criteria andExpiresAtGreaterThan(OffsetDateTime value) {
             addCriterion("expires_at >", value, "expiresAt");
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtGreaterThanOrEqualTo(LocalDateTime value) {
+        public Criteria andExpiresAtGreaterThanOrEqualTo(OffsetDateTime value) {
             addCriterion("expires_at >=", value, "expiresAt");
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtLessThan(LocalDateTime value) {
+        public Criteria andExpiresAtLessThan(OffsetDateTime value) {
             addCriterion("expires_at <", value, "expiresAt");
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtLessThanOrEqualTo(LocalDateTime value) {
+        public Criteria andExpiresAtLessThanOrEqualTo(OffsetDateTime value) {
             addCriterion("expires_at <=", value, "expiresAt");
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtIn(List<LocalDateTime> values) {
+        public Criteria andExpiresAtIn(List<OffsetDateTime> values) {
             addCriterion("expires_at in", values, "expiresAt");
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtNotIn(List<LocalDateTime> values) {
+        public Criteria andExpiresAtNotIn(List<OffsetDateTime> values) {
             addCriterion("expires_at not in", values, "expiresAt");
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andExpiresAtBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("expires_at between", value1, value2, "expiresAt");
             return (Criteria) this;
         }
 
-        public Criteria andExpiresAtNotBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andExpiresAtNotBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("expires_at not between", value1, value2, "expiresAt");
             return (Criteria) this;
         }
@@ -529,52 +529,52 @@ public class EmailTokenDbExample {
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtEqualTo(LocalDateTime value) {
+        public Criteria andUsedAtEqualTo(OffsetDateTime value) {
             addCriterion("used_at =", value, "usedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtNotEqualTo(LocalDateTime value) {
+        public Criteria andUsedAtNotEqualTo(OffsetDateTime value) {
             addCriterion("used_at <>", value, "usedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtGreaterThan(LocalDateTime value) {
+        public Criteria andUsedAtGreaterThan(OffsetDateTime value) {
             addCriterion("used_at >", value, "usedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtGreaterThanOrEqualTo(LocalDateTime value) {
+        public Criteria andUsedAtGreaterThanOrEqualTo(OffsetDateTime value) {
             addCriterion("used_at >=", value, "usedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtLessThan(LocalDateTime value) {
+        public Criteria andUsedAtLessThan(OffsetDateTime value) {
             addCriterion("used_at <", value, "usedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtLessThanOrEqualTo(LocalDateTime value) {
+        public Criteria andUsedAtLessThanOrEqualTo(OffsetDateTime value) {
             addCriterion("used_at <=", value, "usedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtIn(List<LocalDateTime> values) {
+        public Criteria andUsedAtIn(List<OffsetDateTime> values) {
             addCriterion("used_at in", values, "usedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtNotIn(List<LocalDateTime> values) {
+        public Criteria andUsedAtNotIn(List<OffsetDateTime> values) {
             addCriterion("used_at not in", values, "usedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andUsedAtBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("used_at between", value1, value2, "usedAt");
             return (Criteria) this;
         }
 
-        public Criteria andUsedAtNotBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andUsedAtNotBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("used_at not between", value1, value2, "usedAt");
             return (Criteria) this;
         }

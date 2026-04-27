@@ -1,6 +1,6 @@
 package com.killeen.taskflow.components.user.model;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,7 @@ public class User {
     private String email;
     private String passwordHash;
     private String displayName;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
     private boolean emailVerified;
 }

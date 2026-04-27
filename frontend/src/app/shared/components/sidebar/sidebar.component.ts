@@ -13,7 +13,7 @@ export class SidebarComponent {
     sidebarTitle = input<string>('');
     navItems = input<NavItem[]>([]);
     collapsible = input<boolean>(false);
-    initiallyExpanded = input<boolean>(true);
+    initiallyExpanded = input<boolean>(false);
 
     isExpanded = linkedSignal(() => this.initiallyExpanded());
 

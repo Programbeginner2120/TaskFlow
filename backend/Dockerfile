@@ -1,6 +1,7 @@
 # ---- Dev Stage (hot reload via Spring DevTools + volume-mounted source) ----
 FROM eclipse-temurin:25-jdk-alpine AS dev
 WORKDIR /app
+ENV TZ=UTC
 
 # Copy Gradle wrapper and build config to pre-download dependencies into the image layer.
 # The full source tree will be supplied at runtime via a Docker volume mount.
@@ -43,4 +44,4 @@ COPY --from=builder /app/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=UTC", "-jar", "app.jar"]

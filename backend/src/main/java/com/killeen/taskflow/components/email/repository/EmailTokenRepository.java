@@ -1,6 +1,7 @@
 package com.killeen.taskflow.components.email.repository;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -38,7 +39,7 @@ public class EmailTokenRepository {
     public void markUsed(Long id) {
         EmailTokenDb update = new EmailTokenDb();
         update.setId(id);
-        update.setUsedAt(LocalDateTime.now());
+        update.setUsedAt(OffsetDateTime.now(ZoneOffset.UTC));
         mapper.updateByPrimaryKeySelective(update);
     }
     

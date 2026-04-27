@@ -1,6 +1,7 @@
 package com.killeen.taskflow.components.user.service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.env.Environment;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -35,6 +37,7 @@ public class UserService {
     private final EmailService emailService;
     private final Environment env;
 
+    @Transactional
     public User register(String email, String password, String displayName) {
         log.info("Registering new user with email: {}", email);
 
@@ -42,7 +45,7 @@ public class UserService {
             throw new UserAlreadyExistsException(env.getProperty("user.email.already.exists"));
         }
 
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         User user = User.builder()
                 .email(email.toLowerCase().trim())
                 .passwordHash(passwordEncoder.encode(password))
@@ -84,6 +87,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public void verifyEmail(String rawToken) {
         EmailToken token = emailTokenService.validateAndConsume(rawToken, EmailTokenType.VERIFY_EMAIL);
         userRepository.setEmailVerified(token.getUserId(), true);
@@ -111,6 +115,7 @@ public class UserService {
         });
     }
 
+    @Transactional
     public void resetPassword(String rawToken, String newPassword) {
         EmailToken token = emailTokenService.validateAndConsume(rawToken, EmailTokenType.RESET_PASSWORD);
         String newHash = passwordEncoder.encode(newPassword);

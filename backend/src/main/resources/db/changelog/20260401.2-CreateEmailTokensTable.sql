@@ -8,9 +8,9 @@ CREATE TABLE email_tokens (
     user_id BIGINT NOT NULL,
     token VARCHAR(64) NOT NULL UNIQUE,
     token_type email_token_type NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP NOT NULL,
-    used_at TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMPTZ NOT NULL,
+    used_at TIMESTAMPTZ
 );
 
 ALTER TABLE email_tokens
