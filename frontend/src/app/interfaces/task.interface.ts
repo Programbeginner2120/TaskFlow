@@ -111,3 +111,19 @@ export interface TaskListTemplateApiResponse {
     updatedAt: string | null;
     taskTemplates: TaskTemplateApiResponse[];
 }
+
+export interface CreateTaskListTemplateRequest {
+    name: string;
+    color: string;
+    rrule: string;
+    timezone: string;
+    taskTemplates: { title: string, notes: string | null }
+}
+
+export interface UpdateTaskListTemplateRequest {
+    name: string;
+    color: string;
+    rrule: string;
+    timezone: string;
+    taskTemplates: { title: string, notes: string | null };
+}
