@@ -1,2 +1,15 @@
-export type RruleFrequency = 'DAILY' | 'WEEKLY' | 'MONTHLY';
-export type RruleDay = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
+export enum RruleFrequency {
+    DAILY = 'DAILY',
+    WEEKLY = 'WEEKLY',
+    MONTHLY = 'MONTHLY'
+}
+
+export enum RruleDay {
+    MONDAY = 'MO',
+    TUESDAY = 'TU',
+    WEDNESDAY = 'WE',
+    THURSDAY = 'TH',
+    FRIDAY = 'FR',
+    SATURDAY = 'SA',
+    SUNDAY = 'SU'
+}

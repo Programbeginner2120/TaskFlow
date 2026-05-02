@@ -59,6 +59,18 @@
     margin-top: 3px;
 }
 
+.schedule-container, .schedule-dropdowns-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.one-time-datepicker-button-label-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 app-input {
     margin-bottom: 8px;
 }

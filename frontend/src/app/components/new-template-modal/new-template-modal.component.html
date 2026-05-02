@@ -64,6 +64,48 @@
                 </div>
             </app-button>
         </div>
+        <div class="schedule-container">
+            <div class="schedule-title">Schedule</div>
+            <div class="schedule-dropdowns-container">
+                <app-select
+                    [options]="scheduleTypes()"
+                    [(value)]="templateScheduleType"
+                    aria-label="Schedule Type Select">
+                </app-select>
+                @if (templateScheduleType() === 'recurring') {
+                    <app-select
+                        [options]="frequencies()"
+                        [(value)]="templateFrequency"
+                        aria-label="Frequency Select">
+                    </app-select>
+                    @if (templateFrequency() === 'WEEKLY') {
+                        <app-select
+                            [options]="daysOfWeek()"
+                            [(value)]="dayOfWeek"
+                            aria-label="Day of Week Select">
+                        </app-select>
+                    } @else if (templateFrequency() === 'MONTHLY') {
+                        <app-select
+                            [options]="daysOfMonth()"
+                            [(value)]="monthDay"
+                            aria-label="Day of Month Select">
+                        </app-select>
+                    }
+                } 
+                <!-- @else if (templateScheduleType() === 'one-time') {
+                    <app-button
+                        class="one-time-datepicker-button"
+                        [variant]="'secondary'"
+                        [fullWidth]="true"
+                        (click)="templateOneTimeDatepicker!.toggle($event)">
+                            <div class="one-time-datepicker-button-label-container">
+                                <app-datepicker [(value)]="templateOneTimeDate" #templateOneTimeDatepicker ></app-datepicker>
+                                <div class="one-time-datepicker-button-label">Pick a date</div>
+                            </div>
+                    </app-button>
+                } -->
+            </div>
+        </div>
     </div>
 
 </app-modal>

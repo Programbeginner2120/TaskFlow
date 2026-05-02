@@ -153,4 +153,7 @@ export enum TaskListTemplateColor {
     LIGHT_GREEN = '#14B8A6'
 }
 
-export type TaskListTemplateSchedule = 'recurring';
+export enum TaskListTemplateSchedule {
+    RECURRING = 'recurring',
+    ONE_TIME = 'one-time'
+}
