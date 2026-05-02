@@ -29,6 +29,14 @@ export interface TaskList {
     updatedAt: Date | null;
 }
 
+export interface TaskRequestBody {
+    title: string;
+    notes?: string | null;
+    dueDate?: string | null;
+    listId?: number | null;
+    completed?: boolean;
+}
+
 // Raw shapes returned by the API — date fields are strings as serialized by Spring
 
 export interface SubtaskApiResponse {
@@ -117,7 +125,7 @@ export interface CreateTaskListTemplateRequest {
     color: string;
     rrule: string;
     timezone: string;
-    taskTemplates: { title: string, notes: string | null }
+    taskTemplates: Pick<TaskRequestBody, 'title' | 'notes'>[];
 }
 
 export interface UpdateTaskListTemplateRequest {
@@ -125,5 +133,18 @@ export interface UpdateTaskListTemplateRequest {
     color: string;
     rrule: string;
     timezone: string;
-    taskTemplates: { title: string, notes: string | null };
+    taskTemplates: Pick<TaskRequestBody, 'title' | 'notes'>[];
 }
+
+export enum TaskListTemplateColor {
+    BLUE = '#6366F1',
+    PINK = '#EC4899',
+    ORANGE = '#F59E0B',
+    GREEN = '#10B981',
+    LIGHT_BLUE = '#3B82F6',
+    PURPLE = '#8B5CF6',
+    RED = '#EF4444',
+    LIGHT_GREEN = '#14B8A6'
+}
+
+export type TaskListTemplateSchedule = 'recurring';
