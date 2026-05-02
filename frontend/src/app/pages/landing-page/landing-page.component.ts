@@ -9,6 +9,7 @@ import { TaskDetailsPanelComponent } from "../../components/task-details-panel/t
 import { MyDayComponent } from "../../components/my-day/my-day.component";
 import { ListViewComponent } from "../../components/list-view/list-view.component";
 import { AutoFocusDirective } from "../../shared/directives/auto-focus.directive";
+import { NewTemplateModalComponent } from "../../components/new-template-modal/new-template-modal.component";
 
 export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
 
@@ -16,7 +17,7 @@ export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
     selector: 'app-landing-page',
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.scss'],
-    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, AutoFocusDirective]
+    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, AutoFocusDirective, NewTemplateModalComponent]
 })
 export class LandingPageComponent {
 
@@ -30,7 +31,8 @@ export class LandingPageComponent {
     selectedListId = signal<number | null>(null);
     searchQuery = signal<string>('');
     selectedTask = signal<Task | null>(null);
-    addingList = signal(false);
+    addingList = signal<boolean>(false);
+    addingTemplate = signal<boolean>(false);
 
     navItems = computed<NavItem[]>(() => [
         {
@@ -75,5 +77,13 @@ export class LandingPageComponent {
 
     cancelAddList(): void {
         this.addingList.set(false);
+    }
+    
+    startAddingTemplate(): void {
+        this.addingTemplate.set(true);
+    }
+
+    stopAddingTemplate(): void {
+        this.addingTemplate.set(false);
     }
 }

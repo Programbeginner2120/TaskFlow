@@ -69,6 +69,11 @@
                         <span class="no-projected-items-label">There are no templates to display</span>
                     }
                 </ul>
+                <button class="add-projected-item-btn" type="button" aria-label="Add new list"
+                    (click)="startAddingTemplate()">
+                    <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
+                    <span>New Template</span>
+                </button>
             </div>
         </app-sidebar>
 
@@ -103,5 +108,10 @@
         [task]="selectedTask()"
         (close)="selectedTask.set(null)">
     </app-task-details-panel>
+
+    <app-new-template-modal
+        [isOpen]="addingTemplate()"
+        (close)="stopAddingTemplate()"
+    ></app-new-template-modal>
 
 </div>

@@ -1,0 +1,25 @@
+.new-template-modal-header-description {
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+.colors-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.color-pickers-container {
+    display: flex;
+    gap: 8px;
+}
+
+.color-picker {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+
+    &.selected-color {
+        border: 3px solid var(--color-text-primary);
+    }
+}

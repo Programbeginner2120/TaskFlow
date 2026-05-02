@@ -28,8 +28,12 @@ export class NewTemplateModalComponent {
     readonly monthDay = signal<number>(1);
     readonly submitting = signal<boolean>(false);
 
-    readonly exhaustiveTemplateColors = signal<string[]>(
+    readonly exhaustiveTemplateColors = signal<TaskListTemplateColor[]>(
         Object.values(TaskListTemplateColor)
     );
+
+    selectColor(color: TaskListTemplateColor) {
+        this.templateColor.set(color);
+    }
 
 }

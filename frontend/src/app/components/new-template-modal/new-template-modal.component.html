@@ -14,11 +14,18 @@
             [required]="true"
             [(value)]="templateName"
         ></app-input>
-        <div class="color-label">Color</div>
-        <div class="color-pickers-container">
-            @for (color of exhaustiveTemplateColors(); track color) {
-                <div class="color-picker" [style.background-color]="color"></div>
-            }
+        <div class="colors-container">
+            <div class="color-label">Color</div>
+            <div class="color-pickers-container">
+                @for (color of exhaustiveTemplateColors(); track color) {
+                    <div 
+                        class="color-picker" 
+                        (click)="selectColor(color)" 
+                        [style.background-color]="color" 
+                        [class.selected-color]="templateColor() === color"
+                    ></div>
+                }
+            </div>
         </div>
     </div>
 
