@@ -27,6 +27,43 @@
                 }
             </div>
         </div>
+        <div class="tasks-container">
+            <div class="tasks-label">Tasks</div>
+            @for (task of templateTasks(); track task.id; let i = $index) {
+                <div class="task-container">
+                    <div class="task-input-container">
+                        <app-input
+                            class="new-task-title"
+                            [type]="'text'"
+                            [placeholder]="`Task ${i + 1}`"
+                            [required]="true"
+                            [value]="task.title"
+                            (valueChange)="updateTaskTitle(i, $event)">
+                        </app-input>
+                        <app-input
+                            class="new-task-notes"
+                            [type]="'text'"
+                            [placeholder]="'Notes (optional)'"
+                            [value]="task.notes"
+                            (valueChange)="updateTaskNotes(i, $event)">
+                        </app-input>
+                    </div>
+                    @if (templateTasks().length > 1) {
+                        <lucide-icon (click)="deleteTask(i)" [img]="trash" [size]="20"></lucide-icon>
+                    }
+                </div>
+            }
+            <app-button
+                class="add-task-button"
+                [fullWidth]="true"
+                (click)="addTask()"
+            >
+                <div class="add-task-label-container">
+                    <lucide-icon class="add-task-icon" [img]="plus" [size]="20"></lucide-icon>
+                    <div class="add-task-label">Add Task</div>
+                </div>
+            </app-button>
+        </div>
     </div>
 
 </app-modal>

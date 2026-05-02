@@ -1,3 +1,9 @@
+.new-template-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
 .new-template-modal-header-description {
     font-size: 14px;
     color: var(--color-text-muted);
@@ -23,3 +29,41 @@
         border: 3px solid var(--color-text-primary);
     }
 }
+
+.color-picker:hover {
+    cursor: pointer;
+}
+
+.task-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.task-input-container {
+    flex: 1;
+}
+
+.add-task-button {
+    margin-top: 8px;
+    width: 100%;
+}
+
+.add-task-label-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-task-icon {
+    margin-top: 3px;
+}
+
+app-input {
+    margin-bottom: 8px;
+}
+
+lucide-icon:hover {
+    cursor: pointer;
+}
+
