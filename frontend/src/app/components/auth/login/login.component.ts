@@ -25,7 +25,7 @@ export class LoginComponent {
     readonly password = signal<string>('');
 
     readonly formTitle = computed(() => 'Sign In');
-    readonly formSubtitle = computed(() =>'Sign in to access your analytics dashboard');
+    readonly formSubtitle = computed(() =>'Sign in to TaskFlow');
 
     readonly submitLabel = computed(() => 'Sign In');
 

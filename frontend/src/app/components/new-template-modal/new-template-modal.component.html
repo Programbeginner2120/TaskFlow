@@ -108,4 +108,18 @@
         </div>
     </div>
 
+    <div class="new-template-modal-footer" modal-footer>
+        <app-button
+            class="new-template-modal-footer-cancel"
+            [variant]="'secondary'"
+            (click)="close.emit()">
+            Cancel
+        </app-button>
+        <app-button
+            class="new-template-modal-footer-submit"
+            [variant]="'primary'">
+            Create Template
+        </app-button>
+    </div>
+
 </app-modal>

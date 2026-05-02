@@ -1,5 +1,5 @@
-import { Component, input, output, signal, viewChild } from "@angular/core";
-import { QuickTask, TaskListTemplateColor, TaskListTemplateSchedule, TaskRequestBody } from "../../interfaces/task.interface";
+import { Component, inject, input, output, signal, viewChild } from "@angular/core";
+import { CreateTaskListTemplateRequest, QuickTask, TaskListTemplateColor, TaskListTemplateSchedule, TaskRequestBody } from "../../interfaces/task.interface";
 import { RruleDay, RruleFrequency } from "../../interfaces/rrule.interface";
 import { ModalComponent } from "../../shared/components/modal/modal.component";
 import { InputComponent } from "../../shared/components/input/input.component";
@@ -8,6 +8,8 @@ import { ButtonComponent } from "../../shared/components/button/button.component
 import { SelectComponent } from "../../shared/components/select/select.component";
 import { SelectOption } from "../../shared/interfaces/select.interface";
 import { DatepickerComponent } from "../../shared/components/datepicker/datepicker.component";
+import { TaskListTemplateStateService } from "../../services/task-list-template-state.service";
+import { buildRule } from "../../utils/rrule.util";
 
 @Component({
     selector: 'app-new-template-modal',
@@ -21,6 +23,9 @@ export class NewTemplateModalComponent {
     readonly isOpen = input.required<boolean>();
     readonly close = output<void>();
     readonly created = output<void>(); // signifies creation of template
+
+    // Injections
+    private readonly taskListTemplateStateService = inject(TaskListTemplateStateService);
 
     // Internal signals
     readonly templateName = signal<string>('');
@@ -96,6 +101,35 @@ export class NewTemplateModalComponent {
         this.templateTasks.update(tasks =>
             tasks.filter((_, i) => i !== index)
         );
+    }
+
+    createTemplate() {
+        const scheduleType: string = this.templateScheduleType();
+        if (TaskListTemplateSchedule.RECURRING === scheduleType) {
+            const frequency = this.templateFrequency();
+            let rrule: string;
+            if (RruleFrequency.DAILY === frequency) {
+                rrule = buildRule(this.templateFrequency());
+            } else if (RruleFrequency.WEEKLY === frequency) {
+                const rrule = buildRule(this.templateFrequency(), this.dayOfWeek());
+            } else if (RruleFrequency.MONTHLY === frequency) {
+                rrule = buildRule(this.templateFrequency(), undefined, this.monthDay())
+            } else {
+                throw new Error('Rrule frequency could not be processed');
+            }
+            /*
+            TODO: Need to do the following:
+                1. Develop validation mechanism for fields
+                2. Align quick task with what backend is expecting for task template requets, or have a partial / pick
+                / new object
+                3. Figure out how to get the timezone of the user's browser from the frontend
+                4. Figure out how the backend is expecting this timezone to be represented
+             */
+        } else if (TaskListTemplateSchedule.ONE_TIME === scheduleType) {
+            console.log("TODO: implement this flow, does nothing right now...");
+        } else {
+            throw Error('Schedule type could not be processed');
+        }
     }
 
 }
