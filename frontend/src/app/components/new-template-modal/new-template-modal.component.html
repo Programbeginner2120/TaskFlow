@@ -1,7 +1,7 @@
-<app-modal class="new-template-modal-container" [isOpen]="isOpen()" (close)="close.emit()">
+<app-modal class="new-template-modal-container" [isOpen]="true" (close)="close.emit()">
 
     <div class="new-template-modal-header" modal-header>
-        <h2 class="new-template-modal-header-title">New Template</h2>
+        <h2 class="new-template-modal-header-title">{{ isEditMode() ? 'Edit Template' : 'New Template' }}</h2>
         <p class="new-template-modal-header-description">Define a reusable task list that can be auto-created on a schedule.</p>
     </div>
 
@@ -131,8 +131,8 @@
         <app-button
             class="new-template-modal-footer-submit"
             [variant]="'primary'"
-            (click)="createTemplate()">
-            Create Template
+            (click)="submitTemplate()">
+            {{ isEditMode() ? 'Save Changes' : 'Create Template' }}
         </app-button>
     </div>
 

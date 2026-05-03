@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
 import { Sun, LucideAngularModule, Plus, Ellipsis } from "lucide-angular";
-import { Task } from "../../interfaces/task.interface";
+import { Task, TaskListTemplate } from "../../interfaces/task.interface";
 import { TaskListStateService } from '../../services/task-list-state.service';
 import { LandingPageHeaderComponent } from "../../components/headers/landing-page-header/landing-page-header.component";
 import { TaskDetailsPanelComponent } from "../../components/task-details-panel/task-details-panel.component";
@@ -35,6 +35,7 @@ export class LandingPageComponent {
     selectedTask = signal<Task | null>(null);
     addingList = signal<boolean>(false);
     addingTemplate = signal<boolean>(false);
+    selectedTemplate = signal<TaskListTemplate | null>(null);
 
     navItems = computed<NavItem[]>(() => [
         {
@@ -87,5 +88,11 @@ export class LandingPageComponent {
 
     stopAddingTemplate(): void {
         this.addingTemplate.set(false);
+        this.selectedTemplate.set(null);
+    }
+
+    editTemplate(template: TaskListTemplate): void {
+        this.selectedTemplate.set(template);
+        this.addingTemplate.set(true);
     }
 }

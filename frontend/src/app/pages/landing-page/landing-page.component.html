@@ -58,7 +58,8 @@
                             <button
                                 class="projected-item"
                                 type="button"
-                                [attr.aria-label]="'View ' + template.name + ' template'">
+                                [attr.aria-label]="'Edit ' + template.name + ' template'"
+                                (click)="editTemplate(template)">
                                 <span class="projected-item-dot" [style.backgroundColor]="template.color" aria-hidden="true"></span>
                                 <span class="projected-item-name">{{ template.name }}</span>
                                 <lucide-icon class="projected-item-ellipsis" [img]="ellipsis" [size]="16" aria-hidden="true"></lucide-icon>
@@ -109,8 +110,10 @@
         (close)="selectedTask.set(null)">
     </app-task-details-panel>
 
-    <app-new-template-modal
-        [isOpen]="addingTemplate()"
-        (close)="stopAddingTemplate()"
-    ></app-new-template-modal>
+    @if (addingTemplate()) {
+        <app-new-template-modal
+            [template]="selectedTemplate()"
+            (close)="stopAddingTemplate()">
+        </app-new-template-modal>
+    }
 </div>

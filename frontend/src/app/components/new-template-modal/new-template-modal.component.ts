@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal, viewChild } from "@angular/core";
-import { CreateTaskListTemplateRequest, CreateTaskTemplateRequest, TaskListTemplateColor, TaskListTemplateSchedule } from "../../interfaces/task.interface";
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, output, signal, viewChild } from "@angular/core";
+import { CreateTaskListTemplateRequest, CreateTaskTemplateRequest, TaskListTemplate, TaskListTemplateColor, TaskListTemplateSchedule, UpdateTaskListTemplateRequest } from "../../interfaces/task.interface";
 import { RruleDay, RruleFrequency } from "../../interfaces/rrule.interface";
 import { ModalComponent } from "../../shared/components/modal/modal.component";
 import { InputComponent } from "../../shared/components/input/input.component";
@@ -9,7 +9,7 @@ import { SelectComponent } from "../../shared/components/select/select.component
 import { SelectOption } from "../../shared/interfaces/select.interface";
 import { DatepickerComponent } from "../../shared/components/datepicker/datepicker.component";
 import { TaskListTemplateStateService } from "../../services/task-list-template-state.service";
-import { buildRule } from "../../utils/rrule.util";
+import { buildRule, parseRule } from "../../utils/rrule.util";
 
 @Component({
     selector: 'app-new-template-modal',
@@ -18,10 +18,10 @@ import { buildRule } from "../../utils/rrule.util";
     imports: [ModalComponent, InputComponent, LucideAngularModule, ButtonComponent, SelectComponent, DatepickerComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NewTemplateModalComponent {
+export class NewTemplateModalComponent implements OnInit {
 
     // Input / output signals
-    readonly isOpen = input.required<boolean>();
+    readonly template = input<TaskListTemplate | null>(null);
     readonly close = output<void>();
     readonly created = output<void>(); // signifies creation of template
 
@@ -39,6 +39,9 @@ export class NewTemplateModalComponent {
     readonly monthDay = signal<number>(1);
     readonly submitting = signal<boolean>(false);
     readonly submitted = signal<boolean>(false);
+
+    // Edit mode
+    readonly isEditMode = computed<boolean>(() => this.template() !== null);
 
     // Computed validation
     readonly templateNameError = computed<string | undefined>(() => {
@@ -99,6 +102,26 @@ export class NewTemplateModalComponent {
         this.templateColor.set(color);
     }
 
+    ngOnInit(): void {
+        const t = this.template();
+        if (!t) return; // create mode — defaults already set in signal declarations
+
+        this.templateName.set(t.name);
+        this.templateColor.set(t.color as TaskListTemplateColor);
+        this.templateTasks.set(
+            t.taskTemplates.map(tt => ({
+                title: tt.title,
+                notes: tt.notes ?? '',
+                dueDateOffset: tt.dueDateOffset,
+                subtaskTemplates: tt.subtaskTemplates.map(st => ({ title: st.title })),
+            }))
+        );
+        const parsed = parseRule(t.rrule);
+        this.templateFrequency.set(parsed.frequency);
+        if (parsed.dayOfWeek) this.dayOfWeek.set(parsed.dayOfWeek);
+        if (parsed.monthDay)  this.monthDay.set(parsed.monthDay);
+    }
+
     updateTaskTitle(index: number, title: string) {
         this.templateTasks.update(tasks =>
             tasks.map((task, i) => i === index ? { ...task, title } : task)
@@ -131,7 +154,7 @@ export class NewTemplateModalComponent {
         );
     }
 
-    createTemplate() {
+    submitTemplate() {
         this.submitted.set(true);
         if (!this.isFormValid()) return;
 
@@ -150,15 +173,25 @@ export class NewTemplateModalComponent {
                 throw new Error('Rrule frequency could not be processed');
             }
 
-            const createTemplateRequest: CreateTaskListTemplateRequest = {
-                name: this.templateName(),
-                color: this.templateColor(),
-                rrule: rrule,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                taskTemplates: this.templateTasks()
-            };
-
-            this.taskListTemplateStateService.addTemplate(createTemplateRequest);
+            if (this.isEditMode()) {
+                const updateRequest: UpdateTaskListTemplateRequest = {
+                    name: this.templateName(),
+                    color: this.templateColor(),
+                    rrule,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    taskTemplates: this.templateTasks(),
+                };
+                this.taskListTemplateStateService.updateTemplate(this.template()!.id, updateRequest);
+            } else {
+                const createRequest: CreateTaskListTemplateRequest = {
+                    name: this.templateName(),
+                    color: this.templateColor(),
+                    rrule,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    taskTemplates: this.templateTasks(),
+                };
+                this.taskListTemplateStateService.addTemplate(createRequest);
+            }
 
             this.close.emit();
             

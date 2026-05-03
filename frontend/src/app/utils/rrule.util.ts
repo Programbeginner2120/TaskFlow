@@ -16,3 +16,18 @@ export function buildRule(freq: RruleFrequency, day?: RruleDay, monthDay?: numbe
     }
     return `FREQ=${freq}`;
 }
+
+export function parseRule(rrule: string): {
+    frequency: RruleFrequency;
+    dayOfWeek?: RruleDay;
+    monthDay?: number;
+} {
+    const freq = /FREQ=(\w+)/.exec(rrule)?.[1] as RruleFrequency ?? RruleFrequency.WEEKLY;
+    const byday = /BYDAY=(\w+)/.exec(rrule)?.[1] as RruleDay | undefined;
+    const bymonthday = /BYMONTHDAY=(\d+)/.exec(rrule)?.[1];
+    return {
+        frequency: freq,
+        dayOfWeek: byday,
+        monthDay: bymonthday ? Number(bymonthday) : undefined,
+    };
+}
