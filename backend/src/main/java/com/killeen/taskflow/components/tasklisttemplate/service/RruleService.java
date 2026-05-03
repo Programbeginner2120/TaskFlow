@@ -27,7 +27,7 @@ public class RruleService {
                 throw new InvalidRruleException(
                         env.getProperty("rrule.no.future.occurrences") + ": " + rrule);
             }
-            return next.toOffsetDateTime();
+            return next.toLocalDate().atStartOfDay(next.getZone()).toOffsetDateTime();
         } catch (InvalidRruleException e) {
             throw e;
         } catch (Exception e) {
