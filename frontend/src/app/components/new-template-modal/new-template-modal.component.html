@@ -12,6 +12,8 @@
             [type]="'text'"
             [placeholder]="'e.g. Weekly Sprint Tasks'"
             [required]="true"
+            [variant]="templateNameError() ? 'error' : 'default'"
+            [errorMessage]="templateNameError()"
             [(value)]="templateName"
         ></app-input>
         <div class="colors-container">
@@ -37,6 +39,8 @@
                             [type]="'text'"
                             [placeholder]="`Task ${$index + 1}`"
                             [required]="true"
+                            [variant]="taskTitleErrors()[$index] ? 'error' : 'default'"
+                            [errorMessage]="taskTitleErrors()[$index]"
                             [value]="task.title"
                             (valueChange)="updateTaskTitle($index, $event)">
                         </app-input>
@@ -126,7 +130,8 @@
         </app-button>
         <app-button
             class="new-template-modal-footer-submit"
-            [variant]="'primary'">
+            [variant]="'primary'"
+            (click)="createTemplate()">
             Create Template
         </app-button>
     </div>

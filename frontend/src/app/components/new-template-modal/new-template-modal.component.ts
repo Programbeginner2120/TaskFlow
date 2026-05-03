@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal, viewChild } from "@angular/core";
-import { CreateTaskTemplateRequest, TaskListTemplateColor, TaskListTemplateSchedule } from "../../interfaces/task.interface";
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal, viewChild } from "@angular/core";
+import { CreateTaskListTemplateRequest, CreateTaskTemplateRequest, TaskListTemplateColor, TaskListTemplateSchedule } from "../../interfaces/task.interface";
 import { RruleDay, RruleFrequency } from "../../interfaces/rrule.interface";
 import { ModalComponent } from "../../shared/components/modal/modal.component";
 import { InputComponent } from "../../shared/components/input/input.component";
@@ -38,6 +38,25 @@ export class NewTemplateModalComponent {
     readonly dayOfWeek = signal<RruleDay>(RruleDay.MONDAY);
     readonly monthDay = signal<number>(1);
     readonly submitting = signal<boolean>(false);
+    readonly submitted = signal<boolean>(false);
+
+    // Computed validation
+    readonly templateNameError = computed<string | undefined>(() => {
+        if (!this.submitted()) return undefined;
+        return this.templateName().trim() === '' ? 'Template name is required' : undefined;
+    });
+
+    readonly taskTitleErrors = computed<(string | undefined)[]>(() => {
+        if (!this.submitted()) return this.templateTasks().map(() => undefined);
+        return this.templateTasks().map(task =>
+            task.title.trim() === '' ? 'Task title is required' : undefined
+        );
+    });
+
+    readonly isFormValid = computed<boolean>(() =>
+        this.templateName().trim() !== '' &&
+        this.templateTasks().every(task => task.title.trim() !== '')
+    );
 
     readonly exhaustiveTemplateColors = signal<TaskListTemplateColor[]>(
         Object.values(TaskListTemplateColor)
@@ -96,7 +115,7 @@ export class NewTemplateModalComponent {
         const parsed = dueDateOffset.trim();
         const dueDateOffsetParsed = parsed === '' ? null : Number(parsed);
         this.templateTasks.update(tasks =>
-            tasks.map((task, i) => i === index ? { ...task, dueDateOffsetParsed } : task)
+            tasks.map((task, i) => i === index ? { ...task, dueDateOffset: dueDateOffsetParsed } : task)
         );
     }
 
@@ -113,8 +132,12 @@ export class NewTemplateModalComponent {
     }
 
     createTemplate() {
+        this.submitted.set(true);
+        if (!this.isFormValid()) return;
+
         const scheduleType: string = this.templateScheduleType();
         if (TaskListTemplateSchedule.RECURRING === scheduleType) {
+
             const frequency = this.templateFrequency();
             let rrule: string;
             if (RruleFrequency.DAILY === frequency) {
@@ -126,14 +149,19 @@ export class NewTemplateModalComponent {
             } else {
                 throw new Error('Rrule frequency could not be processed');
             }
-            /*
-            TODO: Need to do the following:
-                1. Develop validation mechanism for fields
-                2. Align quick task with what backend is expecting for task template requets, or have a partial / pick
-                / new object [DONE]
-                3. Figure out how to get the timezone of the user's browser from the frontend [DONE]
-                4. Figure out how the backend is expecting this timezone to be represented [DONE]
-             */
+
+            const createTemplateRequest: CreateTaskListTemplateRequest = {
+                name: this.templateName(),
+                color: this.templateColor(),
+                rrule: rrule,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                taskTemplates: this.templateTasks()
+            };
+
+            this.taskListTemplateStateService.addTemplate(createTemplateRequest);
+
+            this.close.emit();
+            
         } else if (TaskListTemplateSchedule.ONE_TIME === scheduleType) {
             console.log("TODO: implement this flow, does nothing right now...");
         } else {
