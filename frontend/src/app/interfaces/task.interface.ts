@@ -37,12 +37,6 @@ export interface TaskRequestBody {
     completed?: boolean;
 }
 
-export interface QuickTask {
-    id: string;
-    title: string;
-    notes: string;
-}
-
 // Raw shapes returned by the API — date fields are strings as serialized by Spring
 
 export interface SubtaskApiResponse {
@@ -84,7 +78,12 @@ export interface TaskTemplate {
     dueDateOffset: number | null;
     createdAt: Date;
     updatedAt: Date | null;
-    subtaskTemplates: { id: number; title: string }[];
+    subtaskTemplates: SubtaskTemplate[];
+}
+
+export interface SubtaskTemplate {
+    id: number;
+    title: string;
 }
 
 export interface TaskListTemplate {
@@ -109,7 +108,12 @@ export interface TaskTemplateApiResponse {
     dueDateOffset: number | null;
     createdAt: string;
     updatedAt: string | null;
-    subtaskTemplates: { id: number; title: string }[];
+    subtaskTemplates: SubtaskTemplateApiResponse[];
+}
+
+export interface SubtaskTemplateApiResponse {
+    id: number;
+    title: string;
 }
 
 export interface TaskListTemplateApiResponse {
@@ -126,12 +130,23 @@ export interface TaskListTemplateApiResponse {
     taskTemplates: TaskTemplateApiResponse[];
 }
 
+export interface CreateTaskTemplateRequest {
+    title: string;
+    notes: string;
+    dueDateOffset: number | null;
+    subtaskTemplates: CreateSubtaskTemplateRequest[];
+}
+
+export interface CreateSubtaskTemplateRequest {
+    title: string;
+}
+
 export interface CreateTaskListTemplateRequest {
     name: string;
     color: string;
     rrule: string;
     timezone: string;
-    taskTemplates: QuickTask[];
+    taskTemplates: CreateTaskTemplateRequest[];
 }
 
 export interface UpdateTaskListTemplateRequest {
@@ -139,7 +154,7 @@ export interface UpdateTaskListTemplateRequest {
     color: string;
     rrule: string;
     timezone: string;
-    taskTemplates: QuickTask[];
+    taskTemplates: CreateTaskTemplateRequest[];
 }
 
 export enum TaskListTemplateColor {

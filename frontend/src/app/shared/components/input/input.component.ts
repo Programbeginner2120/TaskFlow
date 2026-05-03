@@ -1,4 +1,4 @@
-import { Component, computed, input, model, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, model, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, LucideIconData } from 'lucide-angular';
 import { InputType, InputSize, InputVariant } from '../../interfaces/input.interface';
@@ -8,7 +8,8 @@ import { InputType, InputSize, InputVariant } from '../../interfaces/input.inter
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss'],
   imports: [CommonModule, LucideAngularModule],
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputComponent {
   // Inputs

@@ -1,4 +1,4 @@
-import { Component, effect, HostListener, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, HostListener, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, X } from 'lucide-angular';
 
@@ -7,7 +7,8 @@ import { LucideAngularModule, X } from 'lucide-angular';
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
   imports: [CommonModule, LucideAngularModule],
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalComponent {
   // Input signal for open state (controlled by parent)

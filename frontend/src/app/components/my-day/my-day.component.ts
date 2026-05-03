@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { Task } from '../../interfaces/task.interface';
 import { TaskStateService } from '../../services/task-state.service';
 import { TaskListStateService } from '../../services/task-list-state.service';
@@ -9,6 +9,7 @@ import { TaskListViewComponent } from '../task-list-view/task-list-view.componen
     templateUrl: './my-day.component.html',
     styleUrls: ['./my-day.component.scss'],
     imports: [TaskListViewComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyDayComponent {
     private readonly taskService = inject(TaskStateService);

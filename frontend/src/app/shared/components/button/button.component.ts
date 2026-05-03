@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, LucideIconData, Loader2 } from 'lucide-angular';
 import { ButtonVariant, ButtonSize, ButtonType } from '../../interfaces/button.interface';
@@ -8,7 +8,8 @@ import { ButtonVariant, ButtonSize, ButtonType } from '../../interfaces/button.i
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
   imports: [CommonModule, LucideAngularModule],
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonComponent {
   // Icons

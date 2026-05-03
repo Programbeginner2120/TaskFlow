@@ -1,4 +1,4 @@
-import { Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { AuthService } from "../../../services/auth.service";
 import { AuthHeaderComponent } from "../../../components/headers/auth-header/auth-header.component";
@@ -7,7 +7,8 @@ import { AuthHeaderComponent } from "../../../components/headers/auth-header/aut
     selector: 'app-verify-email',
     templateUrl: './verify-email.component.html',
     styleUrls: ['./verify-email.component.scss', '../../../shared/common-styles/auth-common-styles.scss'],
-    imports: [RouterLink, AuthHeaderComponent]
+    imports: [RouterLink, AuthHeaderComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifyEmailComponent {
     private readonly authService = inject(AuthService);

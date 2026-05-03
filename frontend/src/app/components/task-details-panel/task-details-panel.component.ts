@@ -1,4 +1,5 @@
 import {
+    ChangeDetectionStrategy,
     Component,
     computed,
     effect,
@@ -25,6 +26,7 @@ import { toLocalDateString } from '../../utils/date.utils';
     templateUrl: './task-details-panel.component.html',
     styleUrls: ['./task-details-panel.component.scss'],
     imports: [LucideAngularModule, SelectComponent, DatepickerComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskDetailsPanelComponent implements OnDestroy {
     readonly closeIcon = X;

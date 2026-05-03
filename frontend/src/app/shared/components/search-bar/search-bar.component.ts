@@ -1,4 +1,4 @@
-import { Component, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { LucideAngularModule, Search, X } from 'lucide-angular';
 
 @Component({
@@ -6,6 +6,7 @@ import { LucideAngularModule, Search, X } from 'lucide-angular';
     templateUrl: './search-bar.component.html',
     styleUrls: ['./search-bar.component.scss'],
     imports: [LucideAngularModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchBarComponent {
     readonly searchIcon = Search;

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from "@angular/core";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
 import { Calendar, Clock, Sun, LucideAngularModule, Plus, Ellipsis } from "lucide-angular";
@@ -17,7 +17,8 @@ export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
     selector: 'app-landing-page',
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.scss'],
-    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, AutoFocusDirective, NewTemplateModalComponent]
+    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, AutoFocusDirective, NewTemplateModalComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingPageComponent {
 

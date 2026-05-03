@@ -1,5 +1,5 @@
-import { Component, inject, input, output, signal, viewChild } from "@angular/core";
-import { CreateTaskListTemplateRequest, QuickTask, TaskListTemplateColor, TaskListTemplateSchedule, TaskRequestBody } from "../../interfaces/task.interface";
+import { ChangeDetectionStrategy, Component, inject, input, output, signal, viewChild } from "@angular/core";
+import { CreateTaskTemplateRequest, TaskListTemplateColor, TaskListTemplateSchedule } from "../../interfaces/task.interface";
 import { RruleDay, RruleFrequency } from "../../interfaces/rrule.interface";
 import { ModalComponent } from "../../shared/components/modal/modal.component";
 import { InputComponent } from "../../shared/components/input/input.component";
@@ -15,7 +15,8 @@ import { buildRule } from "../../utils/rrule.util";
     selector: 'app-new-template-modal',
     templateUrl: './new-template-modal.component.html',
     styleUrls: ['./new-template-modal.component.scss'],
-    imports: [ModalComponent, InputComponent, LucideAngularModule, ButtonComponent, SelectComponent, DatepickerComponent]
+    imports: [ModalComponent, InputComponent, LucideAngularModule, ButtonComponent, SelectComponent, DatepickerComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewTemplateModalComponent {
 
@@ -30,7 +31,7 @@ export class NewTemplateModalComponent {
     // Internal signals
     readonly templateName = signal<string>('');
     readonly templateColor = signal<TaskListTemplateColor>(TaskListTemplateColor.BLUE);
-    readonly templateTasks = signal<QuickTask[]>([{ id: crypto.randomUUID(), title: '', notes: '' }]);
+    readonly templateTasks = signal<CreateTaskTemplateRequest[]>([{ title: '', notes: '', dueDateOffset: null, subtaskTemplates: [] }]);
     readonly templateScheduleType = signal<TaskListTemplateSchedule>(TaskListTemplateSchedule.RECURRING);
     readonly templateOneTimeDate = signal<Date>(new Date());
     readonly templateFrequency = signal<RruleFrequency>(RruleFrequency.WEEKLY);
@@ -93,7 +94,7 @@ export class NewTemplateModalComponent {
 
     addTask() {
         this.templateTasks.update(tasks =>
-            [ ...tasks, { id: crypto.randomUUID(), title: '', notes: '' }]
+            [ ...tasks, { title: '', notes: '', dueDateOffset: null, subtaskTemplates: [] }]
         );
     }
 
@@ -111,7 +112,7 @@ export class NewTemplateModalComponent {
             if (RruleFrequency.DAILY === frequency) {
                 rrule = buildRule(this.templateFrequency());
             } else if (RruleFrequency.WEEKLY === frequency) {
-                const rrule = buildRule(this.templateFrequency(), this.dayOfWeek());
+                rrule = buildRule(this.templateFrequency(), this.dayOfWeek());
             } else if (RruleFrequency.MONTHLY === frequency) {
                 rrule = buildRule(this.templateFrequency(), undefined, this.monthDay())
             } else {

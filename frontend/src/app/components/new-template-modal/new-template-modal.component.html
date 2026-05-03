@@ -29,27 +29,27 @@
         </div>
         <div class="tasks-container">
             <div class="tasks-label">Tasks</div>
-            @for (task of templateTasks(); track task.id; let i = $index) {
+            @for (task of templateTasks(); track $index) {
                 <div class="task-container">
                     <div class="task-input-container">
                         <app-input
                             class="new-task-title"
                             [type]="'text'"
-                            [placeholder]="`Task ${i + 1}`"
+                            [placeholder]="`Task ${$index + 1}`"
                             [required]="true"
                             [value]="task.title"
-                            (valueChange)="updateTaskTitle(i, $event)">
+                            (valueChange)="updateTaskTitle($index, $event)">
                         </app-input>
                         <app-input
                             class="new-task-notes"
                             [type]="'text'"
                             [placeholder]="'Notes (optional)'"
                             [value]="task.notes"
-                            (valueChange)="updateTaskNotes(i, $event)">
+                            (valueChange)="updateTaskNotes($index, $event)">
                         </app-input>
                     </div>
                     @if (templateTasks().length > 1) {
-                        <lucide-icon (click)="deleteTask(i)" [img]="trash" [size]="20"></lucide-icon>
+                        <lucide-icon (click)="deleteTask($index)" [img]="trash" [size]="20"></lucide-icon>
                     }
                 </div>
             }

@@ -1,4 +1,4 @@
-import { Component, HostListener, input, linkedSignal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, HostListener, input, linkedSignal } from "@angular/core";
 import { NavItem } from "../../interfaces/sidebar.interface";
 import { LucideAngularModule, List, ArrowRightFromLine, ArrowLeftFromLine } from "lucide-angular";
 
@@ -6,7 +6,8 @@ import { LucideAngularModule, List, ArrowRightFromLine, ArrowLeftFromLine } from
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
-    imports: [LucideAngularModule]
+    imports: [LucideAngularModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
 
