@@ -47,6 +47,15 @@
                             [value]="task.notes"
                             (valueChange)="updateTaskNotes($index, $event)">
                         </app-input>
+                        <app-input
+                            class="new-task-due-date-offset"
+                            [type]="'number'"
+                            [min]="0"
+                            [placeholder]="'Due X days after generation'"
+                            [value]="task.dueDateOffset?.toString() ?? ''"
+                            (valueChange)="updateTaskDueDateOffset($index, $event)">
+                        </app-input>
+                            
                     </div>
                     @if (templateTasks().length > 1) {
                         <lucide-icon (click)="deleteTask($index)" [img]="trash" [size]="20"></lucide-icon>

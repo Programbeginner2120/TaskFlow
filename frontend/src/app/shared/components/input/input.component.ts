@@ -29,6 +29,8 @@ export class InputComponent {
   autocomplete = input<string | undefined>(undefined);
   name = input<string | undefined>(undefined);
   id = input<string | undefined>(undefined);
+  min = input<number | undefined>(undefined);
+  max = input<number | undefined>(undefined);
 
   // Two-way binding for value
   value = model<string>('');

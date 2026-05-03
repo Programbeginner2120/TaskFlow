@@ -92,6 +92,14 @@ export class NewTemplateModalComponent {
         );
     }
 
+    updateTaskDueDateOffset(index: number, dueDateOffset: string) {
+        const parsed = dueDateOffset.trim();
+        const dueDateOffsetParsed = parsed === '' ? null : Number(parsed);
+        this.templateTasks.update(tasks =>
+            tasks.map((task, i) => i === index ? { ...task, dueDateOffsetParsed } : task)
+        );
+    }
+
     addTask() {
         this.templateTasks.update(tasks =>
             [ ...tasks, { title: '', notes: '', dueDateOffset: null, subtaskTemplates: [] }]
@@ -122,9 +130,9 @@ export class NewTemplateModalComponent {
             TODO: Need to do the following:
                 1. Develop validation mechanism for fields
                 2. Align quick task with what backend is expecting for task template requets, or have a partial / pick
-                / new object
-                3. Figure out how to get the timezone of the user's browser from the frontend
-                4. Figure out how the backend is expecting this timezone to be represented
+                / new object [DONE]
+                3. Figure out how to get the timezone of the user's browser from the frontend [DONE]
+                4. Figure out how the backend is expecting this timezone to be represented [DONE]
              */
         } else if (TaskListTemplateSchedule.ONE_TIME === scheduleType) {
             console.log("TODO: implement this flow, does nothing right now...");
