@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, WritableSignal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, signal, WritableSignal } from "@angular/core";
 import { LayoutGrid, LucideAngularModule, Moon, Sun } from "lucide-angular";
 import { ThemeService } from "../../services/theme.service";
 import { PlatformService } from "../../services/platform.service";
@@ -13,7 +13,8 @@ import { AuthHeaderComponent } from "../../components/headers/auth-header/auth-h
     selector: 'app-auth-layout',
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.scss'],
-    imports: [LucideAngularModule, LoginComponent, RegisterComponent, ForgotPasswordComponent, AuthHeaderComponent]
+    imports: [LucideAngularModule, LoginComponent, RegisterComponent, ForgotPasswordComponent, AuthHeaderComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthComponent {
 

@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, HostListener, inject, input, model, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener, inject, input, model, signal, viewChild } from '@angular/core';
 import { LucideAngularModule, Calendar, ChevronLeft, ChevronRight } from 'lucide-angular';
 import { CalendarDay } from '../../interfaces/datepicker.interface';
 
@@ -7,6 +7,7 @@ import { CalendarDay } from '../../interfaces/datepicker.interface';
     templateUrl: './datepicker.component.html',
     styleUrls: ['./datepicker.component.scss'],
     imports: [LucideAngularModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatepickerComponent {
     private readonly elementRef = inject(ElementRef);

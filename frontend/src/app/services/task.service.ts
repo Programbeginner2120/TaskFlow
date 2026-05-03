@@ -1,15 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TaskApiResponse, SubtaskApiResponse } from '../shared/interfaces/api-response.interface';
-
-export interface TaskRequestBody {
-    title: string;
-    notes?: string | null;
-    dueDate?: string | null;
-    listId?: number | null;
-    completed?: boolean;
-}
+import { TaskApiResponse, SubtaskApiResponse, TaskRequestBody } from '../interfaces/task.interface';
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {

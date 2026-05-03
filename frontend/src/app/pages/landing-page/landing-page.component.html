@@ -10,29 +10,32 @@
             [collapsible]="true"
             [initiallyExpanded]="false"
             #sidebar>
-            <div class="lists-container" sidebar-content>
-                <div class="list-section-title">Lists</div>
-                <ul class="list-items" aria-label="Task lists">
+            <div class="projected-items-container" sidebar-content>
+                <div class="projected-items-section-title">Lists</div>
+                <ul class="projected-items" aria-label="Task lists">
                     @for (list of lists(); track list.id) {
                         <li>
                             <button
-                                class="list-item"
+                                class="projected-item"
                                 type="button"
                                 [attr.aria-label]="'View ' + list.name + ' list'"
                                 (click)="selectListView(list.id)">
-                                <span class="list-item-dot" [style.backgroundColor]="list.color" aria-hidden="true"></span>
-                                <span class="list-item-name">{{ list.name }}</span>
-                                <lucide-icon class="list-item-ellipsis" [img]="ellipsis" [size]="16" aria-hidden="true"></lucide-icon>
+                                <span class="projected-item-dot" [style.backgroundColor]="list.color" aria-hidden="true"></span>
+                                <span class="projected-item-name">{{ list.name }}</span>
+                                <lucide-icon class="projected-item-ellipsis" [img]="ellipsis" [size]="16" aria-hidden="true"></lucide-icon>
                             </button>
                         </li>
                     }
+                    @if (lists().length === 0) {
+                        <span class="no-projected-items-label">There are no lists to display</span>
+                    }
                 </ul>
                 @if (addingList()) {
-                    <div class="new-list-input-wrapper">
+                    <div class="new-projected-item-input-wrapper">
                         <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
                         <input autoFocus
                             type="text"
-                            class="new-list-input"
+                            class="new-projected-item-input"
                             placeholder="List name"
                             autocomplete="off"
                             (keydown.enter)="confirmAddList($any($event.target).value)"
@@ -40,12 +43,38 @@
                             (blur)="cancelAddList()">
                     </div>
                 } @else {
-                    <button class="add-list-btn" type="button" aria-label="Add new list"
+                    <button class="add-projected-item-btn" type="button" aria-label="Add new list"
                         (click)="startAddingList()">
                         <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
                         <span>New List</span>
                     </button>
                 }
+            </div>
+            <div class="projected-items-container" sidebar-content>
+                <div class="projected-items-section-title">Templates</div>
+                <ul class="projected-items" aria-label="Task list templates">
+                    @for (template of templates(); track template.id) {
+                        <li>
+                            <button
+                                class="projected-item"
+                                type="button"
+                                [attr.aria-label]="'Edit ' + template.name + ' template'"
+                                (click)="editTemplate(template)">
+                                <span class="projected-item-dot" [style.backgroundColor]="template.color" aria-hidden="true"></span>
+                                <span class="projected-item-name">{{ template.name }}</span>
+                                <lucide-icon class="projected-item-ellipsis" [img]="ellipsis" [size]="16" aria-hidden="true"></lucide-icon>
+                            </button>
+                        </li>
+                    }
+                    @if (templates().length === 0) {
+                        <span class="no-projected-items-label">There are no templates to display</span>
+                    }
+                </ul>
+                <button class="add-projected-item-btn" type="button" aria-label="Add new list"
+                    (click)="startAddingTemplate()">
+                    <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
+                    <span>New Template</span>
+                </button>
             </div>
         </app-sidebar>
 
@@ -81,4 +110,10 @@
         (close)="selectedTask.set(null)">
     </app-task-details-panel>
 
+    @if (addingTemplate()) {
+        <app-new-template-modal
+            [template]="selectedTemplate()"
+            (close)="stopAddingTemplate()">
+        </app-new-template-modal>
+    }
 </div>

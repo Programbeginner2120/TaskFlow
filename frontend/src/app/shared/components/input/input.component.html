@@ -32,6 +32,8 @@
       [attr.aria-invalid]="ariaInvalid()"
       [attr.aria-required]="required()"
       [attr.autocomplete]="autocomplete()"
+      [attr.min]="min()"
+      [attr.max]="max()"
       (input)="onInput($event)"
       (focus)="onFocus($event)"
       (blur)="onBlur($event)">
@@ -45,24 +47,27 @@
     }
   </div>
 
-  <div class="input-footer">
-    @if (showError()) {
-      <p [id]="(id() || 'input') + '-error'" class="input-error-text" role="alert">
-        {{ errorMessage() }}
-      </p>
-    } @else if (showHelper()) {
-      <p [id]="(id() || 'input') + '-helper'" class="input-helper-text">
-        {{ helperText() }}
-      </p>
-    }
-    
-    @if (showCharacterCount()) {
-      <p 
-        [id]="(id() || 'input') + '-count'" 
-        class="input-character-count"
-        [class.input-character-count--over]="isOverLimit()">
-        {{ characterCount() }}
-      </p>
-    }
-  </div>
+  @if (showError() || showHelper() || showCharacterCount()) {
+    <div class="input-footer">
+        @if (showError()) {
+          <p [id]="(id() || 'input') + '-error'" class="input-error-text" role="alert">
+            {{ errorMessage() }}
+          </p>
+        } @else if (showHelper()) {
+          <p [id]="(id() || 'input') + '-helper'" class="input-helper-text">
+            {{ helperText() }}
+          </p>
+        }
+        
+        @if (showCharacterCount()) {
+          <p 
+            [id]="(id() || 'input') + '-count'" 
+            class="input-character-count"
+            [class.input-character-count--over]="isOverLimit()">
+            {{ characterCount() }}
+          </p>
+        }
+      </div>
+  }
+  
 </div>

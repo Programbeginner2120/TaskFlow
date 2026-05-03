@@ -1,11 +1,12 @@
-import { Component, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { LucideAngularModule, Menu, X } from "lucide-angular";
 
 @Component({
     selector: 'app-hamburger-menu',
     templateUrl: './hamburger.component.html',
     styleUrls: ['./hamburger.component.scss'],
-    imports: [LucideAngularModule]
+    imports: [LucideAngularModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HamburgerMenuComponent {
 

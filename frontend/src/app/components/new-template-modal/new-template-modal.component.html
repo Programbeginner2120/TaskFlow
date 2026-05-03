@@ -1,0 +1,139 @@
+<app-modal class="new-template-modal-container" [isOpen]="true" (close)="close.emit()">
+
+    <div class="new-template-modal-header" modal-header>
+        <h2 class="new-template-modal-header-title">{{ isEditMode() ? 'Edit Template' : 'New Template' }}</h2>
+        <p class="new-template-modal-header-description">Define a reusable task list that can be auto-created on a schedule.</p>
+    </div>
+
+    <div class="new-template-modal-body" modal-body>
+        <app-input
+            class="new-template-name"
+            [label]="'Template Name'"
+            [type]="'text'"
+            [placeholder]="'e.g. Weekly Sprint Tasks'"
+            [required]="true"
+            [variant]="templateNameError() ? 'error' : 'default'"
+            [errorMessage]="templateNameError()"
+            [(value)]="templateName"
+        ></app-input>
+        <div class="colors-container">
+            <div class="color-label">Color</div>
+            <div class="color-pickers-container">
+                @for (color of exhaustiveTemplateColors(); track color) {
+                    <div 
+                        class="color-picker" 
+                        (click)="selectColor(color)" 
+                        [style.background-color]="color" 
+                        [class.selected-color]="templateColor() === color"
+                    ></div>
+                }
+            </div>
+        </div>
+        <div class="tasks-container">
+            <div class="tasks-label">Tasks</div>
+            @for (task of templateTasks(); track $index) {
+                <div class="task-container">
+                    <div class="task-input-container">
+                        <app-input
+                            class="new-task-title"
+                            [type]="'text'"
+                            [placeholder]="`Task ${$index + 1}`"
+                            [required]="true"
+                            [variant]="taskTitleErrors()[$index] ? 'error' : 'default'"
+                            [errorMessage]="taskTitleErrors()[$index]"
+                            [value]="task.title"
+                            (valueChange)="updateTaskTitle($index, $event)">
+                        </app-input>
+                        <app-input
+                            class="new-task-notes"
+                            [type]="'text'"
+                            [placeholder]="'Notes (optional)'"
+                            [value]="task.notes"
+                            (valueChange)="updateTaskNotes($index, $event)">
+                        </app-input>
+                        <app-input
+                            class="new-task-due-date-offset"
+                            [type]="'number'"
+                            [min]="0"
+                            [placeholder]="'Due X days after generation'"
+                            [value]="task.dueDateOffset?.toString() ?? ''"
+                            (valueChange)="updateTaskDueDateOffset($index, $event)">
+                        </app-input>
+                            
+                    </div>
+                    @if (templateTasks().length > 1) {
+                        <lucide-icon (click)="deleteTask($index)" [img]="trash" [size]="20"></lucide-icon>
+                    }
+                </div>
+            }
+            <app-button
+                class="add-task-button"
+                [fullWidth]="true"
+                (click)="addTask()"
+            >
+                <div class="add-task-label-container">
+                    <lucide-icon class="add-task-icon" [img]="plus" [size]="20"></lucide-icon>
+                    <div class="add-task-label">Add Task</div>
+                </div>
+            </app-button>
+        </div>
+        <div class="schedule-container">
+            <div class="schedule-title">Schedule</div>
+            <div class="schedule-dropdowns-container">
+                <app-select
+                    [options]="scheduleTypes()"
+                    [(value)]="templateScheduleType"
+                    aria-label="Schedule Type Select">
+                </app-select>
+                @if (templateScheduleType() === 'recurring') {
+                    <app-select
+                        [options]="frequencies()"
+                        [(value)]="templateFrequency"
+                        aria-label="Frequency Select">
+                    </app-select>
+                    @if (templateFrequency() === 'WEEKLY') {
+                        <app-select
+                            [options]="daysOfWeek()"
+                            [(value)]="dayOfWeek"
+                            aria-label="Day of Week Select">
+                        </app-select>
+                    } @else if (templateFrequency() === 'MONTHLY') {
+                        <app-select
+                            [options]="daysOfMonth()"
+                            [(value)]="monthDay"
+                            aria-label="Day of Month Select">
+                        </app-select>
+                    }
+                } 
+                <!-- @else if (templateScheduleType() === 'one-time') {
+                    <app-button
+                        class="one-time-datepicker-button"
+                        [variant]="'secondary'"
+                        [fullWidth]="true"
+                        (click)="templateOneTimeDatepicker!.toggle($event)">
+                            <div class="one-time-datepicker-button-label-container">
+                                <app-datepicker [(value)]="templateOneTimeDate" #templateOneTimeDatepicker ></app-datepicker>
+                                <div class="one-time-datepicker-button-label">Pick a date</div>
+                            </div>
+                    </app-button>
+                } -->
+            </div>
+        </div>
+    </div>
+
+    <div class="new-template-modal-footer" modal-footer>
+        <app-button
+            class="new-template-modal-footer-cancel"
+            [variant]="'secondary'"
+            (click)="close.emit()">
+            Cancel
+        </app-button>
+        <app-button
+            class="new-template-modal-footer-submit"
+            [variant]="'primary'"
+            (click)="submitTemplate()">
+            {{ isEditMode() ? 'Save Changes' : 'Create Template' }}
+        </app-button>
+    </div>
+
+</app-modal>

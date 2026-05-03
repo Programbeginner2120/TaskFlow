@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { ThemeService } from "../../../services/theme.service";
 import { LayoutGrid, LucideAngularModule, Moon, Sun } from "lucide-angular";
 
@@ -6,7 +6,8 @@ import { LayoutGrid, LucideAngularModule, Moon, Sun } from "lucide-angular";
     selector: 'app-auth-header',
     templateUrl: './auth-header.component.html',
     styleUrls: ['./auth-header.component.scss'],
-    imports: [LucideAngularModule]
+    imports: [LucideAngularModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthHeaderComponent {
 

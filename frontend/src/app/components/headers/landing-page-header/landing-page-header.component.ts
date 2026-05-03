@@ -1,4 +1,4 @@
-import { Component, inject, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
 import { LucideAngularModule, Plus, Moon, Sun, User } from 'lucide-angular';
 import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
 import { ThemeService } from '../../../services/theme.service';
@@ -11,6 +11,7 @@ import { HamburgerMenuComponent } from '../../../shared/components/hamburger/ham
     templateUrl: './landing-page-header.component.html',
     styleUrls: ['./landing-page-header.component.scss'],
     imports: [LucideAngularModule, SearchBarComponent, HamburgerMenuComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingPageHeaderComponent {
     readonly plusIcon = Plus;

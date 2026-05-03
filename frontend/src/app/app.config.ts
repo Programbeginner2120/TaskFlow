@@ -9,6 +9,7 @@ import { AuthService } from './services/auth.service';
 import { TaskStateService } from './services/task-state.service';
 import { TaskListStateService } from './services/task-list-state.service';
 import { firstValueFrom, forkJoin, of, switchMap } from 'rxjs';
+import { TaskListTemplateStateService } from './services/task-list-template-state.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +21,7 @@ export const appConfig: ApplicationConfig = {
       const authService = inject(AuthService);
       const taskStateService = inject(TaskStateService);
       const taskListStateService = inject(TaskListStateService);
+      const taskListTemplateStateService = inject(TaskListTemplateStateService);
 
       return firstValueFrom(
         authService.loadCurrentUser().pipe(
@@ -28,6 +30,7 @@ export const appConfig: ApplicationConfig = {
             return forkJoin([
               taskStateService.loadAll(),
               taskListStateService.loadAll(),
+              taskListTemplateStateService.loadAll()
             ]);
           })
         )

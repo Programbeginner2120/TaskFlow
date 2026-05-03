@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TaskListApiResponse } from '../shared/interfaces/api-response.interface';
+import { TaskListApiResponse } from '../interfaces/task.interface';
 
 @Injectable({ providedIn: 'root' })
 export class TaskListService {

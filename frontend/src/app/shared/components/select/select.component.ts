@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, HostListener, inject, input, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener, inject, input, model, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, ChevronDown, Check } from 'lucide-angular';
 import { SelectOption } from '../../interfaces/select.interface';
@@ -8,7 +8,8 @@ import { SelectOption } from '../../interfaces/select.interface';
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
   imports: [CommonModule, LucideAngularModule],
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponent {
   // Dependency injection using inject()

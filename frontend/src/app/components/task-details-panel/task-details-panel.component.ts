@@ -1,4 +1,5 @@
 import {
+    ChangeDetectionStrategy,
     Component,
     computed,
     effect,
@@ -12,19 +13,20 @@ import {
 } from '@angular/core';
 import { LucideAngularModule, X, Calendar, Check } from 'lucide-angular';
 import { Task } from '../../interfaces/task.interface';
-import { TaskStateService } from '../../../services/task-state.service';
-import { TaskListStateService } from '../../../services/task-list-state.service';
-import { SelectComponent } from '../select/select.component';
-import { DatepickerComponent } from '../datepicker/datepicker.component';
-import { SelectOption } from '../../interfaces/select.interface';
-import { PlatformService } from '../../../services/platform.service';
-import { toLocalDateString } from '../../../utils/date.utils';
+import { TaskStateService } from '../../services/task-state.service';
+import { TaskListStateService } from '../../services/task-list-state.service';
+import { SelectComponent } from '../../shared/components/select/select.component';
+import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
+import { SelectOption } from '../../shared/interfaces/select.interface';
+import { PlatformService } from '../../services/platform.service';
+import { toLocalDateString } from '../../utils/date.utils';
 
 @Component({
     selector: 'app-task-details-panel',
     templateUrl: './task-details-panel.component.html',
     styleUrls: ['./task-details-panel.component.scss'],
     imports: [LucideAngularModule, SelectComponent, DatepickerComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskDetailsPanelComponent implements OnDestroy {
     readonly closeIcon = X;
