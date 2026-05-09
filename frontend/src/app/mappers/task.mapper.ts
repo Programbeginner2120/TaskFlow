@@ -22,6 +22,7 @@ export function toTask(raw: TaskApiResponse): Task {
         completed: raw.completed,
         dueDate: raw.dueDate ? new Date(raw.dueDate + 'T00:00:00') : null,
         subtasks: raw.subtasks.map(toSubtask),
+        position: raw.position,
         createdAt: new Date(raw.createdAt),
         updatedAt: raw.updatedAt ? new Date(raw.updatedAt) : null,
     };

@@ -2,6 +2,7 @@ package com.killeen.taskflow.components.task.service;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.core.env.Environment;
@@ -47,10 +48,14 @@ public class TaskService {
     }
 
     public Task createTask(Long userId, CreateTaskRequest request) {
+        Long taskPosition = null;
         if (request.getListId() != null) {
-            taskListRepository.findByIdAndUserId(request.getListId(), userId)
-                    .orElseThrow(() -> new TaskListNotFoundException(
-                            env.getProperty("task.list.not.found")));
+                taskListRepository.findByIdAndUserId(request.getListId(), userId)
+                        .orElseThrow(() -> new TaskListNotFoundException(
+                                env.getProperty("task.list.not.found")));
+
+                taskPosition = (long) taskRepository.findByTaskListId(request.getListId())
+                        .orElse(new ArrayList<>()).size();
         }
 
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
@@ -62,6 +67,7 @@ public class TaskService {
                 .completed(false)
                 .dueDate(request.getDueDate())
                 .subtasks(List.of())
+                .position(taskPosition)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();

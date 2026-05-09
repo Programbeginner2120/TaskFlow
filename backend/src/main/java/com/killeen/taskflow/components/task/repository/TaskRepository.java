@@ -62,6 +62,20 @@ public class TaskRepository {
                 });
     }
 
+    public Optional<List<Task>> findByTaskListId(Long taskListId) {
+        TaskDbExample example = new TaskDbExample();
+        example.createCriteria()
+                .andListIdEqualTo(taskListId);
+        return Optional.of(taskDbMapper.selectByExample(example).stream()
+            .map(taskDb -> {
+                Task task = taskConverter.toDto(taskDb);
+                task.setSubtasks(subtaskRepository.findAllByTaskId(task.getId()));
+                return task;
+            })
+            .toList()
+        );
+    }
+
     public Long save(Task task) {
         TaskDb dbModel = taskConverter.toDb(task);
         taskDbMapper.insert(dbModel);

@@ -36,6 +36,7 @@ export interface TaskRequestBody {
     dueDate?: string | null;
     listId?: number | null;
     completed?: boolean;
+    position?: number | null;
 }
 
 // Raw shapes returned by the API — date fields are strings as serialized by Spring
@@ -58,6 +59,7 @@ export interface TaskApiResponse {
     completed: boolean;
     dueDate: string | null;         // "YYYY-MM-DD"
     subtasks: SubtaskApiResponse[];
+    position: number;
     createdAt: string;
     updatedAt: string | null;
 }
