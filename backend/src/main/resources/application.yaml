@@ -13,7 +13,7 @@ spring:
     change-log: classpath:db/liquibase.xml
 
   mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
+    host: ${MAIL_HOST}
     port: ${MAIL_PORT:587}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
@@ -45,7 +45,7 @@ app:
   cors:
     allowed-origins: "http://localhost:4200,http://127.0.0.1:4200,http://localhost,http://127.0.0.1"
   email:
-    from-address: ${MAIL_FROM:noreply@taskflow.com}
+    from-address: ${MAIL_FROM}
     base-url: ${APP_BASE_URL:http://localhost:4200}
     verification-token-ttl-hours: 24
     reset-token-ttl-hours: 1
