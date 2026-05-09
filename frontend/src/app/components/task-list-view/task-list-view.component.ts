@@ -4,12 +4,13 @@ import { Task, TaskList } from '../../interfaces/task.interface';
 import { TaskStateService } from '../../services/task-state.service';
 import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
 import { toLocalDateString, formatDisplayDate } from '../../utils/date.utils';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-task-list-view',
     templateUrl: './task-list-view.component.html',
     styleUrls: ['./task-list-view.component.scss'],
-    imports: [LucideAngularModule, DatepickerComponent],
+    imports: [LucideAngularModule, DatepickerComponent, DragDropModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskListViewComponent {
@@ -19,7 +20,7 @@ export class TaskListViewComponent {
 
     private readonly taskService = inject(TaskStateService);
 
-    title = input.required<string>();
+    componentTitle = input.required<string>();
     tasks = input.required<Task[]>();
     lists = input.required<TaskList[]>();
     searchQuery = input<string>('');
