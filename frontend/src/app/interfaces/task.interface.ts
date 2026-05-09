@@ -16,6 +16,7 @@ export interface Task {
     listId: number | null;
     notes: string;
     subtasks: Subtask[];
+    position: number;
     createdAt: Date;
     updatedAt: Date | null;
 }
