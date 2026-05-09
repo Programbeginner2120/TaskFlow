@@ -22,6 +22,8 @@ public class TaskDb {
 
     private OffsetDateTime updatedAt;
 
+    private Long position;
+
     public Long getId() {
         return id;
     }
@@ -92,5 +94,13 @@ public class TaskDb {
 
     public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Long getPosition() {
+        return position;
+    }
+
+    public void setPosition(Long position) {
+        this.position = position;
     }
 }

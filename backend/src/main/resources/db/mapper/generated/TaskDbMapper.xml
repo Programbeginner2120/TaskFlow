@@ -11,6 +11,7 @@
     <result column="due_date" jdbcType="DATE" property="dueDate" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="position" jdbcType="BIGINT" property="position" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -71,7 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, list_id, title, notes, completed, due_date, created_at, updated_at
+    id, user_id, list_id, title, notes, completed, due_date, created_at, updated_at, 
+    position
   </sql>
   <select id="selectByExample" parameterType="com.killeen.taskflow.db.model.generated.TaskDbExample" resultMap="BaseResultMap">
     select
@@ -106,10 +108,12 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.TaskDb" useGeneratedKeys="true">
     insert into tasks (user_id, list_id, title, 
       notes, completed, due_date, 
-      created_at, updated_at)
+      created_at, updated_at, position
+      )
     values (#{userId,jdbcType=BIGINT}, #{listId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{notes,jdbcType=VARCHAR}, #{completed,jdbcType=BIT}, #{dueDate,jdbcType=DATE}, 
-      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, #{position,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.TaskDb" useGeneratedKeys="true">
     insert into tasks
@@ -138,6 +142,9 @@
       <if test="updatedAt != null">
         updated_at,
       </if>
+      <if test="position != null">
+        position,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -163,6 +170,9 @@
       </if>
       <if test="updatedAt != null">
         #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -202,6 +212,9 @@
       <if test="row.updatedAt != null">
         updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="row.position != null">
+        position = #{row.position,jdbcType=BIGINT},
+      </if>
     </set>
     <if test="example != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -217,7 +230,8 @@
       completed = #{row.completed,jdbcType=BIT},
       due_date = #{row.dueDate,jdbcType=DATE},
       created_at = #{row.createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP}
+      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      position = #{row.position,jdbcType=BIGINT}
     <if test="example != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -249,6 +263,9 @@
       <if test="updatedAt != null">
         updated_at = #{updatedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="position != null">
+        position = #{position,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -261,7 +278,8 @@
       completed = #{completed,jdbcType=BIT},
       due_date = #{dueDate,jdbcType=DATE},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      position = #{position,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

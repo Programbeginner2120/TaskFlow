@@ -665,6 +665,66 @@ public class TaskDbExample {
             addCriterion("updated_at not between", value1, value2, "updatedAt");
             return (Criteria) this;
         }
+
+        public Criteria andPositionIsNull() {
+            addCriterion("position is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionIsNotNull() {
+            addCriterion("position is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionEqualTo(Long value) {
+            addCriterion("position =", value, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionNotEqualTo(Long value) {
+            addCriterion("position <>", value, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionGreaterThan(Long value) {
+            addCriterion("position >", value, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionGreaterThanOrEqualTo(Long value) {
+            addCriterion("position >=", value, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionLessThan(Long value) {
+            addCriterion("position <", value, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionLessThanOrEqualTo(Long value) {
+            addCriterion("position <=", value, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionIn(List<Long> values) {
+            addCriterion("position in", values, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionNotIn(List<Long> values) {
+            addCriterion("position not in", values, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionBetween(Long value1, Long value2) {
+            addCriterion("position between", value1, value2, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andPositionNotBetween(Long value1, Long value2) {
+            addCriterion("position not between", value1, value2, "position");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
