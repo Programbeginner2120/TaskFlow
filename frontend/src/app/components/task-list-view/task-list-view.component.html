@@ -24,12 +24,12 @@
     </div>
 
     <!-- Task list -->
-    <ul class="task-list" aria-label="Tasks">
+    <ul cdkDropList (cdkDropListDropped)="drop($event)" class="task-list" aria-label="Tasks">
         @for (task of sortedTasks(); track task.id) {
             @let list = getListForTask(task.listId);
             @let progress = getSubtaskProgress(task);
 
-            <li class="task-row" [class.completed]="task.completed">
+            <li cdkDrag class="task-row" [class.completed]="task.completed">
 
                 <!-- Completion toggle -->
                 <button
@@ -87,6 +87,21 @@
                     [size]="16"
                     aria-hidden="true">
                 </lucide-icon>
+
+                <!-- Drop placeholder: shown at the target position in the list -->
+                <div *cdkDragPlaceholder class="task-drag-placeholder"></div>
+
+                <!-- Drag preview: card that follows the cursor while dragging -->
+                <div *cdkDragPreview class="task-drag-preview">
+                    <lucide-icon
+                        [img]="task.completed ? checkCircleIcon : circleIcon"
+                        [size]="18"
+                        aria-hidden="true">
+                    </lucide-icon>
+                    <span class="drag-preview-title" [class.completed-title]="task.completed">
+                        {{ task.title }}
+                    </span>
+                </div>
 
             </li>
         }

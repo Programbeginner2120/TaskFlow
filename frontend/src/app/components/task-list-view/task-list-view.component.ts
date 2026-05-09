@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
 import { LucideAngularModule, Circle, CheckCircle2, ChevronRight } from 'lucide-angular';
 import { Task, TaskList } from '../../interfaces/task.interface';
 import { TaskStateService } from '../../services/task-state.service';
 import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
 import { toLocalDateString, formatDisplayDate } from '../../utils/date.utils';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-task-list-view',
@@ -38,12 +38,17 @@ export class TaskListViewComponent {
         return this.tasks().filter(t => t.title.toLowerCase().includes(query));
     });
 
-    readonly sortedTasks = computed(() => {
-        const tasks = this.filteredTasks();
-        return [
-            ...tasks.filter(t => !t.completed),
-            ...tasks.filter(t => t.completed),
-        ];
+    // readonly sortedTasks = computed(() => {
+    //     const tasks = this.filteredTasks();
+    //     return [
+    //         ...tasks.filter(t => !t.completed),
+    //         ...tasks.filter(t => t.completed),
+    //     ];
+    // });
+
+    readonly sortedTasks = linkedSignal({
+        source: () => this.filteredTasks(),
+        computation: () => this.filteredTasks()
     });
 
     readonly incompleteCount = computed(() =>
@@ -99,5 +104,13 @@ export class TaskListViewComponent {
             event.preventDefault();
             this.addTask();
         }
+    }
+
+    drop(event: CdkDragDrop<Task[]>) {
+        moveItemInArray(
+            this.sortedTasks(),
+            event.previousIndex,
+            event.currentIndex
+        );
     }
 }
