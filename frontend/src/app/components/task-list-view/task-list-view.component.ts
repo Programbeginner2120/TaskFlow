@@ -79,6 +79,7 @@ export class TaskListViewComponent {
             dueDate: task.dueDate ? toLocalDateString(task.dueDate) : null,
             listId: task.listId,
             completed: !task.completed,
+            position: task.position
         });
     }
 

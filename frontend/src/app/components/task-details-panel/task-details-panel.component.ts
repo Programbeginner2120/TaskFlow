@@ -123,6 +123,7 @@ export class TaskDetailsPanelComponent implements OnDestroy {
                 dueDate: dueDate ? toLocalDateString(dueDate) : null,
                 listId,
                 completed: t.completed,
+                position: t.position
             });
         }
     }

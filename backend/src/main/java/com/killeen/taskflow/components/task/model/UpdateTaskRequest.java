@@ -17,4 +17,5 @@ public class UpdateTaskRequest {
     private LocalDate dueDate;
     private Long      listId;
     private boolean   completed;
+    private Long      position;
 }
