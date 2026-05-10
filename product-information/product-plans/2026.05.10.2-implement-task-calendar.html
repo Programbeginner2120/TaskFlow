@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Implementation Plan — Task Calendar View</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 24px; line-height: 1.7; color: #1F2937; background: #f6f7f9; }
+        h1 { font-size: 1.8rem; color: #6366F1; border-bottom: 2px solid #6366F1; padding-bottom: 8px; }
+        h2 { font-size: 1.2rem; margin-top: 2rem; color: #1F2937; }
+        h3 { font-size: 1rem; margin-top: 1.4rem; color: #4F46E5; }
+        code { background: #e5e7eb; border-radius: 4px; padding: 1px 5px; font-size: 0.88em; }
+        pre { background: #1F2937; color: #f3f4f6; border-radius: 8px; padding: 16px; overflow-x: auto; font-size: 0.85em; }
+        pre code { background: none; padding: 0; color: inherit; }
+        .step { background: #fff; border: 1px solid #e5e7eb; border-left: 4px solid #6366F1; border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+        .badge { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 12px; margin-left: 8px; vertical-align: middle; }
+        .badge-file { background: #dbeafe; color: #1d4ed8; }
+        .badge-new { background: #d1fae5; color: #065f46; }
+        .badge-edit { background: #fef3c7; color: #92400e; }
+        ul { padding-left: 1.4rem; }
+        li { margin: 4px 0; }
+        .note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 10px 14px; margin: 12px 0; font-size: 0.92em; }
+        table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+        th, td { border: 1px solid #d1d5db; padding: 8px 12px; font-size: 0.9em; text-align: left; }
+        th { background: #f3f4f6; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<h1>Implementation Plan — Task Calendar View</h1>
+<p>
+    This plan covers the full implementation of a responsive, monthly (and optionally weekly) task calendar view built on
+    <strong>FullCalendar for Angular</strong> (<code>@fullcalendar/angular</code>, <code>@fullcalendar/daygrid</code>,
+    <code>@fullcalendar/interaction</code>). The calendar displays tasks by their due date, caps visible events per cell
+    at two with a <em>"+N others"</em> overflow link, opens a task-details side panel on event click, and is fully
+    responsive via the existing <code>PlatformService</code>.
+</p>
+<p>
+    The mockup reference is <code>product-information/mockup-images/full-calendar-with-tasks-mockup.png</code>.
+</p>
+
+<hr />
+
+<!-- ═══════════════════════════════════════════════ STEP 1 ══ -->
+<div class="step">
+    <h2>Step 1 — Scaffold the <code>CalendarViewComponent</code> <span class="badge badge-new">NEW FILE</span></h2>
+    <p>Create a standalone Angular component in <code>frontend/src/app/components/calendar-view/</code>.</p>
+    <p><strong>Files to create:</strong></p>
+    <ul>
+        <li><code>calendar-view.component.ts</code></li>
+        <li><code>calendar-view.component.html</code></li>
+        <li><code>calendar-view.component.scss</code></li>
+    </ul>
+
+    <h3>Component class skeleton</h3>
+    <pre><code>// calendar-view.component.ts
+import { ChangeDetectionStrategy, Component, inject, input, output, signal, computed } from '@angular/core';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { CalendarOptions, EventClickArg, MoreLinkClickArg } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import { Task } from '../../interfaces/task.interface';
+import { TaskStateService } from '../../services/task-state.service';
+import { PlatformService } from '../../services/platform.service';
+
+@Component({
+    selector: 'app-calendar-view',
+    templateUrl: './calendar-view.component.html',
+    styleUrls: ['./calendar-view.component.scss'],
+    imports: [FullCalendarModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CalendarViewComponent {
+    private readonly taskService = inject(TaskStateService);
+    readonly platformService = inject(PlatformService);
+
+    searchQuery = input&lt;string&gt;('');
+    taskSelected = output&lt;Task&gt;();
+
+    // ... (see Steps 3–5 for implementation details)
+}
+</code></pre>
+
+    <div class="note">
+        FullCalendar requires its own bundle; it is already listed in <code>package.json</code> as
+        <code>@fullcalendar/angular ^6.1.20</code>, <code>@fullcalendar/core</code>, <code>@fullcalendar/daygrid</code>,
+        and <code>@fullcalendar/interaction</code> — no additional <code>npm install</code> needed.
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ STEP 2 ══ -->
+<div class="step">
+    <h2>Step 2 — Map <code>Task[]</code> to FullCalendar <code>EventInput[]</code></h2>
+    <p>
+        FullCalendar works with an array of <code>EventInput</code> objects. We derive this array from the reactive task
+        signal so the calendar re-renders automatically when tasks change.
+    </p>
+
+    <h3>Computed signal — <code>calendarEvents</code></h3>
+    <pre><code>readonly calendarEvents = computed(() =>
+    this.taskService.tasks()
+        .filter(t => t.dueDate !== null)
+        .filter(t => {
+            const q = this.searchQuery().toLowerCase().trim();
+            return !q || t.title.toLowerCase().includes(q);
+        })
+        .map(t =&gt; ({
+            id: String(t.id),
+            title: t.title,
+            start: t.dueDate!,          // FullCalendar accepts Date objects
+            allDay: true,
+            classNames: t.completed ? ['fc-event--completed'] : [],
+            extendedProps: { task: t }, // store full task for click handler
+        }))
+);</code></pre>
+
+    <h3>Wire the events into <code>CalendarOptions</code></h3>
+    <p>
+        <code>CalendarOptions</code> is built as a <code>computed</code> signal so that responsive options (e.g.
+        <code>headerToolbar</code> layout, <code>dayMaxEvents</code>) react to platform changes. The
+        <code>events</code> property is set to <code>() => this.calendarEvents()</code> (a function) so FullCalendar
+        calls it when it needs to re-render rather than holding a stale snapshot.
+    </p>
+    <pre><code>readonly calendarOptions = computed&lt;CalendarOptions&gt;(() =&gt; ({
+    plugins: [dayGridPlugin, interactionPlugin],
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+        left:   this.platformService.isPhone() ? 'prev,next' : 'prev,next today',
+        center: 'title',
+        right:  this.platformService.isPhone() ? 'today' : 'dayGridMonth,dayGridWeek',
+    },
+    height: 'auto',
+    dayMaxEvents: 2,          // show at most 2 events; remainder becomes "+N more"
+    moreLinkClick: 'popover', // replaced in Step 6 with a custom modal handler
+    events: () =&gt; this.calendarEvents(),
+    eventClick: (arg) =&gt; this.onEventClick(arg),
+    eventClassNames: 'fc-task-event',
+}));</code></pre>
+
+    <div class="note">
+        <strong>Week view:</strong> Adding <code>dayGridWeek</code> to the <code>right</code> toolbar button group is
+        all that is needed for the week view. FullCalendar handles it automatically. The plan is designed so this is
+        already wired in from day one.
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ STEP 3 ══ -->
+<div class="step">
+    <h2>Step 3 — Build the component template</h2>
+    <p>
+        The template is minimal — it wraps the FullCalendar component and the overflow modal (Step 6).
+        The <code>[options]</code> binding is passed the computed signal value.
+    </p>
+
+    <h3><code>calendar-view.component.html</code></h3>
+    <pre><code>&lt;div class="calendar-container"
+     [class.--phone]="platformService.isPhone()"
+     [class.--tablet]="platformService.isTablet()"
+     [class.--laptop]="platformService.isLaptop()"
+     [class.--desktop]="platformService.isDesktop()"&gt;
+    &lt;full-calendar [options]="calendarOptions()"&gt;&lt;/full-calendar&gt;
+&lt;/div&gt;
+
+&lt;!-- Overflow modal (Step 6) --&gt;
+@if (overflowModalOpen()) {
+    &lt;app-calendar-overflow-modal
+        [tasks]="overflowTasks()"
+        (taskSelected)="onTaskSelected($event)"
+        (close)="overflowModalOpen.set(false)"&gt;
+    &lt;/app-calendar-overflow-modal&gt;
+}
+</code></pre>
+
+    <h3>Event click handler</h3>
+    <pre><code>onEventClick(arg: EventClickArg): void {
+    const task = arg.event.extendedProps['task'] as Task;
+    this.taskSelected.emit(task);
+}
+</code></pre>
+</div>
+
+<!-- ═══════════════════════════════════════════════ STEP 4 ══ -->
+<div class="step">
+    <h2>Step 4 — Style the calendar to match global design tokens <span class="badge badge-edit">SCSS</span></h2>
+    <p>
+        FullCalendar ships with its own stylesheet. We override its CSS custom properties and key selectors inside
+        <code>calendar-view.component.scss</code> using <code>::ng-deep</code> (scoped to <code>:host</code>) to match
+        the app's design tokens.
+    </p>
+
+    <h3>Key overrides in <code>calendar-view.component.scss</code></h3>
+    <pre><code>:host {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    /* FullCalendar CSS variable overrides */
+    --fc-border-color: var(--color-border, #E5E7EB);
+    --fc-today-bg-color: rgba(99, 102, 241, 0.08);  /* primary at 8% */
+    --fc-page-bg-color: var(--color-bg-primary);
+    --fc-neutral-bg-color: var(--color-bg-secondary);
+    --fc-button-bg-color: var(--color-primary);
+    --fc-button-border-color: var(--color-primary);
+    --fc-button-hover-bg-color: var(--color-primary-hover);
+    --fc-button-active-bg-color: var(--color-primary-active);
+    --fc-event-bg-color: var(--color-primary);
+    --fc-event-border-color: transparent;
+    --fc-event-text-color: #ffffff;
+    --fc-more-link-bg-color: transparent;
+    --fc-more-link-text-color: var(--color-primary);
+}
+
+:host ::ng-deep {
+
+    /* Toolbar title */
+    .fc-toolbar-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+    }
+
+    /* Day number cells */
+    .fc-daygrid-day-number {
+        font-size: 0.82rem;
+        color: var(--color-text-secondary);
+        padding: var(--space-1);
+    }
+
+    /* Today cell number */
+    .fc-day-today .fc-daygrid-day-number {
+        background: var(--color-primary);
+        color: #fff;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Event pill */
+    .fc-task-event {
+        border-radius: var(--radius-sm);
+        font-size: 0.76rem;
+        font-weight: 500;
+        padding: 1px 5px;
+        cursor: pointer;
+        transition: opacity 0.15s ease;
+
+        &:hover { opacity: 0.85; }
+    }
+
+    /* Completed task — muted appearance */
+    .fc-task-event.fc-event--completed {
+        background-color: var(--color-text-muted) !important;
+        border-color: transparent !important;
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    /* "+N more" overflow link */
+    .fc-more-link {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        padding: 0 var(--space-1);
+        cursor: pointer;
+
+        &:hover { text-decoration: underline; }
+    }
+
+    /* Header buttons */
+    .fc-button {
+        font-family: inherit;
+        font-size: 0.82rem;
+        border-radius: var(--radius-sm) !important;
+        box-shadow: none !important;
+    }
+
+    /* Remove default border from calendar */
+    .fc-scrollgrid { border: none !important; }
+    .fc-scrollgrid-section-header td { border: none !important; }
+}
+
+/* ── Responsive tweaks ─────────────────────────────────────── */
+
+.calendar-container.--phone {
+    padding: 0;
+
+    &::ng-deep .fc-toolbar-title { font-size: 0.95rem; }
+    &::ng-deep .fc-daygrid-day-number { font-size: 0.75rem; }
+    &::ng-deep .fc-task-event { font-size: 0.68rem; }
+}
+
+.calendar-container.--tablet {
+    padding: 0 var(--space-2);
+}
+</code></pre>
+</div>
+
+<!-- ═══════════════════════════════════════════════ STEP 5 ══ -->
+<div class="step">
+    <h2>Step 5 — Responsive <code>CalendarOptions</code> adjustments by platform</h2>
+    <p>
+        Beyond the SCSS tweaks, some FullCalendar options themselves need to differ by platform. These are already
+        captured in the <code>computed</code> signal from Step 2, but this step enumerates the exact values.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Option</th>
+                <th>Phone</th>
+                <th>Tablet</th>
+                <th>Laptop / Desktop</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>headerToolbar.left</code></td>
+                <td><code>'prev,next'</code></td>
+                <td><code>'prev,next today'</code></td>
+                <td><code>'prev,next today'</code></td>
+            </tr>
+            <tr>
+                <td><code>headerToolbar.right</code></td>
+                <td><code>'today'</code></td>
+                <td><code>'dayGridMonth,dayGridWeek'</code></td>
+                <td><code>'dayGridMonth,dayGridWeek'</code></td>
+            </tr>
+            <tr>
+                <td><code>dayMaxEvents</code></td>
+                <td><code>1</code></td>
+                <td><code>2</code></td>
+                <td><code>2</code></td>
+            </tr>
+            <tr>
+                <td><code>aspectRatio</code></td>
+                <td><em>unset (height: auto)</em></td>
+                <td><em>unset (height: auto)</em></td>
+                <td><code>1.5</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        All of these branch on <code>this.platformService.isPhone()</code> /
+        <code>this.platformService.isLaptop()</code> etc. inside the single <code>computed&lt;CalendarOptions&gt;</code>
+        signal, so the calendar re-configures automatically when the viewport crosses a breakpoint.
+    </p>
+</div>
+
+<!-- ═══════════════════════════════════════════════ STEP 6 ══ -->
+<div class="step">
+    <h2>Step 6 — Overflow modal: <code>CalendarOverflowModalComponent</code> <span class="badge badge-new">NEW FILE</span></h2>
+    <p>
+        When a user clicks <em>"+N others"</em> in a calendar cell, instead of FullCalendar's default popover we open
+        an app-native modal that lists all tasks for that date in a scrollable container. Clicking a task in the modal
+        emits <code>taskSelected</code> and closes the modal.
+    </p>
+
+    <h3>Wiring the custom more-link click</h3>
+    <p>
+        Override FullCalendar's <code>moreLinkClick</code> with a function callback in <code>CalendarOptions</code>:
+    </p>
+    <pre><code>moreLinkClick: (arg: MoreLinkClickArg) =&gt; {
+    this.overflowDate.set(arg.date);
+    this.overflowTasks.set(arg.allSegs.map(s =&gt; s.event.extendedProps['task'] as Task));
+    this.overflowModalOpen.set(true);
+    return 'stop'; // prevent FullCalendar default popover
+},</code></pre>
+
+    <h3>Signals in <code>CalendarViewComponent</code></h3>
+    <pre><code>overflowModalOpen = signal&lt;boolean&gt;(false);
+overflowDate     = signal&lt;Date | null&gt;(null);
+overflowTasks    = signal&lt;Task[]&gt;([]);</code></pre>
+
+    <h3>New component: <code>calendar-overflow-modal/</code></h3>
+    <p>Files to create:</p>
+    <ul>
+        <li><code>calendar-overflow-modal.component.ts</code></li>
+        <li><code>calendar-overflow-modal.component.html</code></li>
+        <li><code>calendar-overflow-modal.component.scss</code></li>
+    </ul>
+    <p>
+        The component accepts <code>tasks = input.required&lt;Task[]&gt;()</code> and
+        <code>date = input&lt;Date | null&gt;(null)</code>, emits <code>taskSelected = output&lt;Task&gt;()</code> and
+        <code>close = output&lt;void&gt;()</code>. It renders a centered modal overlay with:
+    </p>
+    <ul>
+        <li>A header showing the formatted date (e.g. <em>"May 10"</em>) and a close button (Lucide <code>X</code> icon).</li>
+        <li>A scrollable list of task rows — each row shows a checkbox-style completion dot and the task title.</li>
+        <li>Clicking a row emits <code>taskSelected</code> (with the <code>Task</code>) and <code>close</code>.</li>
+        <li>Clicking the backdrop also emits <code>close</code>.</li>
+        <li>Pressing <kbd>Escape</kbd> also emits <code>close</code> (keydown listener registered in constructor,
+            removed in <code>ngOnDestroy</code>).</li>
+    </ul>
+    <p>
+        Style the modal using <code>var(--color-bg-secondary)</code> for the card background,
+        <code>var(--radius-lg)</code> for border-radius, and <code>var(--space-4)</code> for padding — consistent with
+        the <code>task-details-panel</code> approach.
+    </p>
+
+    <div class="note">
+        The modal body content and its interactions are intentionally minimal at this stage. A future task can enrich
+        it (e.g. inline task completion toggles, add-task shortcut). See comment in the plan footer.
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ STEP 7 ══ -->
+<div class="step">
+    <h2>Step 7 — Register the calendar view in <code>LandingPageComponent</code> <span class="badge badge-edit">EDIT</span></h2>
+    <p>Four changes are needed in the landing page:</p>
+
+    <h3>7a. Uncomment the Calendar nav item</h3>
+    <p>
+        In <code>landing-page.component.ts</code>, the Calendar nav item is already written but commented out. Uncomment
+        it and wire <code>navItemRouteFn</code> to <code>this.currentView.set('calendar')</code>.
+        Import the <code>Calendar</code> icon from <code>lucide-angular</code> (already imported via
+        <code>LucideAngularModule</code>) and add it to the component's icon list.
+    </p>
+
+    <h3>7b. Import <code>CalendarViewComponent</code></h3>
+    <p>Add it to the <code>imports</code> array of <code>LandingPageComponent</code>.</p>
+
+    <h3>7c. Add the <code>'calendar'</code> case to the template switch</h3>
+    <pre><code>@case ('calendar') {
+    &lt;app-calendar-view
+        [searchQuery]="searchQuery()"
+        (taskSelected)="selectedTask.set($event)"&gt;
+    &lt;/app-calendar-view&gt;
+}
+</code></pre>
+
+    <h3>7d. No route change needed</h3>
+    <p>
+        Calendar is a view within the existing <code>/landing-page</code> route (same pattern as <em>My Day</em> and
+        <em>List View</em>). No changes to <code>app.routes.ts</code> are required.
+    </p>
+</div>
+
+<!-- ═══════════════════════════════════════════════ STEP 8 ══ -->
+<div class="step">
+    <h2>Step 8 — Import FullCalendar global stylesheet <span class="badge badge-edit">EDIT</span></h2>
+    <p>
+        FullCalendar's base CSS must be imported globally (not just component-scoped) for the plugin styles to load
+        correctly. Add the following import to the top of <code>frontend/src/styles.scss</code>:
+    </p>
+    <pre><code>@import '@fullcalendar/core/main.css';
+@import '@fullcalendar/daygrid/main.css';</code></pre>
+
+    <div class="note">
+        With FullCalendar v6, the package exposes CSS through the same entry points as the JS. If
+        <code>angular.json</code> is configured with <code>"stylePreprocessorOptions"</code> that strips vendor
+        prefixes, verify the import resolves correctly after the first build. An alternative is to add the paths to the
+        <code>"styles"</code> array in <code>angular.json</code> instead.
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ STEP 9 ══ -->
+<div class="step">
+    <h2>Step 9 — Verify and polish</h2>
+    <p>After the above steps, perform the following manual checks before considering the feature complete:</p>
+    <ul>
+        <li>
+            <strong>Month view renders correctly</strong> — navigate forward/back through months; tasks appear on their
+            due-date cells; completed tasks appear muted/strikethrough.
+        </li>
+        <li>
+            <strong>Week view toggling</strong> — clicking the <em>Week</em> button in the toolbar switches to
+            <code>dayGridWeek</code> and back to <code>dayGridMonth</code> correctly.
+        </li>
+        <li>
+            <strong>Event click → task-details panel</strong> — clicking a task event in any cell opens the
+            <code>TaskDetailsPanelComponent</code> slide-in panel with the correct task loaded.
+        </li>
+        <li>
+            <strong>Overflow link → modal</strong> — when a cell has more than <code>dayMaxEvents</code> tasks, the
+            "+N others" link opens the overflow modal listing all tasks for that date.
+        </li>
+        <li>
+            <strong>Responsive behaviour</strong>:
+            <ul>
+                <li>Phone (&lt;768 px): single-column header, <code>dayMaxEvents: 1</code>, small font sizes.</li>
+                <li>Tablet (768–1023 px): full toolbar with view switcher, <code>dayMaxEvents: 2</code>.</li>
+                <li>Laptop/Desktop (≥1024 px): toolbar with view switcher and <code>today</code> button,
+                    <code>dayMaxEvents: 2</code>, fixed aspect ratio.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Search filtering</strong> — typing in the global search bar updates the calendar to show only
+            matching tasks in real time (via the reactive <code>calendarEvents</code> computed signal).
+        </li>
+        <li>
+            <strong>Accessibility</strong> — verify FullCalendar's built-in keyboard navigation works (arrow keys move
+            between cells, <kbd>Enter</kbd> selects). The overflow modal traps focus within the dialog and closes on
+            <kbd>Escape</kbd>.
+        </li>
+        <li>
+            <strong>Global token alignment</strong> — compare the rendered calendar against the mockup
+            (<code>full-calendar-with-tasks-mockup.png</code>). Adjust the <code>::ng-deep</code> overrides from Step 4
+            until colors, typography, and spacing match.
+        </li>
+    </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SUMMARY ══ -->
+<hr />
+<h2>File summary</h2>
+<table>
+    <thead>
+        <tr><th>File</th><th>Action</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>components/calendar-view/calendar-view.component.ts</code></td>
+            <td>CREATE</td>
+            <td>Main calendar component with FullCalendar options, event mapping, click handlers</td>
+        </tr>
+        <tr>
+            <td><code>components/calendar-view/calendar-view.component.html</code></td>
+            <td>CREATE</td>
+            <td>Template wrapping <code>&lt;full-calendar&gt;</code> and the overflow modal</td>
+        </tr>
+        <tr>
+            <td><code>components/calendar-view/calendar-view.component.scss</code></td>
+            <td>CREATE</td>
+            <td>FullCalendar CSS overrides using global design tokens; responsive class modifiers</td>
+        </tr>
+        <tr>
+            <td><code>components/calendar-overflow-modal/calendar-overflow-modal.component.ts</code></td>
+            <td>CREATE</td>
+            <td>Overflow modal listing all tasks for a given date; emits <code>taskSelected</code></td>
+        </tr>
+        <tr>
+            <td><code>components/calendar-overflow-modal/calendar-overflow-modal.component.html</code></td>
+            <td>CREATE</td>
+            <td>Modal template: header with date + close button, scrollable task list</td>
+        </tr>
+        <tr>
+            <td><code>components/calendar-overflow-modal/calendar-overflow-modal.component.scss</code></td>
+            <td>CREATE</td>
+            <td>Modal overlay and card styles using global tokens</td>
+        </tr>
+        <tr>
+            <td><code>pages/landing-page/landing-page.component.ts</code></td>
+            <td>EDIT</td>
+            <td>Uncomment Calendar nav item; import <code>CalendarViewComponent</code></td>
+        </tr>
+        <tr>
+            <td><code>pages/landing-page/landing-page.component.html</code></td>
+            <td>EDIT</td>
+            <td>Add <code>@case ('calendar')</code> with <code>&lt;app-calendar-view&gt;</code></td>
+        </tr>
+        <tr>
+            <td><code>src/styles.scss</code></td>
+            <td>EDIT</td>
+            <td>Import FullCalendar base + daygrid CSS globally</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Future tasks (out of scope for this plan)</h2>
+<ul>
+    <li>Add inline task-completion toggle inside calendar event pills.</li>
+    <li>Enrich the overflow modal with completion toggles and a direct "add task on this date" shortcut.</li>
+    <li>Add drag-and-drop rescheduling of tasks between calendar cells (requires <code>@fullcalendar/interaction</code>
+        <code>editable: true</code> + backend <code>PATCH /tasks/{id}</code> with new <code>dueDate</code>).</li>
+    <li>Support an <em>Upcoming</em> agenda view (<code>@fullcalendar/list</code> plugin).</li>
+</ul>
+
+</body>
+</html>
