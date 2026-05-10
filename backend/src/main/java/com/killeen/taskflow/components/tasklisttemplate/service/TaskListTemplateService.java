@@ -68,6 +68,7 @@ public class TaskListTemplateService {
                 .createdAt(now)
                 .updatedAt(now)
                 .taskTemplates(List.of())
+                .generationTitle(request.getGenerationTitle())
                 .build();
 
         Long id = templateRepository.save(encryptionHelper.encrypt(plaintext));

@@ -192,7 +192,7 @@ export class NewTemplateModalComponent implements OnInit {
                     generationTitle: this.templateGenerationTitle() || null,
                     rrule,
                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    taskTemplates: this.templateTasks(),
+                    taskTemplates: this.templateTasks()
                 };
                 this.taskListTemplateStateService.updateTemplate(this.template()!.id, updateRequest);
             } else {
