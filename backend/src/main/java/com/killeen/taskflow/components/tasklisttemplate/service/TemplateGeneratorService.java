@@ -59,35 +59,37 @@ public class TemplateGeneratorService {
 
         Long listId = taskListRepository.save(taskListEncryptionHelper.encrypt(taskList));
 
-        for (TaskTemplate taskTemplate : template.getTaskTemplates()) {
-            LocalDate dueDate = taskTemplate.getDueDateOffset() != null
-                    ? today.plusDays(taskTemplate.getDueDateOffset())
-                    : null;
+        for (int i = 0; i < template.getTaskTemplates().size(); i++) {
+                TaskTemplate taskTemplate = template.getTaskTemplates().get(i);
+                LocalDate dueDate = taskTemplate.getDueDateOffset() != null
+                        ? today.plusDays(taskTemplate.getDueDateOffset())
+                        : null;
 
-            Task task = Task.builder()
-                    .userId(template.getUserId())
-                    .listId(listId)
-                    .title(taskTemplate.getTitle())
-                    .notes(taskTemplate.getNotes())
-                    .completed(false)
-                    .dueDate(dueDate)
-                    .subtasks(List.of())
-                    .createdAt(now)
-                    .updatedAt(now)
-                    .build();
-
-            Long taskId = taskRepository.save(taskEncryptionHelper.encryptTask(task));
-
-            for (SubtaskTemplate subtaskTemplate : taskTemplate.getSubtaskTemplates()) {
-                Subtask subtask = Subtask.builder()
-                        .taskId(taskId)
-                        .title(subtaskTemplate.getTitle())
+                Task task = Task.builder()
+                        .userId(template.getUserId())
+                        .listId(listId)
+                        .title(taskTemplate.getTitle())
+                        .notes(taskTemplate.getNotes())
                         .completed(false)
+                        .dueDate(dueDate)
+                        .subtasks(List.of())
+                        .position((long) i)
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                subtaskRepository.save(taskEncryptionHelper.encryptSubtask(subtask));
-            }
+
+                Long taskId = taskRepository.save(taskEncryptionHelper.encryptTask(task));
+
+                for (SubtaskTemplate subtaskTemplate : taskTemplate.getSubtaskTemplates()) {
+                        Subtask subtask = Subtask.builder()
+                                .taskId(taskId)
+                                .title(subtaskTemplate.getTitle())
+                                .completed(false)
+                                .createdAt(now)
+                                .updatedAt(now)
+                                .build();
+                        subtaskRepository.save(taskEncryptionHelper.encryptSubtask(subtask));
+                }
         }
 
         OffsetDateTime nextGenerate = rruleService.computeNextGenerate(
