@@ -26,6 +26,7 @@ export class TaskListViewComponent {
     searchQuery = input<string>('');
     defaultListId = input<number | null>(null);
     defaultDueDate = input<Date | null>(null);
+    dragAndDropEnabled = input<boolean>(false);
 
     taskSelected = output<Task>();
 

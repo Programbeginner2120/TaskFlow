@@ -38,6 +38,8 @@ export class TaskDetailsPanelComponent implements OnDestroy {
     readonly platformService = inject(PlatformService);
 
     task = input.required<Task | null>();
+
+    triggerTaskReload = output<number>();
     close = output<void>();
 
     newSubtaskTitle = signal<string>('');
@@ -122,8 +124,7 @@ export class TaskDetailsPanelComponent implements OnDestroy {
                 notes,
                 dueDate: dueDate ? toLocalDateString(dueDate) : null,
                 listId,
-                completed: t.completed,
-                position: t.position
+                completed: t.completed
             });
         }
     }
@@ -163,7 +164,10 @@ export class TaskDetailsPanelComponent implements OnDestroy {
         const title = this.newSubtaskTitle().trim();
         if (!t || !title) return;
         this.newSubtaskTitle.set('');
-        this.taskService.addSubtask(t.id, { title });
+        this.taskService.addSubtask(t.id, { title }).subscribe({
+                next: () => this.triggerTaskReload.emit(t.id),
+                error: console.error
+        });
     }
 
     onSubtaskKeydown(event: KeyboardEvent): void {
