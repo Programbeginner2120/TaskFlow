@@ -107,6 +107,7 @@
 
     <app-task-details-panel
         [task]="selectedTask()"
+        (triggerTaskReload)="selectedTask.set(fetchTaskById($event))"
         (close)="selectedTask.set(null)">
     </app-task-details-panel>
 
