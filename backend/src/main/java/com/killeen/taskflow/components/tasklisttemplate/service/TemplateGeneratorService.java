@@ -2,6 +2,7 @@ package com.killeen.taskflow.components.tasklisttemplate.service;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -46,11 +47,15 @@ public class TemplateGeneratorService {
         }
 
         OffsetDateTime now   = OffsetDateTime.now(ZoneOffset.UTC);
-        LocalDate      today = now.toLocalDate();
+        LocalDate      today = now.atZoneSameInstant(ZoneId.of(template.getTimezone())).toLocalDate();
+
+        String listName = (template.getGenerationTitle() != null && !template.getGenerationTitle().isBlank())
+                ? resolveGenerationTitle(template.getGenerationTitle(), today)
+                : template.getName();
 
         TaskList taskList = TaskList.builder()
                 .userId(template.getUserId())
-                .name(template.getName())
+                .name(listName)
                 .color(template.getColor())
                 .createdAt(now)
                 .updatedAt(now)
@@ -58,35 +63,37 @@ public class TemplateGeneratorService {
 
         Long listId = taskListRepository.save(taskListEncryptionHelper.encrypt(taskList));
 
-        for (TaskTemplate taskTemplate : template.getTaskTemplates()) {
-            LocalDate dueDate = taskTemplate.getDueDateOffset() != null
-                    ? today.plusDays(taskTemplate.getDueDateOffset())
-                    : null;
+        for (int i = 0; i < template.getTaskTemplates().size(); i++) {
+                TaskTemplate taskTemplate = template.getTaskTemplates().get(i);
+                LocalDate dueDate = taskTemplate.getDueDateOffset() != null
+                        ? today.plusDays(taskTemplate.getDueDateOffset())
+                        : null;
 
-            Task task = Task.builder()
-                    .userId(template.getUserId())
-                    .listId(listId)
-                    .title(taskTemplate.getTitle())
-                    .notes(taskTemplate.getNotes())
-                    .completed(false)
-                    .dueDate(dueDate)
-                    .subtasks(List.of())
-                    .createdAt(now)
-                    .updatedAt(now)
-                    .build();
-
-            Long taskId = taskRepository.save(taskEncryptionHelper.encryptTask(task));
-
-            for (SubtaskTemplate subtaskTemplate : taskTemplate.getSubtaskTemplates()) {
-                Subtask subtask = Subtask.builder()
-                        .taskId(taskId)
-                        .title(subtaskTemplate.getTitle())
+                Task task = Task.builder()
+                        .userId(template.getUserId())
+                        .listId(listId)
+                        .title(taskTemplate.getTitle())
+                        .notes(taskTemplate.getNotes())
                         .completed(false)
+                        .dueDate(dueDate)
+                        .subtasks(List.of())
+                        .position((long) i)
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                subtaskRepository.save(taskEncryptionHelper.encryptSubtask(subtask));
-            }
+
+                Long taskId = taskRepository.save(taskEncryptionHelper.encryptTask(task));
+
+                for (SubtaskTemplate subtaskTemplate : taskTemplate.getSubtaskTemplates()) {
+                        Subtask subtask = Subtask.builder()
+                                .taskId(taskId)
+                                .title(subtaskTemplate.getTitle())
+                                .completed(false)
+                                .createdAt(now)
+                                .updatedAt(now)
+                                .build();
+                        subtaskRepository.save(taskEncryptionHelper.encryptSubtask(subtask));
+                }
         }
 
         OffsetDateTime nextGenerate = rruleService.computeNextGenerate(
@@ -96,4 +103,13 @@ public class TemplateGeneratorService {
         log.info("Generated task list {} from template {} for user {}",
                 listId, template.getId(), template.getUserId());
     }
+
+        private String resolveGenerationTitle(String pattern, LocalDate date) {
+                if (pattern == null) return null;
+                String result = pattern;
+                result = result.replace("YYYY", String.format("%04d", date.getYear()));
+                result = result.replace("MM", String.format("%02d", date.getMonthValue()));
+                result = result.replace("DD", String.format("%02d", date.getDayOfMonth()));
+                return result;
+        }
 }

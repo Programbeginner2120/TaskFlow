@@ -12,6 +12,7 @@
     <result column="next_generate" jdbcType="TIMESTAMP" property="nextGenerate" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="generation_title" jdbcType="VARCHAR" property="generationTitle" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -73,7 +74,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, user_id, name, color, rrule, timezone, last_generated, next_generate, created_at, 
-    updated_at
+    updated_at, generation_title
   </sql>
   <select id="selectByExample" parameterType="com.killeen.taskflow.db.model.generated.TaskListTemplateDbExample" resultMap="BaseResultMap">
     select
@@ -108,12 +109,12 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.TaskListTemplateDb" useGeneratedKeys="true">
     insert into task_list_templates (user_id, name, color, 
       rrule, timezone, last_generated, 
-      next_generate, created_at, updated_at
-      )
+      next_generate, created_at, updated_at, 
+      generation_title)
     values (#{userId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR}, 
       #{rrule,jdbcType=VARCHAR}, #{timezone,jdbcType=VARCHAR}, #{lastGenerated,jdbcType=TIMESTAMP}, 
-      #{nextGenerate,jdbcType=TIMESTAMP}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
-      )
+      #{nextGenerate,jdbcType=TIMESTAMP}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{generationTitle,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.TaskListTemplateDb" useGeneratedKeys="true">
     insert into task_list_templates
@@ -145,6 +146,9 @@
       <if test="updatedAt != null">
         updated_at,
       </if>
+      <if test="generationTitle != null">
+        generation_title,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -173,6 +177,9 @@
       </if>
       <if test="updatedAt != null">
         #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="generationTitle != null">
+        #{generationTitle,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -215,6 +222,9 @@
       <if test="row.updatedAt != null">
         updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="row.generationTitle != null">
+        generation_title = #{row.generationTitle,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="example != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -231,7 +241,8 @@
       last_generated = #{row.lastGenerated,jdbcType=TIMESTAMP},
       next_generate = #{row.nextGenerate,jdbcType=TIMESTAMP},
       created_at = #{row.createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP}
+      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      generation_title = #{row.generationTitle,jdbcType=VARCHAR}
     <if test="example != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -266,6 +277,9 @@
       <if test="updatedAt != null">
         updated_at = #{updatedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="generationTitle != null">
+        generation_title = #{generationTitle,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -279,7 +293,8 @@
       last_generated = #{lastGenerated,jdbcType=TIMESTAMP},
       next_generate = #{nextGenerate,jdbcType=TIMESTAMP},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      generation_title = #{generationTitle,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

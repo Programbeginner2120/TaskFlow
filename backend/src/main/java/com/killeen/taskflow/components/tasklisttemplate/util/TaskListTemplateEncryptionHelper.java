@@ -1,4 +1,4 @@
-package com.killeen.taskflow.components.tasklisttemplate;
+package com.killeen.taskflow.components.tasklisttemplate.util;
 
 import org.springframework.stereotype.Component;
 
@@ -18,12 +18,14 @@ public class TaskListTemplateEncryptionHelper {
     public TaskListTemplate encrypt(TaskListTemplate template) {
         return template.toBuilder()
                 .name(encryptionService.encrypt(template.getName()))
+                .generationTitle(template.getGenerationTitle() == null ? null : encryptionService.encrypt(template.getGenerationTitle()))
                 .build();
     }
 
     public TaskListTemplate decrypt(TaskListTemplate template) {
         return template.toBuilder()
                 .name(encryptionService.decrypt(template.getName()))
+                .generationTitle(template.getGenerationTitle() == null ? null : encryptionService.decrypt(template.getGenerationTitle()))
                 .build();
     }
 

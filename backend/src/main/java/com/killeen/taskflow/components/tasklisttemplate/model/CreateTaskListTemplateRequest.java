@@ -26,6 +26,9 @@ public class CreateTaskListTemplateRequest {
     @Size(min = 1, max = 64)
     private String timezone;
 
+    @Size(max = 500)
+    private String generationTitle;
+
     @Valid
     private List<CreateTaskTemplateRequest> taskTemplates;
 }

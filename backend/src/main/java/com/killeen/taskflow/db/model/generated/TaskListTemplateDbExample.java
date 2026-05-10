@@ -744,6 +744,76 @@ public class TaskListTemplateDbExample {
             addCriterion("updated_at not between", value1, value2, "updatedAt");
             return (Criteria) this;
         }
+
+        public Criteria andGenerationTitleIsNull() {
+            addCriterion("generation_title is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleIsNotNull() {
+            addCriterion("generation_title is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleEqualTo(String value) {
+            addCriterion("generation_title =", value, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleNotEqualTo(String value) {
+            addCriterion("generation_title <>", value, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleGreaterThan(String value) {
+            addCriterion("generation_title >", value, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleGreaterThanOrEqualTo(String value) {
+            addCriterion("generation_title >=", value, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleLessThan(String value) {
+            addCriterion("generation_title <", value, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleLessThanOrEqualTo(String value) {
+            addCriterion("generation_title <=", value, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleLike(String value) {
+            addCriterion("generation_title like", value, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleNotLike(String value) {
+            addCriterion("generation_title not like", value, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleIn(List<String> values) {
+            addCriterion("generation_title in", values, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleNotIn(List<String> values) {
+            addCriterion("generation_title not in", values, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleBetween(String value1, String value2) {
+            addCriterion("generation_title between", value1, value2, "generationTitle");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenerationTitleNotBetween(String value1, String value2) {
+            addCriterion("generation_title not between", value1, value2, "generationTitle");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
