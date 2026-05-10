@@ -38,17 +38,9 @@ export class TaskListViewComponent {
         return this.tasks().filter(t => t.title.toLowerCase().includes(query));
     });
 
-    // readonly sortedTasks = computed(() => {
-    //     const tasks = this.filteredTasks();
-    //     return [
-    //         ...tasks.filter(t => !t.completed),
-    //         ...tasks.filter(t => t.completed),
-    //     ];
-    // });
-
     readonly sortedTasks = linkedSignal({
         source: () => this.filteredTasks(),
-        computation: () => this.filteredTasks()
+        computation: () => this.filteredTasks().sort((a, b) => a.position - b.position)
     });
 
     readonly incompleteCount = computed(() =>
@@ -108,10 +100,22 @@ export class TaskListViewComponent {
     }
 
     drop(event: CdkDragDrop<Task[]>) {
-        moveItemInArray(
-            this.sortedTasks(),
-            event.previousIndex,
-            event.currentIndex
-        );
+        if (event.previousIndex === event.currentIndex) {
+            return;
+        }
+
+        const tasks = this.sortedTasks();
+        const task = tasks[event.previousIndex];
+
+        moveItemInArray(tasks, event.previousIndex, event.currentIndex);
+
+        this.taskService.updateTask(task.id, {
+            title: task.title,
+            notes: task.notes,
+            dueDate: task.dueDate ? toLocalDateString(task.dueDate) : null,
+            listId: task.listId,
+            completed: task.completed,
+            position: event.currentIndex
+        });
     }
 }

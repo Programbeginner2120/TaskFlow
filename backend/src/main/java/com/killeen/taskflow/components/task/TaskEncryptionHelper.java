@@ -28,6 +28,7 @@ public class TaskEncryptionHelper {
                 .subtasks(task.getSubtasks().stream()
                         .map(this::decryptSubtask)
                         .toList())
+                .position(task.getPosition())
                 .build();
     }
 

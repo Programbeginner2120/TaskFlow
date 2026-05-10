@@ -107,7 +107,7 @@ public class TaskService {
                                         .filter(t -> t.getPosition() > oldPos && t.getPosition() <= newPos)
                                         .forEach(t -> {
                                                 t.setPosition(t.getPosition() - 1);
-                                                taskRepository.update(encryptionHelper.encryptTask(t));
+                                                taskRepository.update(t);
                                         });
                         }
                         // We have to shift elements in range [newPos, oldPos) +1
@@ -117,11 +117,11 @@ public class TaskService {
                                         .filter(t -> t.getPosition() >= newPos && t.getPosition() < oldPos)
                                         .forEach(t -> {
                                                 t.setPosition(t.getPosition() + 1);
-                                                taskRepository.update(encryptionHelper.encryptTask(t));
+                                                taskRepository.update(t);
                                         });
                         }
 
-                        existing.setPosition(taskId);
+                        existing.setPosition(newPos);
         }
 
         existing.setTitle(request.getTitle());
