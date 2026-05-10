@@ -3,6 +3,9 @@ import { Router } from "@angular/router";
 import { InputComponent } from "../../../shared/components/input/input.component";
 import { ButtonComponent } from "../../../shared/components/button/button.component";
 import { AuthService } from "../../../services/auth.service";
+import { TaskStateService } from "../../../services/task-state.service";
+import { TaskListStateService } from "../../../services/task-list-state.service";
+import { TaskListTemplateStateService } from "../../../services/task-list-template-state.service";
 
 @Component({
     selector: 'app-login',
@@ -15,6 +18,9 @@ export class LoginComponent {
 
     private readonly authService = inject(AuthService);
     private readonly router = inject(Router);
+    private readonly taskStateService = inject(TaskStateService);
+    private readonly taskListStateService = inject(TaskListStateService);
+    private readonly taskListTemplateStateService = inject(TaskListTemplateStateService);
 
     navigateToRegister = output<void>();
     navigateToForgotPassword = output<void>();
@@ -42,6 +48,9 @@ export class LoginComponent {
                     next: () => {
                         this.isLoading.set(false);
                         this.router.navigate(['/landing-page']);
+                        this.taskStateService.loadAll();
+                        this.taskListStateService.loadAll();
+                        this.taskListTemplateStateService.loadAll();
                     }
                 });
             },
