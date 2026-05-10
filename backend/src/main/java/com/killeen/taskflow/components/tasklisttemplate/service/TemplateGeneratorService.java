@@ -2,6 +2,7 @@ package com.killeen.taskflow.components.tasklisttemplate.service;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class TemplateGeneratorService {
         }
 
         OffsetDateTime now   = OffsetDateTime.now(ZoneOffset.UTC);
-        LocalDate      today = now.toLocalDate();
+        LocalDate      today = now.atZoneSameInstant(ZoneId.of(template.getTimezone())).toLocalDate();
 
         TaskList taskList = TaskList.builder()
                 .userId(template.getUserId())

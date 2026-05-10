@@ -1,4 +1,4 @@
-package com.killeen.taskflow.components.tasklisttemplate;
+package com.killeen.taskflow.components.tasklisttemplate.util;
 
 import org.springframework.stereotype.Component;
 
