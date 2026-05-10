@@ -41,6 +41,12 @@ export class TaskStateService {
         ).subscribe({ error: console.error });
     }
 
+    moveTask(taskId: number, body: TaskRequestBody): void {
+        this.taskService.updateTask(taskId, body).pipe(
+            tap(() => this.loadAll().subscribe({ error: console.error }))
+        ).subscribe({ error: console.error });
+    }
+
     deleteTask(taskId: number): void {
         this.taskService.deleteTask(taskId).pipe(
             tap(() => this._tasks.update(ts => ts.filter(t => t.id !== taskId)))

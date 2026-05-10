@@ -109,7 +109,7 @@ export class TaskListViewComponent {
 
         moveItemInArray(tasks, event.previousIndex, event.currentIndex);
 
-        this.taskService.updateTask(task.id, {
+        this.taskService.moveTask(task.id, {
             title: task.title,
             notes: task.notes,
             dueDate: task.dueDate ? toLocalDateString(task.dueDate) : null,
