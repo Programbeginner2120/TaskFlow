@@ -1,0 +1,137 @@
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 60;
+}
+
+.modal-card {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-modal);
+    width: min(480px, calc(100% - 32px));
+    max-height: 70vh;
+    z-index: 61;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ── Header ── */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-4) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    padding: var(--space-1);
+    cursor: pointer;
+    color: var(--color-text-muted);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+        background: var(--color-bg-primary);
+        color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+}
+
+/* ── Body ── */
+.modal-body {
+    padding: var(--space-3) var(--space-4);
+    overflow-y: auto;
+    flex: 1;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    padding: var(--space-6) 0;
+}
+
+/* ── Task list ── */
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.task-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-2) var(--space-2);
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: left;
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+        background: var(--color-bg-primary);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+}
+
+.task-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    flex-shrink: 0;
+    transition: background-color 0.15s ease;
+
+    &.--completed {
+        background: var(--color-text-muted);
+    }
+}
+
+.task-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.--completed {
+        text-decoration: line-through;
+        color: var(--color-text-muted);
+    }
+}

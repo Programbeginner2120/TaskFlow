@@ -86,6 +86,12 @@
                         (taskSelected)="selectedTask.set($any($event))">
                     </app-my-day>
                 }
+                @case ('calendar') {
+                    <app-calendar-view
+                        [searchQuery]="searchQuery()"
+                        (taskSelected)="selectedTask.set($event)">
+                    </app-calendar-view>
+                }
                 @case ('list') {
                     @if (selectedListId(); as listId) {
                         <app-list-view

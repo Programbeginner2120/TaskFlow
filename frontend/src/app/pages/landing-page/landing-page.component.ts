@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from "@angular/core";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
-import { Sun, LucideAngularModule, Plus, Ellipsis } from "lucide-angular";
+import { Sun, Calendar, LucideAngularModule, Plus, Ellipsis } from "lucide-angular";
 import { Task, TaskListTemplate } from "../../interfaces/task.interface";
 import { TaskListStateService } from '../../services/task-list-state.service';
 import { LandingPageHeaderComponent } from "../../components/headers/landing-page-header/landing-page-header.component";
 import { TaskDetailsPanelComponent } from "../../components/task-details-panel/task-details-panel.component";
 import { MyDayComponent } from "../../components/my-day/my-day.component";
 import { ListViewComponent } from "../../components/list-view/list-view.component";
+import { CalendarViewComponent } from "../../components/calendar-view/calendar-view.component";
 import { AutoFocusDirective } from "../../shared/directives/auto-focus.directive";
 import { NewTemplateModalComponent } from "../../components/new-template-modal/new-template-modal.component";
 import { TaskListTemplateStateService } from "../../services/task-list-template-state.service";
@@ -20,7 +21,7 @@ export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
     selector: 'app-landing-page',
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.scss'],
-    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, AutoFocusDirective, NewTemplateModalComponent],
+    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, CalendarViewComponent, AutoFocusDirective, NewTemplateModalComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingPageComponent {
@@ -53,11 +54,11 @@ export class LandingPageComponent {
         //     navItemIcon: Clock,
         //     navItemRouteFn: () => this.currentView.set('upcoming')
         // },
-        // {
-        //     navItemLabel: 'Calendar',
-        //     navItemIcon: Calendar,
-        //     navItemRouteFn: () => this.currentView.set('calendar')
-        // }
+        {
+            navItemLabel: 'Calendar',
+            navItemIcon: Calendar,
+            navItemRouteFn: () => this.currentView.set('calendar')
+        }
     ]);
 
     readonly sidebarComponent = viewChild.required<SidebarComponent>('sidebar');

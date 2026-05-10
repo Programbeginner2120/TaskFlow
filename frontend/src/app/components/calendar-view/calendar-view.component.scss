@@ -1,0 +1,146 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+/* ── FullCalendar CSS variable overrides ───────────────────────────────────── */
+:host ::ng-deep {
+    --fc-border-color: var(--color-border);
+    --fc-today-bg-color: rgba(99, 102, 241, 0.08);
+    --fc-page-bg-color: var(--color-bg-primary);
+    --fc-neutral-bg-color: var(--color-bg-secondary);
+    --fc-button-bg-color: var(--color-primary);
+    --fc-button-border-color: var(--color-primary);
+    --fc-button-hover-bg-color: var(--color-primary-hover);
+    --fc-button-active-bg-color: var(--color-primary-active);
+    --fc-event-bg-color: var(--color-primary);
+    --fc-event-border-color: transparent;
+    --fc-event-text-color: #ffffff;
+
+    /* ── Toolbar ─────────────────────────────────────────────────── */
+    .fc-toolbar-title {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+    }
+
+    .fc-button {
+        font-family: inherit;
+        font-size: 0.82rem;
+        border-radius: var(--radius-sm) !important;
+        box-shadow: none !important;
+    }
+
+    .fc-button-primary:not(:disabled):active,
+    .fc-button-primary.fc-button-active {
+        background-color: var(--color-primary-active) !important;
+        border-color: var(--color-primary-active) !important;
+    }
+
+    /* ── Day cells ───────────────────────────────────────────────── */
+    .fc-daygrid-day-number {
+        font-size: 0.82rem;
+        color: var(--color-text-secondary);
+        padding: var(--space-1);
+        text-decoration: none;
+    }
+
+    .fc-col-header-cell-cushion {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        text-decoration: none;
+    }
+
+    /* "Today" day number — circle badge */
+    .fc-day-today .fc-daygrid-day-number {
+        background: var(--color-primary);
+        color: #fff;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+    /* Remove stray bg that FullCalendar adds on today cell header */
+    .fc-day-today {
+        background-color: var(--fc-today-bg-color) !important;
+    }
+
+    /* ── Event pills ─────────────────────────────────────────────── */
+    .fc-task-event {
+        border-radius: var(--radius-sm);
+        font-size: 0.76rem;
+        font-weight: 500;
+        padding: 1px 5px;
+        cursor: pointer;
+        transition: opacity 0.15s ease;
+        border: none;
+
+        &:hover {
+            opacity: 0.85;
+        }
+
+        .fc-event-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    /* Completed tasks — muted with strikethrough */
+    .fc-task-event.fc-event--completed {
+        background-color: var(--color-text-muted) !important;
+        border-color: transparent !important;
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    /* ── "+N more" overflow link ─────────────────────────────────── */
+    .fc-more-link {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        padding: 0 var(--space-1);
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    /* ── Grid lines ──────────────────────────────────────────────── */
+    .fc-scrollgrid {
+        border: none !important;
+    }
+
+    .fc-scrollgrid-section-header td {
+        border-bottom: 1px solid var(--color-border) !important;
+    }
+}
+
+/* ── Responsive modifiers ──────────────────────────────────────────────────── */
+
+.calendar-container.--phone {
+    padding: 0;
+
+    ::ng-deep .fc-toolbar-title {
+        font-size: 0.92rem;
+    }
+
+    ::ng-deep .fc-daygrid-day-number {
+        font-size: 0.72rem;
+    }
+
+    ::ng-deep .fc-task-event {
+        font-size: 0.66rem;
+    }
+}
+
+.calendar-container.--tablet {
+    padding: 0 var(--space-2);
+}
