@@ -23,6 +23,8 @@ public class TaskListTemplateDb {
 
     private OffsetDateTime updatedAt;
 
+    private String generationTitle;
+
     public Long getId() {
         return id;
     }
@@ -101,5 +103,13 @@ public class TaskListTemplateDb {
 
     public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getGenerationTitle() {
+        return generationTitle;
+    }
+
+    public void setGenerationTitle(String generationTitle) {
+        this.generationTitle = generationTitle == null ? null : generationTitle.trim();
     }
 }

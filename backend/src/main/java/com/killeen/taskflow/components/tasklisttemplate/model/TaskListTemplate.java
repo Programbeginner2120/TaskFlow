@@ -16,6 +16,7 @@ public class TaskListTemplate {
     private Long               id;
     private Long               userId;
     private String             name;
+    private String             generationTitle;
     private String             color;
     private String             rrule;
     private String             timezone;
