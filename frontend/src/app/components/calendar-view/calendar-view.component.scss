@@ -18,23 +18,25 @@
     --fc-event-text-color: #ffffff;
 
     /* ── Toolbar ─────────────────────────────────────────────────── */
+    .fc-header-toolbar {
+        margin-left: 2.5%;
+        margin-right: 2.5%;
+
+        .fc-button-group {
+            gap: 4px;
+        }
+    }
+
     .fc-toolbar-title {
         font-size: 1.05rem;
         font-weight: 600;
         color: var(--color-text-primary);
+        text-align: center;
     }
 
     .fc-button {
         font-family: inherit;
         font-size: 0.82rem;
-        border-radius: var(--radius-sm) !important;
-        box-shadow: none !important;
-    }
-
-    .fc-button-primary:not(:disabled):active,
-    .fc-button-primary.fc-button-active {
-        background-color: var(--color-primary-active) !important;
-        border-color: var(--color-primary-active) !important;
     }
 
     /* ── Day cells ───────────────────────────────────────────────── */
@@ -43,6 +45,12 @@
         color: var(--color-text-secondary);
         padding: var(--space-1);
         text-decoration: none;
+    }
+
+    .fc-daygrid-day-events {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
     }
 
     .fc-col-header-cell-cushion {
@@ -63,11 +71,6 @@
         align-items: center;
         justify-content: center;
         padding: 0;
-    }
-
-    /* Remove stray bg that FullCalendar adds on today cell header */
-    .fc-day-today {
-        background-color: var(--fc-today-bg-color) !important;
     }
 
     /* ── Event pills ─────────────────────────────────────────────── */
@@ -93,10 +96,13 @@
 
     /* Completed tasks — muted with strikethrough */
     .fc-task-event.fc-event--completed {
-        background-color: var(--color-text-muted) !important;
-        border-color: transparent !important;
-        text-decoration: line-through;
+        background-color: var(--color-text-muted);
+        border-color: transparent;
         opacity: 0.6;
+
+        .fc-event-title {
+            text-decoration: line-through;
+        }
     }
 
     /* ── "+N more" overflow link ─────────────────────────────────── */
@@ -112,15 +118,6 @@
             text-decoration: underline;
         }
     }
-
-    /* ── Grid lines ──────────────────────────────────────────────── */
-    .fc-scrollgrid {
-        border: none !important;
-    }
-
-    .fc-scrollgrid-section-header td {
-        border-bottom: 1px solid var(--color-border) !important;
-    }
 }
 
 /* ── Responsive modifiers ──────────────────────────────────────────────────── */
@@ -130,6 +127,11 @@
 
     ::ng-deep .fc-toolbar-title {
         font-size: 0.92rem;
+    }
+
+    ::ng-deep .fc-header-toolbar {
+        margin-left: 7.5%;
+        margin-right: 7.5%;
     }
 
     ::ng-deep .fc-daygrid-day-number {

@@ -62,9 +62,9 @@ export class CalendarViewComponent {
             plugins: [dayGridPlugin, interactionPlugin],
             initialView: 'dayGridMonth',
             headerToolbar: {
-                left: isPhone ? 'prev,next' : 'prev,next today',
+                left: 'prev,next',
                 center: 'title',
-                right: isPhone ? 'today' : 'dayGridMonth,dayGridWeek',
+                right: 'dayGridMonth,dayGridWeek',
             },
             height: 'auto',
             dayMaxEvents: isPhone ? 1 : 2,
