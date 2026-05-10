@@ -124,8 +124,7 @@ export class TaskDetailsPanelComponent implements OnDestroy {
                 notes,
                 dueDate: dueDate ? toLocalDateString(dueDate) : null,
                 listId,
-                completed: t.completed,
-                position: t.position
+                completed: t.completed
             });
         }
     }

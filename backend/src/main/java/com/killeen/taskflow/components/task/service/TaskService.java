@@ -84,10 +84,29 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(
                         env.getProperty("task.not.found")));
 
-        if (request.getListId() != null && !request.getListId().equals(existing.getListId())) {
-            taskListRepository.findByIdAndUserId(request.getListId(), userId)
-                    .orElseThrow(() -> new TaskListNotFoundException(
-                            env.getProperty("task.list.not.found")));
+        // Specific case where we are either adding a task with no list to a new list or moving a task from one list to another
+        if (request.getPosition() == null && request.getListId() != null 
+                && !request.getListId().equals(existing.getListId())) {
+                taskListRepository.findByIdAndUserId(request.getListId(), userId)
+                        .orElseThrow(() -> new TaskListNotFoundException(
+                                env.getProperty("task.list.not.found")));
+
+                // Need to decrement position where > oldPos
+                if (existing.getListId() != null) {
+                        long oldPos = existing.getPosition();
+                        taskRepository.findByTaskListId(existing.getListId())
+                                .orElse(List.of())
+                                .stream()
+                                .filter(t -> !t.getId().equals(taskId))
+                                .filter(t -> t.getPosition() > oldPos)
+                                .forEach(t -> {
+                                        t.setPosition(t.getPosition() - 1);
+                                        taskRepository.update(t);
+                                });
+                }
+
+                long newPos = taskRepository.findByTaskListId(request.getListId()).orElse(List.of()).size();
+                existing.setPosition(newPos);
         }
 
         if (request.getPosition() != null && existing.getListId() != null
