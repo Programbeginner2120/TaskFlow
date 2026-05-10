@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { Task, TaskRequestBody } from '../interfaces/task.interface';
+import { SubtaskApiResponse, Task, TaskRequestBody } from '../interfaces/task.interface';
 import { toTask, toSubtask } from '../mappers/task.mapper';
 import { TaskService } from './task.service';
 
@@ -53,8 +53,9 @@ export class TaskStateService {
         ).subscribe({ error: console.error });
     }
 
-    addSubtask(taskId: number, body: { title: string }): void {
-        this.taskService.createSubtask(taskId, body).pipe(
+    // Returning observable here as we need to time the subscribe to reload subtasks
+    addSubtask(taskId: number, body: { title: string }): Observable<SubtaskApiResponse> {
+        return this.taskService.createSubtask(taskId, body).pipe(
             tap(raw => {
                 const subtask = toSubtask(raw);
                 this._tasks.update(ts =>
@@ -65,7 +66,7 @@ export class TaskStateService {
                     )
                 );
             })
-        ).subscribe({ error: console.error });
+        );
     }
 
     updateSubtask(taskId: number, subtaskId: number, body: { title: string; completed: boolean }): void {

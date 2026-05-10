@@ -11,6 +11,8 @@ import { ListViewComponent } from "../../components/list-view/list-view.componen
 import { AutoFocusDirective } from "../../shared/directives/auto-focus.directive";
 import { NewTemplateModalComponent } from "../../components/new-template-modal/new-template-modal.component";
 import { TaskListTemplateStateService } from "../../services/task-list-template-state.service";
+import { R } from "@angular/cdk/keycodes";
+import { TaskStateService } from "../../services/task-state.service";
 
 export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
 
@@ -23,9 +25,12 @@ export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
 })
 export class LandingPageComponent {
 
+    private readonly taskService = inject(TaskStateService);
     private readonly taskListService = inject(TaskListStateService);
     private readonly taskListTemplateStateService = inject(TaskListTemplateStateService);
+    
 
+    readonly tasks = this.taskService.tasks;
     readonly lists = this.taskListService.lists;
     readonly templates = this.taskListTemplateStateService.templates;
 
@@ -94,5 +99,9 @@ export class LandingPageComponent {
     editTemplate(template: TaskListTemplate): void {
         this.selectedTemplate.set(template);
         this.addingTemplate.set(true);
+    }
+
+    fetchTaskById(id: number) {
+        return this.tasks().filter(t => t.id === id).pop() ?? null;
     }
 }
