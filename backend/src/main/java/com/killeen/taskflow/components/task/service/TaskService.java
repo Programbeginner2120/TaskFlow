@@ -47,10 +47,14 @@ public class TaskService {
     }
 
     public Task createTask(Long userId, CreateTaskRequest request) {
+        Long taskPosition = null;
         if (request.getListId() != null) {
-            taskListRepository.findByIdAndUserId(request.getListId(), userId)
-                    .orElseThrow(() -> new TaskListNotFoundException(
-                            env.getProperty("task.list.not.found")));
+                taskListRepository.findByIdAndUserId(request.getListId(), userId)
+                        .orElseThrow(() -> new TaskListNotFoundException(
+                                env.getProperty("task.list.not.found")));
+
+                taskPosition = (long) taskRepository.findByTaskListId(request.getListId())
+                        .orElse(List.of()).size();
         }
 
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
@@ -62,6 +66,7 @@ public class TaskService {
                 .completed(false)
                 .dueDate(request.getDueDate())
                 .subtasks(List.of())
+                .position(taskPosition)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
@@ -85,6 +90,40 @@ public class TaskService {
                             env.getProperty("task.list.not.found")));
         }
 
+        if (request.getPosition() != null && existing.getListId() != null
+                && existing.getPosition() != null
+                && !request.getPosition().equals(existing.getPosition())) {
+
+                        long oldPos = existing.getPosition();
+                        long newPos = Math.max(0, request.getPosition());
+
+                        List<Task> siblings = taskRepository.findByTaskListId(existing.getListId())
+                                .orElse(List.of());
+
+                        // We have to shift elements in range (oldPos, newPos] -1
+                        if (oldPos < newPos) {
+                                siblings.stream()
+                                        .filter(t -> !t.getId().equals(taskId))
+                                        .filter(t -> t.getPosition() > oldPos && t.getPosition() <= newPos)
+                                        .forEach(t -> {
+                                                t.setPosition(t.getPosition() - 1);
+                                                taskRepository.update(t);
+                                        });
+                        }
+                        // We have to shift elements in range [newPos, oldPos) +1
+                        else {
+                                siblings.stream()
+                                        .filter(t -> !t.getId().equals(taskId))
+                                        .filter(t -> t.getPosition() >= newPos && t.getPosition() < oldPos)
+                                        .forEach(t -> {
+                                                t.setPosition(t.getPosition() + 1);
+                                                taskRepository.update(t);
+                                        });
+                        }
+
+                        existing.setPosition(newPos);
+        }
+
         existing.setTitle(request.getTitle());
         existing.setNotes(request.getNotes());
         existing.setDueDate(request.getDueDate());
@@ -98,9 +137,22 @@ public class TaskService {
     }
 
     public void deleteTask(Long userId, Long taskId) {
-        taskRepository.findByIdAndUserId(taskId, userId)
+        Task existing = taskRepository.findByIdAndUserId(taskId, userId)
                 .orElseThrow(() -> new TaskNotFoundException(
                         env.getProperty("task.not.found")));
+
+        // If the task is a part of a list, decrement the positions of all tasks that come after it
+        if (existing.getListId() != null) {
+                taskRepository.findByTaskListId(existing.getListId())
+                        .orElse(List.of())
+                        .stream()
+                        .filter(t -> !t.getId().equals(existing.getId()))
+                        .filter(t -> t.getPosition() > existing.getPosition())
+                        .forEach(t -> {
+                                t.setPosition(t.getPosition() - 1);
+                                taskRepository.update(encryptionHelper.encryptTask(t));
+                        });
+        }
 
         taskRepository.deleteById(taskId);
         log.info("Deleted task {} for user {}", taskId, userId);

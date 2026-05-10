@@ -1,15 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
 import { LucideAngularModule, Circle, CheckCircle2, ChevronRight } from 'lucide-angular';
 import { Task, TaskList } from '../../interfaces/task.interface';
 import { TaskStateService } from '../../services/task-state.service';
 import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
 import { toLocalDateString, formatDisplayDate } from '../../utils/date.utils';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-task-list-view',
     templateUrl: './task-list-view.component.html',
     styleUrls: ['./task-list-view.component.scss'],
-    imports: [LucideAngularModule, DatepickerComponent],
+    imports: [LucideAngularModule, DatepickerComponent, DragDropModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskListViewComponent {
@@ -19,7 +20,7 @@ export class TaskListViewComponent {
 
     private readonly taskService = inject(TaskStateService);
 
-    title = input.required<string>();
+    componentTitle = input.required<string>();
     tasks = input.required<Task[]>();
     lists = input.required<TaskList[]>();
     searchQuery = input<string>('');
@@ -37,12 +38,9 @@ export class TaskListViewComponent {
         return this.tasks().filter(t => t.title.toLowerCase().includes(query));
     });
 
-    readonly sortedTasks = computed(() => {
-        const tasks = this.filteredTasks();
-        return [
-            ...tasks.filter(t => !t.completed),
-            ...tasks.filter(t => t.completed),
-        ];
+    readonly sortedTasks = linkedSignal({
+        source: () => this.filteredTasks(),
+        computation: () => this.filteredTasks().sort((a, b) => a.position - b.position)
     });
 
     readonly incompleteCount = computed(() =>
@@ -73,6 +71,7 @@ export class TaskListViewComponent {
             dueDate: task.dueDate ? toLocalDateString(task.dueDate) : null,
             listId: task.listId,
             completed: !task.completed,
+            position: task.position
         });
     }
 
@@ -98,5 +97,25 @@ export class TaskListViewComponent {
             event.preventDefault();
             this.addTask();
         }
+    }
+
+    drop(event: CdkDragDrop<Task[]>) {
+        if (event.previousIndex === event.currentIndex) {
+            return;
+        }
+
+        const tasks = this.sortedTasks();
+        const task = tasks[event.previousIndex];
+
+        moveItemInArray(tasks, event.previousIndex, event.currentIndex);
+
+        this.taskService.moveTask(task.id, {
+            title: task.title,
+            notes: task.notes,
+            dueDate: task.dueDate ? toLocalDateString(task.dueDate) : null,
+            listId: task.listId,
+            completed: task.completed,
+            position: event.currentIndex
+        });
     }
 }

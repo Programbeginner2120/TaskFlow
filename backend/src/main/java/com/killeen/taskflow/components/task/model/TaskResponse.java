@@ -22,6 +22,7 @@ public class TaskResponse {
     private boolean               completed;
     private LocalDate             dueDate;
     private List<SubtaskResponse> subtasks;
+    private Long                  position;
     private OffsetDateTime        createdAt;
     private OffsetDateTime        updatedAt;
 }
