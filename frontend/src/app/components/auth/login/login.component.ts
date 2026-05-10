@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from "@angular/core";
 import { Router } from "@angular/router";
+import { forkJoin } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { InputComponent } from "../../../shared/components/input/input.component";
 import { ButtonComponent } from "../../../shared/components/button/button.component";
 import { AuthService } from "../../../services/auth.service";
@@ -42,23 +44,24 @@ export class LoginComponent {
 
     handleLogin(): void {
         this.isLoading.set(true);
-        this.authService.login({ email: this.email(), password: this.password() }).subscribe({
+        this.errorMessage.set(undefined);
+        this.authService.login({ email: this.email(), password: this.password() }).pipe(
+            switchMap(() => this.authService.loadCurrentUser()),
+            switchMap(() => forkJoin([
+                this.taskStateService.loadAll(),
+                this.taskListStateService.loadAll(),
+                this.taskListTemplateStateService.loadAll()
+            ]))
+        ).subscribe({
             next: () => {
-                this.authService.loadCurrentUser().subscribe({
-                    next: () => {
-                        this.isLoading.set(false);
-                        this.router.navigate(['/landing-page']);
-                        this.taskStateService.loadAll();
-                        this.taskListStateService.loadAll();
-                        this.taskListTemplateStateService.loadAll();
-                    }
-                });
+                this.isLoading.set(false);
+                this.router.navigate(['/landing-page']);
             },
             error: (err) => {
                 this.isLoading.set(false);
-                if (err.status === 403) {
+                if (err?.status === 403 || err?.message === 'EMAIL_NOT_VERIFIED') {
                     this.errorMessage.set(`We sent an email to ${this.email()}. Click on the link in the email to activate your account.`)
-                } else if (err.status === 401) {
+                } else if (err?.status === 401) {
                     this.errorMessage.set('Invalid email or password.');
                 } else {
                     this.errorMessage.set('An error occurred. Please try again.');
