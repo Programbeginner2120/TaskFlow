@@ -30,6 +30,7 @@ export class NewTemplateModalComponent implements OnInit {
 
     // Internal signals
     readonly templateName = signal<string>('');
+    readonly templateGenerationTitle = signal<string>('');
     readonly templateColor = signal<TaskListTemplateColor>(TaskListTemplateColor.BLUE);
     readonly templateTasks = signal<CreateTaskTemplateRequest[]>([{ title: '', notes: '', dueDateOffset: null, subtaskTemplates: [] }]);
     readonly templateScheduleType = signal<TaskListTemplateSchedule>(TaskListTemplateSchedule.RECURRING);
@@ -94,6 +95,16 @@ export class NewTemplateModalComponent implements OnInit {
 
     readonly templateOneTimeDatepicker = viewChild<DatepickerComponent>('templateOneTimeDatepicker');
 
+    readonly generationTitlePreview = computed<string>(() => {
+        const title = this.templateGenerationTitle().trim();
+        if (!title) return '';
+        const today = new Date();
+        return title
+            .replace('YYYY', String(today.getFullYear()).padStart(4, '0'))
+            .replace('MM',   String(today.getMonth() + 1).padStart(2, '0'))
+            .replace('DD',   String(today.getDate()).padStart(2, '0'));
+    });
+
     // Lucide Icons
     readonly trash = Trash;
     readonly plus = Plus;
@@ -107,6 +118,7 @@ export class NewTemplateModalComponent implements OnInit {
         if (!t) return; // create mode — defaults already set in signal declarations
 
         this.templateName.set(t.name);
+        if (t.generationTitle) this.templateGenerationTitle.set(t.generationTitle);
         this.templateColor.set(t.color as TaskListTemplateColor);
         this.templateTasks.set(
             t.taskTemplates.map(tt => ({
@@ -177,6 +189,7 @@ export class NewTemplateModalComponent implements OnInit {
                 const updateRequest: UpdateTaskListTemplateRequest = {
                     name: this.templateName(),
                     color: this.templateColor(),
+                    generationTitle: this.templateGenerationTitle() || null,
                     rrule,
                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     taskTemplates: this.templateTasks(),
@@ -186,6 +199,7 @@ export class NewTemplateModalComponent implements OnInit {
                 const createRequest: CreateTaskListTemplateRequest = {
                     name: this.templateName(),
                     color: this.templateColor(),
+                    generationTitle: this.templateGenerationTitle() || null,
                     rrule,
                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     taskTemplates: this.templateTasks(),

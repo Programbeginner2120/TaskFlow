@@ -16,6 +16,17 @@
             [errorMessage]="templateNameError()"
             [(value)]="templateName"
         ></app-input>
+        <app-input
+            class="new-template-generation-title"
+            [label]="'Generation Title (optional)'"
+            [type]="'text'"
+            [placeholder]="'e.g. Weekly Tasks YYYY-MM-DD'"
+            [(value)]="templateGenerationTitle"
+        ></app-input>
+        <p class="generation-title-hint">Supported tokens: YYYY, MM, DD — resolved at generation time.</p>
+        @if (generationTitlePreview()) {
+            <p class="generation-title-preview">Preview: {{ generationTitlePreview() }}</p>
+        }
         <div class="colors-container">
             <div class="color-label">Color</div>
             <div class="color-pickers-container">

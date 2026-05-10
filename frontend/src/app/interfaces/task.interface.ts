@@ -93,6 +93,7 @@ export interface TaskListTemplate {
     id: number;
     userId: number;
     name: string;
+    generationTitle: string | null;
     color: string;
     rrule: string;
     timezone: string;
@@ -123,6 +124,7 @@ export interface TaskListTemplateApiResponse {
     id: number;
     userId: number;
     name: string;
+    generationTitle: string | null;
     color: string;
     rrule: string;
     timezone: string;
@@ -150,6 +152,7 @@ export interface CreateTaskListTemplateRequest {
     rrule: string;
     timezone: string;
     taskTemplates: CreateTaskTemplateRequest[];
+    generationTitle?: string | null;
 }
 
 export interface UpdateTaskListTemplateRequest {
@@ -158,6 +161,7 @@ export interface UpdateTaskListTemplateRequest {
     rrule: string;
     timezone: string;
     taskTemplates: CreateTaskTemplateRequest[];
+    generationTitle?: string | null;
 }
 
 export enum TaskListTemplateColor {

@@ -23,4 +23,7 @@ public class UpdateTaskListTemplateRequest {
 
     @Valid
     private List<CreateTaskTemplateRequest> taskTemplates;
+
+    @Size(max = 500)
+    private String generationTitle;
 }

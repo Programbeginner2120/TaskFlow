@@ -49,9 +49,13 @@ public class TemplateGeneratorService {
         OffsetDateTime now   = OffsetDateTime.now(ZoneOffset.UTC);
         LocalDate      today = now.atZoneSameInstant(ZoneId.of(template.getTimezone())).toLocalDate();
 
+        String listName = (template.getGenerationTitle() != null && !template.getGenerationTitle().isBlank())
+                ? resolveGenerationTitle(template.getGenerationTitle(), today)
+                : template.getName();
+
         TaskList taskList = TaskList.builder()
                 .userId(template.getUserId())
-                .name(template.getName())
+                .name(listName)
                 .color(template.getColor())
                 .createdAt(now)
                 .updatedAt(now)
@@ -99,4 +103,13 @@ public class TemplateGeneratorService {
         log.info("Generated task list {} from template {} for user {}",
                 listId, template.getId(), template.getUserId());
     }
+
+        private String resolveGenerationTitle(String pattern, LocalDate date) {
+                if (pattern == null) return null;
+                String result = pattern;
+                result = result.replace("YYYY", String.format("%04d", date.getYear()));
+                result = result.replace("MM", String.format("%02d", date.getMonthValue()));
+                result = result.replace("DD", String.format("%02d", date.getDayOfMonth()));
+                return result;
+        }
 }
