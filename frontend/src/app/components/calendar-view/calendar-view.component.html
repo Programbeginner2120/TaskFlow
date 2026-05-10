@@ -1,0 +1,19 @@
+<div
+    class="calendar-container"
+    [class.--phone]="platformService.isPhone()"
+    [class.--tablet]="platformService.isTablet()"
+    [class.--laptop]="platformService.isLaptop()"
+    [class.--desktop]="platformService.isDesktop()">
+
+    <full-calendar [options]="calendarOptions()"></full-calendar>
+
+</div>
+
+@if (overflowModalOpen()) {
+    <app-calendar-overflow-modal
+        [tasks]="overflowTasks()"
+        [date]="overflowDate()"
+        (taskSelected)="onTaskSelected($event)"
+        (close)="onOverflowClose()">
+    </app-calendar-overflow-modal>
+}
