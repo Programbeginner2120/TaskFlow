@@ -1,0 +1,46 @@
+<app-modal class="quick-add-task-modal-container" [isOpen]="true" (close)="close.emit()">
+
+    <div class="quick-add-task-modal-header" modal-header>
+        <h2 class="quick-add-task-modal-header-title">Quick Add Task</h2>
+    </div>
+
+    <div class="quick-add-task-modal-body" modal-body>
+        <div class="quick-add-task-inputs-container">
+            <app-input
+                class="quick-add-task-title"
+                [type]="'text'"
+                [placeholder]="'Task title...'"
+                [required]="true"
+                [(value)]="taskTitle"
+            ></app-input>
+            <div class="quick-add-task-inputs-grouped">
+                <app-button
+                    class="quick-add-task-datepicker-button"
+                    [variant]="'secondary'"
+                    [fullWidth]="true"
+                    (click)="dueDateDatepicker()!.toggle($event)">
+                        <div class="quick-add-task-button-label-container">
+                            <app-datepicker [(value)]="taskDueDate" #dueDateDatePicker ></app-datepicker>
+                            <div class="quick-add-task-datepicker-button-label">Due date</div>
+                        </div>
+                </app-button>
+                <app-select
+                    class="quick-add-task-list-select"
+                    [options]="sortedListOptions()"
+                    [(value)]="taskListId"
+                    aria-label="Task List Select"
+                ></app-select>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-add-task-modal-footer" modal-footer>
+        <app-button
+            class="quick-add-task-modal-add-task-button"
+            [variant]="'primary'"
+        >
+            Add Task
+        </app-button>
+    </div>
+
+</app-modal>

@@ -1,0 +1,33 @@
+.quick-add-task-inputs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.quick-add-task-inputs-grouped {
+    display: flex;
+    gap: 8px;
+
+    .quick-add-task-datepicker-button,  .quick-add-task-list-select {
+        flex: 2;
+    }
+}
+
+.quick-add-task-button-label-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.quick-add-task-modal-footer {
+    width: 100%;
+
+    .quick-add-task-modal-add-task-button {
+        width: 100%;
+
+        ::ng-deep .btn {
+            width: 100%;
+        }
+    }
+}
