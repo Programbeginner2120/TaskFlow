@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from "@angular/core";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
-import { Sun, Calendar, LucideAngularModule, Plus, Ellipsis } from "lucide-angular";
+import { Sun, Calendar, LucideAngularModule, Plus, Ellipsis, Clock } from "lucide-angular";
 import { Task, TaskListTemplate } from "../../interfaces/task.interface";
 import { TaskListStateService } from '../../services/task-list-state.service';
 import { LandingPageHeaderComponent } from "../../components/headers/landing-page-header/landing-page-header.component";
@@ -14,6 +14,7 @@ import { NewTemplateModalComponent } from "../../components/new-template-modal/n
 import { TaskListTemplateStateService } from "../../services/task-list-template-state.service";
 import { R } from "@angular/cdk/keycodes";
 import { TaskStateService } from "../../services/task-state.service";
+import { UpcomingComponent } from "../../components/upcoming/upcoming.component";
 
 export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
 
@@ -21,7 +22,7 @@ export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
     selector: 'app-landing-page',
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.scss'],
-    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, CalendarViewComponent, AutoFocusDirective, NewTemplateModalComponent],
+    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, CalendarViewComponent, AutoFocusDirective, NewTemplateModalComponent, UpcomingComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingPageComponent {
@@ -49,11 +50,11 @@ export class LandingPageComponent {
             navItemIcon: Sun,
             navItemRouteFn: () => this.currentView.set('my-day')
         },
-        // {
-        //     navItemLabel: 'Upcoming',
-        //     navItemIcon: Clock,
-        //     navItemRouteFn: () => this.currentView.set('upcoming')
-        // },
+        {
+            navItemLabel: 'Upcoming',
+            navItemIcon: Clock,
+            navItemRouteFn: () => this.currentView.set('upcoming')
+        },
         {
             navItemLabel: 'Calendar',
             navItemIcon: Calendar,
