@@ -1,0 +1,8 @@
+<app-task-list-view
+    componentTitle="Upcoming"
+    [tasks]="thisWeeksTasks()"
+    [lists]="lists()"
+    [searchQuery]="searchQuery()"
+    [defaultDueDate]="today"
+    (taskSelected)="taskSelected.emit($event)">
+</app-task-list-view>

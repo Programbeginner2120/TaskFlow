@@ -101,6 +101,12 @@
                         </app-list-view>
                     }
                 }
+                @case ('upcoming') {
+                    <app-upcoming>
+                        [searchQuery]="searchQuery()"
+                        (taskSelected)="selectedTask.set($any($event))"
+                    </app-upcoming>
+                }
                 @default {
                     <div class="coming-soon">
                         <p>Coming soon</p>

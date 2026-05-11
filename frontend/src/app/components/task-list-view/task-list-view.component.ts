@@ -5,6 +5,7 @@ import { TaskStateService } from '../../services/task-state.service';
 import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
 import { toLocalDateString, formatDisplayDate } from '../../utils/date.utils';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { TaskListViewSortOptions } from '../../interfaces/task-list-view';
 
 @Component({
     selector: 'app-task-list-view',
@@ -27,6 +28,7 @@ export class TaskListViewComponent {
     defaultListId = input<number | null>(null);
     defaultDueDate = input<Date | null>(null);
     dragAndDropEnabled = input<boolean>(false);
+    sortOption = input<TaskListViewSortOptions>(TaskListViewSortOptions.DATE);
 
     taskSelected = output<Task>();
 
@@ -41,7 +43,18 @@ export class TaskListViewComponent {
 
     readonly sortedTasks = linkedSignal({
         source: () => this.filteredTasks(),
-        computation: () => this.filteredTasks().sort((a, b) => a.position - b.position)
+        computation: () => {
+            const sortOption = this.sortOption();
+            if (sortOption === TaskListViewSortOptions.DATE) {
+                // When putting in this sort option, it's assumed that each entry has a due date. Will cause problems if that
+                //  assumption is wrong :) 
+                return this.filteredTasks().sort((a, b) => new Date(a.dueDate ?? new Date()).getTime() - new Date(b.dueDate ?? new Date()).getTime());
+            } else if (sortOption === TaskListViewSortOptions.POSITION) {
+                return this.filteredTasks().sort((a, b) => a.position - b.position)
+            } else {
+                return this.filteredTasks().sort((a, b) => a.title.localeCompare(b.title));
+            }
+        }
     });
 
     readonly incompleteCount = computed(() =>
