@@ -1,3 +1,11 @@
+
+// Really shitty hack that makes me re-consider my chosen career...
+app-modal {
+    ::ng-deep .modal-body {
+        overflow-y: visible !important;
+    }
+}
+
 .quick-add-task-inputs-container {
     display: flex;
     flex-direction: column;
