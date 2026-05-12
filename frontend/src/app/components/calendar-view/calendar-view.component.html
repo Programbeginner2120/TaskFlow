@@ -17,3 +17,10 @@
         (close)="onOverflowClose()">
     </app-calendar-overflow-modal>
 }
+
+@if (isQuickAddingTask()) {
+    <app-quick-add-task-modal
+        [startingDueDate]="quickAddTaskDate()"
+        (close)="isQuickAddingTask.set(false)">
+    </app-quick-add-task-modal>
+}
