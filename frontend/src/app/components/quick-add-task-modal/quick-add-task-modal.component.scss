@@ -20,6 +20,10 @@ app-modal {
     .quick-add-task-datepicker-button,  .quick-add-task-list-select {
         flex: 2;
     }
+
+    &.--mobile {
+        flex-direction: column-reverse;
+    }
 }
 
 .quick-add-task-button-label-container {

@@ -39,6 +39,7 @@
                 <button
                     class="header-icon-btn"
                     type="button"
+                    (click)="isQuickAddingTask.set(true)"
                     aria-label="Quick add task"
                     [class.--mobile]="platformService.isMobile()">
                     <lucide-icon [img]="plusIcon" [size]="20" aria-hidden="true"></lucide-icon>

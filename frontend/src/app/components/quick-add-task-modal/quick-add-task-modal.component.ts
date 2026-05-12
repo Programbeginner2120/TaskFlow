@@ -8,6 +8,7 @@ import { InputComponent } from "../../shared/components/input/input.component";
 import { DatepickerComponent } from "../../shared/components/datepicker/datepicker.component";
 import { ButtonComponent } from "../../shared/components/button/button.component";
 import { SelectComponent } from "../../shared/components/select/select.component";
+import { PlatformService } from "../../services/platform.service";
 
 @Component({
     selector: 'app-quick-add-task-modal',
@@ -28,6 +29,7 @@ export class QuickAddTaskModalComponent {
     readonly dueDateDatepicker = viewChild<DatepickerComponent>('dueDateDatePicker');
 
     private readonly taskListService = inject(TaskListStateService);
+    readonly platformService = inject(PlatformService);
 
     readonly sortedListOptions = computed(() => {
         const taskLists = this.taskListService.lists();

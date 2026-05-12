@@ -13,7 +13,7 @@
                 [required]="true"
                 [(value)]="taskTitle"
             ></app-input>
-            <div class="quick-add-task-inputs-grouped">
+            <div class="quick-add-task-inputs-grouped" [class.--mobile]="platformService.isMobile()">
                 <app-button
                     class="quick-add-task-datepicker-button"
                     [variant]="'secondary'"
