@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from "@angular/core";
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
 import { Sun, Calendar, LucideAngularModule, Plus, Ellipsis, Clock } from "lucide-angular";
@@ -30,14 +32,27 @@ export class LandingPageComponent {
     private readonly taskService = inject(TaskStateService);
     private readonly taskListService = inject(TaskListStateService);
     private readonly taskListTemplateStateService = inject(TaskListTemplateStateService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
+    private readonly queryParamMap = toSignal(this.route.queryParamMap);
     
 
     readonly tasks = this.taskService.tasks;
     readonly lists = this.taskListService.lists;
     readonly templates = this.taskListTemplateStateService.templates;
 
-    currentView = signal<AppView>('my-day');
-    selectedListId = signal<number | null>(null);
+    currentView = computed<AppView>(() => {
+        const view = this.queryParamMap()?.get('view');
+        return (view === 'my-day' || view === 'upcoming' || view === 'calendar' || view === 'list')
+            ? (view as AppView)
+            : 'my-day';
+    });
+
+    selectedListId = computed<number | null>(() => {
+        const raw = this.queryParamMap()?.get('listId');
+        const id = raw ? parseInt(raw, 10) : NaN;
+        return this.currentView() === 'list' && !isNaN(id) ? id : null;
+    });
     searchQuery = signal<string>('');
     selectedTask = signal<Task | null>(null);
     addingList = signal<boolean>(false);
@@ -48,17 +63,17 @@ export class LandingPageComponent {
         {
             navItemLabel: 'My Day',
             navItemIcon: Sun,
-            navItemRouteFn: () => this.currentView.set('my-day')
+            navItemRouteFn: () => this.navigateTo('my-day')
         },
         {
             navItemLabel: 'Upcoming',
             navItemIcon: Clock,
-            navItemRouteFn: () => this.currentView.set('upcoming')
+            navItemRouteFn: () => this.navigateTo('upcoming')
         },
         {
             navItemLabel: 'Calendar',
             navItemIcon: Calendar,
-            navItemRouteFn: () => this.currentView.set('calendar')
+            navItemRouteFn: () => this.navigateTo('calendar')
         }
     ]);
 
@@ -68,9 +83,20 @@ export class LandingPageComponent {
     readonly ellipsis = Ellipsis;
 
     selectListView(listId: number): void {
-        this.selectedListId.set(listId);
-        this.currentView.set('list');
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { view: 'list', listId },
+            queryParamsHandling: 'merge'
+        }).catch(console.error);
         this.sidebarComponent().isExpanded.set(false);
+    }
+
+    private navigateTo(view: AppView): void {
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { view, listId: null },
+            queryParamsHandling: 'merge'
+        }).catch(console.error);
     }
 
     startAddingList(): void {
