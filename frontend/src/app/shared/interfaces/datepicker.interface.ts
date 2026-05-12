@@ -5,3 +5,13 @@ export interface CalendarDay {
     isSelected: boolean;
     isDisabled: boolean;
 }
+
+export type DatepickerPosition =
+    | 'bottom-right'
+    | 'bottom-left'
+    | 'top-right'
+    | 'top-left'
+    | 'right'
+    | 'left'
+    | 'bottom'
+    | 'top';

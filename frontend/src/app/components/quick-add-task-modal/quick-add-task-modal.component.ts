@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, output, signal, viewChild } from "@angular/core";
 import { ModalComponent } from "../../shared/components/modal/modal.component";
 import { TaskListStateService } from "../../services/task-list-state.service";
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -45,7 +45,10 @@ export class QuickAddTaskModalComponent {
 
     // Form fields
     readonly taskTitle = signal<string>('');
-    readonly taskDueDate = signal<Date>(this.startingDueDate() ?? new Date());
+    readonly taskDueDate = linkedSignal({
+        source: () => this.startingDueDate(),
+        computation: () => this.startingDueDate() ?? new Date()
+    })
     readonly taskListId = signal<number | null>(null);
 
 }

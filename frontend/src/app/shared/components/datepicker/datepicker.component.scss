@@ -49,8 +49,6 @@
 
 .datepicker-popup {
     position: absolute;
-    top: calc(100% + var(--space-2));
-    right: 0;
     z-index: 200;
     width: 256px;
     background-color: var(--color-bg-secondary);
@@ -61,16 +59,49 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+}
 
-    &--above {
-        top: auto;
-        bottom: calc(100% + var(--space-2));
-    }
+/* Position modifiers */
+.datepicker-popup--bottom-right {
+    top: calc(100% + var(--space-2));
+    right: 0;
+}
 
-    &--start {
-        right: auto;
-        left: 0;
-    }
+.datepicker-popup--bottom-left {
+    top: calc(100% + var(--space-2));
+    left: 0;
+}
+
+.datepicker-popup--bottom {
+    top: calc(100% + var(--space-2));
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.datepicker-popup--top-right {
+    bottom: calc(100% + var(--space-2));
+    right: 0;
+}
+
+.datepicker-popup--top-left {
+    bottom: calc(100% + var(--space-2));
+    left: 0;
+}
+
+.datepicker-popup--top {
+    bottom: calc(100% + var(--space-2));
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.datepicker-popup--right {
+    left: calc(100% + var(--space-2));
+    top: 0;
+}
+
+.datepicker-popup--left {
+    right: calc(100% + var(--space-2));
+    top: 0;
 }
 
 /* ─── Month navigation ────────────────────────────────────── */

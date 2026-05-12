@@ -6,6 +6,7 @@ import {
     input,
     output,
     signal,
+    WritableSignal,
 } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import type { CalendarOptions } from '@fullcalendar/core';
@@ -15,12 +16,13 @@ import { Task } from '../../interfaces/task.interface';
 import { TaskStateService } from '../../services/task-state.service';
 import { PlatformService } from '../../services/platform.service';
 import { CalendarOverflowModalComponent } from '../calendar-overflow-modal/calendar-overflow-modal.component';
+import { QuickAddTaskModalComponent } from '../quick-add-task-modal/quick-add-task-modal.component';
 
 @Component({
     selector: 'app-calendar-view',
     templateUrl: './calendar-view.component.html',
     styleUrls: ['./calendar-view.component.scss'],
-    imports: [FullCalendarModule, CalendarOverflowModalComponent],
+    imports: [FullCalendarModule, CalendarOverflowModalComponent, QuickAddTaskModalComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarViewComponent {
@@ -29,6 +31,9 @@ export class CalendarViewComponent {
 
     searchQuery = input<string>('');
     taskSelected = output<Task>();
+
+    isQuickAddingTask: WritableSignal<boolean> = signal<boolean>(false);
+    quickAddTaskDate: WritableSignal<Date | null> = signal<Date | null>(null);
 
     // ── Derived event list ────────────────────────────────────────────────────
     readonly calendarEvents = computed(() =>
@@ -88,8 +93,15 @@ export class CalendarViewComponent {
             },
 
             eventClassNames: ['fc-task-event'],
+
+            dateClick: (info) => this.onCalendarCellClick(info.date),
         } as CalendarOptions;
     });
+
+    onCalendarCellClick(cellDate: Date): void {
+        this.quickAddTaskDate.set(cellDate);
+        this.isQuickAddingTask.set(true);
+    }
 
     onTaskSelected(task: Task): void {
         this.taskSelected.emit(task);

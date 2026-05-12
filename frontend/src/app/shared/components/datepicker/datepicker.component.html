@@ -2,7 +2,6 @@
 
     <!-- Trigger button -->
     <button
-        #trigger
         class="datepicker-trigger"
         type="button"
         [class.is-active]="isOpen()"
@@ -18,9 +17,7 @@
     <!-- Popup -->
     @if (isOpen()) {
         <div
-            class="datepicker-popup"
-            [class.datepicker-popup--above]="popupPosition().vertical === 'above'"
-            [class.datepicker-popup--start]="popupPosition().horizontal === 'start'"
+            [class]="'datepicker-popup datepicker-popup--' + position()"
             role="dialog"
             aria-label="Date picker">
 
