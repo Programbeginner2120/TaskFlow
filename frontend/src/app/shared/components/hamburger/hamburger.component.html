@@ -11,7 +11,7 @@
           z-index 99 sits below the dropdown (100) but above everything else. -->
     <div class="hamburger-backdrop" (click)="close()"></div>
 
-    <div class="hamburger-dropdown">
+    <div class="hamburger-dropdown" (click)="close()">
         <ng-content></ng-content>
     </div>
 }

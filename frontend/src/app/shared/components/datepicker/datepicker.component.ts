@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener, inject, input, model, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener, inject, input, model, signal } from '@angular/core';
 import { LucideAngularModule, Calendar, ChevronLeft, ChevronRight } from 'lucide-angular';
-import { CalendarDay } from '../../interfaces/datepicker.interface';
+import { CalendarDay, DatepickerPosition } from '../../interfaces/datepicker.interface';
 
 @Component({
     selector: 'app-datepicker',
@@ -20,19 +20,12 @@ export class DatepickerComponent {
     disabled = input<boolean>(false);
     minDate = input<Date | null>(null);
     maxDate = input<Date | null>(null);
-
-    private readonly triggerRef = viewChild<ElementRef<HTMLButtonElement>>('trigger');
-
     isOpen = signal<boolean>(false);
     viewMonth = signal<number>(new Date().getMonth());
     viewYear = signal<number>(new Date().getFullYear());
-    popupPosition = signal<{ vertical: 'below' | 'above'; horizontal: 'end' | 'start' }>({
-        vertical: 'below',
-        horizontal: 'end',
-    });
 
-    private readonly POPUP_HEIGHT = 300;
-    private readonly POPUP_WIDTH = 256;
+    // Explicit position input — caller chooses one of the supported placements
+    position = input<DatepickerPosition>('bottom-right');
 
     readonly headerLabel = computed(() => {
         const date = new Date(this.viewYear(), this.viewMonth(), 1);
@@ -114,27 +107,9 @@ export class DatepickerComponent {
             const ref = this.value() ?? new Date();
             this.viewMonth.set(ref.getMonth());
             this.viewYear.set(ref.getFullYear());
-            this.computePosition();
         }
 
         this.isOpen.update(v => !v);
-    }
-
-    private computePosition(): void {
-        const triggerEl = this.triggerRef()?.nativeElement;
-        if (!triggerEl) return;
-
-        const rect = triggerEl.getBoundingClientRect();
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const spaceAbove = rect.top;
-
-        const vertical =
-            spaceBelow >= this.POPUP_HEIGHT || spaceBelow >= spaceAbove ? 'below' : 'above';
-
-        const spaceToRight = window.innerWidth - rect.left;
-        const horizontal = spaceToRight >= this.POPUP_WIDTH ? 'start' : 'end';
-
-        this.popupPosition.set({ vertical, horizontal });
     }
 
     prevMonth(event: Event): void {

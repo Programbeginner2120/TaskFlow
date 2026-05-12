@@ -8,7 +8,8 @@
             <button
                 class="header-icon-btn"
                 type="button"
-                aria-label="Quick add task">
+                aria-label="Quick add task"
+                (click)="isQuickAddingTask.set(true)">
                 <lucide-icon [img]="plusIcon" [size]="20" aria-hidden="true"></lucide-icon>
             </button>
 
@@ -38,6 +39,7 @@
                 <button
                     class="header-icon-btn"
                     type="button"
+                    (click)="isQuickAddingTask.set(true)"
                     aria-label="Quick add task"
                     [class.--mobile]="platformService.isMobile()">
                     <lucide-icon [img]="plusIcon" [size]="20" aria-hidden="true"></lucide-icon>
@@ -68,3 +70,9 @@
         </app-hamburger-menu>
     }
 </header>
+
+@if (isQuickAddingTask()) {
+    <app-quick-add-task-modal
+        (close)="isQuickAddingTask.set(false)">
+    </app-quick-add-task-modal>
+}
