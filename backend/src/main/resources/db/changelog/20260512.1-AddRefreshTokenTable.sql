@@ -5,9 +5,9 @@ CREATE TABLE refresh_tokens (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
     token VARCHAR(64) NOT NULL UNIQUE,
-    created_at TIMESTAMPZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMPZ NOT NULL,
-    used_at TIMESTAMPZ
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMPTZ NOT NULL,
+    used_at TIMESTAMPTZ
 );
 
 ALTER TABLE refresh_tokens
