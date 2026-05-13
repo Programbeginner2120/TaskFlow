@@ -2,6 +2,7 @@ package com.killeen.taskflow.components.user.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,12 +24,20 @@ import com.killeen.taskflow.util.AuthUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import com.killeen.taskflow.components.user.model.RefreshRequest;
+import com.killeen.taskflow.components.user.model.RefreshResponse;
+import com.killeen.taskflow.components.refreshtoken.service.RefreshTokenService;
+import com.killeen.taskflow.components.refreshtoken.model.RefreshToken;
+import com.killeen.taskflow.config.JwtService;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -52,6 +61,50 @@ public class AuthController {
                 request.getPassword()
         );
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshResponse> refresh(@Valid @RequestBody RefreshRequest request) {
+        RefreshToken stored = refreshTokenService.findByToken(request.getRefreshToken());
+        if (refreshTokenService.isTokenExpired(stored)) {
+            // remove expired token and reject
+            refreshTokenService.deleteByToken(request.getRefreshToken());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // issue new JWT and rotate refresh token
+        User user = userService.getUserById(stored.getUserId());
+        String jwt = jwtService.generateToken(user);
+        long expiresIn = jwtService.getExpirationMs();
+
+        String newRefresh = refreshTokenService.createRefreshToken(user.getId());
+        refreshTokenService.deleteByToken(request.getRefreshToken());
+
+        RefreshResponse resp = RefreshResponse.builder()
+            .token(jwt)
+            .expiresIn(expiresIn)
+            .refreshToken(newRefresh)
+            .build();
+
+        return ResponseEntity.ok(resp);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@Valid @RequestBody RefreshRequest request) {
+        String raw = request.getRefreshToken();
+        if (raw == null || raw.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        refreshTokenService.deleteByToken(raw);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/sessions")
+    public ResponseEntity<?> revokeAllSessions() {
+        Long userId = AuthUtils.getAuthenticatedUserId();
+        refreshTokenService.deleteAllForUser(userId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")

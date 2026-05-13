@@ -117,6 +117,20 @@ public class RefreshTokenService {
     }
 
     /**
+     * Delete all refresh tokens for a user.
+     */
+    public void deleteAllForUser(Long userId) {
+        refreshTokenRepository.deleteByUserId(userId);
+    }
+
+    /**
+     * Delete expired refresh tokens (used by scheduled cleanup).
+     */
+    public void deleteExpiredTokens() {
+        refreshTokenRepository.deleteExpired();
+    }
+
+    /**
      * Checks if a given token is expired based upon the current time.
      * @param token - the refresh token to be validated.
      * @return - true if the token is expired, false otherwise.
