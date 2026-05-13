@@ -474,6 +474,76 @@ public class RefreshTokenDbExample {
             addCriterion("used_at not between", value1, value2, "usedAt");
             return (Criteria) this;
         }
+
+        public Criteria andSelectorIsNull() {
+            addCriterion("selector is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorIsNotNull() {
+            addCriterion("selector is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorEqualTo(String value) {
+            addCriterion("selector =", value, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorNotEqualTo(String value) {
+            addCriterion("selector <>", value, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorGreaterThan(String value) {
+            addCriterion("selector >", value, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorGreaterThanOrEqualTo(String value) {
+            addCriterion("selector >=", value, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorLessThan(String value) {
+            addCriterion("selector <", value, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorLessThanOrEqualTo(String value) {
+            addCriterion("selector <=", value, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorLike(String value) {
+            addCriterion("selector like", value, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorNotLike(String value) {
+            addCriterion("selector not like", value, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorIn(List<String> values) {
+            addCriterion("selector in", values, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorNotIn(List<String> values) {
+            addCriterion("selector not in", values, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorBetween(String value1, String value2) {
+            addCriterion("selector between", value1, value2, "selector");
+            return (Criteria) this;
+        }
+
+        public Criteria andSelectorNotBetween(String value1, String value2) {
+            addCriterion("selector not between", value1, value2, "selector");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

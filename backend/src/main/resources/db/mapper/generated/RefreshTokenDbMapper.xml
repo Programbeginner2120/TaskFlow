@@ -8,6 +8,7 @@
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="expires_at" jdbcType="TIMESTAMP" property="expiresAt" />
     <result column="used_at" jdbcType="TIMESTAMP" property="usedAt" />
+    <result column="selector" jdbcType="VARCHAR" property="selector" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, token, created_at, expires_at, used_at
+    id, user_id, token, created_at, expires_at, used_at, selector
   </sql>
   <select id="selectByExample" parameterType="com.killeen.taskflow.db.model.generated.RefreshTokenDbExample" resultMap="BaseResultMap">
     select
@@ -102,9 +103,11 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.RefreshTokenDb" useGeneratedKeys="true">
     insert into refresh_tokens (user_id, token, created_at, 
-      expires_at, used_at)
+      expires_at, used_at, selector
+      )
     values (#{userId,jdbcType=BIGINT}, #{token,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{expiresAt,jdbcType=TIMESTAMP}, #{usedAt,jdbcType=TIMESTAMP})
+      #{expiresAt,jdbcType=TIMESTAMP}, #{usedAt,jdbcType=TIMESTAMP}, #{selector,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.RefreshTokenDb" useGeneratedKeys="true">
     insert into refresh_tokens
@@ -124,6 +127,9 @@
       <if test="usedAt != null">
         used_at,
       </if>
+      <if test="selector != null">
+        selector,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -140,6 +146,9 @@
       </if>
       <if test="usedAt != null">
         #{usedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="selector != null">
+        #{selector,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -170,6 +179,9 @@
       <if test="row.usedAt != null">
         used_at = #{row.usedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="row.selector != null">
+        selector = #{row.selector,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="example != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -182,7 +194,8 @@
       token = #{row.token,jdbcType=VARCHAR},
       created_at = #{row.createdAt,jdbcType=TIMESTAMP},
       expires_at = #{row.expiresAt,jdbcType=TIMESTAMP},
-      used_at = #{row.usedAt,jdbcType=TIMESTAMP}
+      used_at = #{row.usedAt,jdbcType=TIMESTAMP},
+      selector = #{row.selector,jdbcType=VARCHAR}
     <if test="example != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -205,6 +218,9 @@
       <if test="usedAt != null">
         used_at = #{usedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="selector != null">
+        selector = #{selector,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -214,7 +230,8 @@
       token = #{token,jdbcType=VARCHAR},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       expires_at = #{expiresAt,jdbcType=TIMESTAMP},
-      used_at = #{usedAt,jdbcType=TIMESTAMP}
+      used_at = #{usedAt,jdbcType=TIMESTAMP},
+      selector = #{selector,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

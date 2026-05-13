@@ -15,6 +15,8 @@ public class RefreshTokenDb {
 
     private OffsetDateTime usedAt;
 
+    private String selector;
+
     public Long getId() {
         return id;
     }
@@ -61,5 +63,13 @@ public class RefreshTokenDb {
 
     public void setUsedAt(OffsetDateTime usedAt) {
         this.usedAt = usedAt;
+    }
+
+    public String getSelector() {
+        return selector;
+    }
+
+    public void setSelector(String selector) {
+        this.selector = selector == null ? null : selector.trim();
     }
 }
