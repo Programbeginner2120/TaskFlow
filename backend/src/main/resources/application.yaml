@@ -42,7 +42,8 @@ jwt:
 
 # Refresh Token Configuration
 refresh:
-  expiration: 604800000 # 7 days in milliseconds
+  expiration: 604800 # 7 days in seconds
+  cleanup.cron: "0 0 * * * *"
 
 # App-level config
 app:

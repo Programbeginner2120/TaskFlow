@@ -28,16 +28,31 @@ public class RefreshTokenRepository {
         return token;
     }
 
-    public Optional<RefreshToken> findByToken(String hashedToken) {
+
+    public Optional<RefreshToken> findBySelector(String selector) {
         RefreshTokenDbExample example = new RefreshTokenDbExample();
-        example.createCriteria().andTokenEqualTo(hashedToken);
+        example.createCriteria().andSelectorEqualTo(selector);
         return mapper.selectByExample(example).stream()
             .findFirst()
             .map(converter::toDto);
     }
 
-    public void deleteByToken(String hashedToken) {
-        findByToken(hashedToken).ifPresent(t -> mapper.deleteByPrimaryKey(t.getId()));
+    public void deleteBySelector(String selector) {
+        RefreshTokenDbExample example = new RefreshTokenDbExample();
+        example.createCriteria().andSelectorEqualTo(selector);
+        mapper.deleteByExample(example);
+    }
+
+    public void deleteByUserId(Long userId) {
+        RefreshTokenDbExample example = new RefreshTokenDbExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        mapper.deleteByExample(example);
+    }
+
+    public void deleteExpired() {
+        RefreshTokenDbExample example = new RefreshTokenDbExample();
+        example.createCriteria().andExpiresAtLessThan(OffsetDateTime.now(ZoneOffset.UTC));
+        mapper.deleteByExample(example);
     }
 
     // Marked deprecated as the "used at" is not used and will likely be removed later
