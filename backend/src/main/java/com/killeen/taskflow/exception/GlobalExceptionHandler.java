@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.killeen.taskflow.components.email.exception.EmailNotVerifiedException;
-import com.killeen.taskflow.components.email.exception.InvalidTokenException;
+import com.killeen.taskflow.components.email.exception.InvalidEmailTokenException;
 import com.killeen.taskflow.components.task.exception.SubtaskNotFoundException;
 import com.killeen.taskflow.components.task.exception.TaskNotFoundException;
 import com.killeen.taskflow.components.tasklist.exception.TaskListNotFoundException;
@@ -54,8 +54,8 @@ public class GlobalExceptionHandler {
         return response(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
-    @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidToken(InvalidTokenException ex) {
+    @ExceptionHandler(InvalidEmailTokenException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidToken(InvalidEmailTokenException ex) {
         log.warn("Invalid token: {}", ex.getMessage());
         return response(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
