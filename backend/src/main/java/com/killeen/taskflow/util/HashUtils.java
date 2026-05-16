@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HashUtils {
 
-    private Environment env;
+    private final Environment env;
  
     public String sha256(String input) {
         try {
