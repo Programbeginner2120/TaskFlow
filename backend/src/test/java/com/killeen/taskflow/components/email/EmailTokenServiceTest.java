@@ -25,9 +25,12 @@ import com.killeen.taskflow.components.email.model.EmailToken;
 import com.killeen.taskflow.components.email.model.EmailTokenType;
 import com.killeen.taskflow.components.email.repository.EmailTokenRepository;
 import com.killeen.taskflow.components.email.service.EmailTokenService;
+import com.killeen.taskflow.util.HashUtils;
 
 @ExtendWith(MockitoExtension.class)
 public class EmailTokenServiceTest {
+
+    HashUtils hashUtils;
 
     @Mock
     private EmailTokenRepository emailTokenRepository;
@@ -39,6 +42,8 @@ public class EmailTokenServiceTest {
 
     @BeforeEach
     void setUp() {
+        hashUtils = new HashUtils(env);
+        ReflectionTestUtils.setField(emailTokenService, "hashUtils", hashUtils);
         ReflectionTestUtils.setField(emailTokenService, "verificationTtlHours", 24);
         ReflectionTestUtils.setField(emailTokenService, "resetTtlHours", 1);
     }
