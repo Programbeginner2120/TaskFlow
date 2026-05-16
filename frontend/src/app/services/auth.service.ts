@@ -35,9 +35,6 @@ export class AuthService {
         return !isTokenExpired(token);
     });
 
-    private logoutSubject = new Subject<void>();
-    logout$ = this.logoutSubject.asObservable();
-
     register(request: RegisterRequest): Observable<UserResponse> {
         return this.http.post<UserResponse>(`${this.API_URL}/register`, request);
     }
@@ -78,7 +75,6 @@ export class AuthService {
         if (refreshToken) {
             this.http.post(`${this.API_URL}/logout`, { refreshToken }).subscribe();
         }
-        this.logoutSubject.next();
         this.clearToken();
         this.clearRefreshToken();
         this._currentUser.set(null);
