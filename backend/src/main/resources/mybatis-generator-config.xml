@@ -83,6 +83,22 @@
       <columnOverride column="used_at" javaType="java.time.OffsetDateTime"/>
     </table>
 
+    <!-- Refresh Tokens Table-->
+    <table
+      tableName="refresh_tokens"
+      domainObjectName="RefreshTokenDb">
+      <generatedKey column="id" sqlStatement="JDBC" identity="true" />
+
+      <!-- token_type is a PostgreSQL enum; use a custom TypeHandler so MyBatis
+           calls setObject(..., Types.OTHER) instead of setString() on writes -->
+      <columnOverride column="token_type"
+                      javaType="java.lang.String"
+                      typeHandler="com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler" />
+      <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="expires_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="used_at" javaType="java.time.OffsetDateTime"/>
+    </table>
+
     <!-- Task Lists Table -->
     <table tableName="task_lists" domainObjectName="TaskListDb">
       <generatedKey column="id" sqlStatement="JDBC" identity="true"/>

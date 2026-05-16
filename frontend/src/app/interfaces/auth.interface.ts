@@ -12,6 +12,17 @@ export interface LoginRequest {
 export interface LoginResponse {
     token: string;
     expiresIn: number;
+    refreshToken: string;
+}
+
+export interface RefreshRequest {
+    refreshToken: string;
+}
+
+export interface RefreshResponse {
+    token: string;
+    expiresIn: number;
+    refreshToken: string;
 }
 
 export interface UserResponse {
