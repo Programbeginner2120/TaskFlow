@@ -14,6 +14,7 @@ import com.killeen.taskflow.components.email.service.EmailTokenService;
 import com.killeen.taskflow.components.user.exception.InvalidCredentialsException;
 import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException;
 import com.killeen.taskflow.components.user.exception.UserNotFoundException;
+import com.killeen.taskflow.components.refreshtoken.service.RefreshTokenService;
 import com.killeen.taskflow.components.user.model.LoginResponse;
 import com.killeen.taskflow.components.user.model.User;
 import com.killeen.taskflow.components.user.repository.UserRepository;
@@ -35,6 +36,7 @@ public class UserService {
     private final JwtService jwtService;
     private final EmailTokenService emailTokenService;
     private final EmailService emailService;
+    private final RefreshTokenService refreshTokenService;
     private final Environment env;
 
     @Transactional
@@ -79,11 +81,13 @@ public class UserService {
         }
 
         String token = jwtService.generateToken(user);
+        String rawRefreshToken = refreshTokenService.createRefreshToken(user.getId());
         log.info("Successfully authenticated user: {}", user.getId());
 
         return LoginResponse.builder()
                 .token(token)
                 .expiresIn(jwtService.getExpirationMs())
+                .refreshToken(rawRefreshToken)
                 .build();
     }
 

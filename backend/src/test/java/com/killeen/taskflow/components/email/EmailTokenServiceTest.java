@@ -19,16 +19,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.threeten.extra.OffsetDate;
 
-import com.killeen.taskflow.components.email.exception.InvalidTokenException;
+import com.killeen.taskflow.components.email.exception.InvalidEmailTokenException;
 import com.killeen.taskflow.components.email.model.EmailToken;
 import com.killeen.taskflow.components.email.model.EmailTokenType;
 import com.killeen.taskflow.components.email.repository.EmailTokenRepository;
 import com.killeen.taskflow.components.email.service.EmailTokenService;
+import com.killeen.taskflow.util.HashUtils;
 
 @ExtendWith(MockitoExtension.class)
 public class EmailTokenServiceTest {
+
+    HashUtils hashUtils;
 
     @Mock
     private EmailTokenRepository emailTokenRepository;
@@ -40,6 +42,8 @@ public class EmailTokenServiceTest {
 
     @BeforeEach
     void setUp() {
+        hashUtils = new HashUtils(env);
+        ReflectionTestUtils.setField(emailTokenService, "hashUtils", hashUtils);
         ReflectionTestUtils.setField(emailTokenService, "verificationTtlHours", 24);
         ReflectionTestUtils.setField(emailTokenService, "resetTtlHours", 1);
     }
@@ -89,7 +93,7 @@ public class EmailTokenServiceTest {
 
         assertThatThrownBy(() -> 
                     emailTokenService.validateAndConsume("raw", EmailTokenType.VERIFY_EMAIL))
-                    .isInstanceOf(InvalidTokenException.class)
+                    .isInstanceOf(InvalidEmailTokenException.class)
                     .hasMessage("Token has expired");
 
     }
@@ -108,7 +112,7 @@ public class EmailTokenServiceTest {
 
         assertThatThrownBy(() -> 
                 emailTokenService.validateAndConsume("raw", EmailTokenType.VERIFY_EMAIL))
-                .isInstanceOf(InvalidTokenException.class)
+                .isInstanceOf(InvalidEmailTokenException.class)
                 .hasMessage("Already used");
     }
 
@@ -125,7 +129,7 @@ public class EmailTokenServiceTest {
 
         assertThatThrownBy(() -> 
                     emailTokenService.validateAndConsume("raw", EmailTokenType.VERIFY_EMAIL))
-                    .isInstanceOf(InvalidTokenException.class)
+                    .isInstanceOf(InvalidEmailTokenException.class)
                     .hasMessage("Wrong type");
     }
     

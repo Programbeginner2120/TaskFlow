@@ -1,16 +1,17 @@
 package com.killeen.taskflow.components.user.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginResponse {
-    private String token;
-    private long expiresIn;
+@Builder
+public class RefreshRequest {
+
+    @NotBlank(message = "Refresh token is required")
     private String refreshToken;
 }

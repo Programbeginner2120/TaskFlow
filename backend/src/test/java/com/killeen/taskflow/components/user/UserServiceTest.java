@@ -24,6 +24,7 @@ import com.killeen.taskflow.components.email.exception.EmailNotVerifiedException
 import com.killeen.taskflow.components.email.model.EmailTokenType;
 import com.killeen.taskflow.components.email.service.EmailService;
 import com.killeen.taskflow.components.email.service.EmailTokenService;
+import com.killeen.taskflow.components.refreshtoken.service.RefreshTokenService;
 import com.killeen.taskflow.components.user.exception.InvalidCredentialsException;
 import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException;
 import com.killeen.taskflow.components.user.exception.UserNotFoundException;
@@ -46,6 +47,8 @@ public class UserServiceTest {
     private EmailTokenService emailTokenService;
     @Mock
     private EmailService emailService;
+    @Mock
+    private RefreshTokenService refreshTokenService;
     @Mock
     private Environment environment;
 

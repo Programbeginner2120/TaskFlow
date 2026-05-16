@@ -40,6 +40,11 @@ jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000  # 24 hours in milliseconds
 
+# Refresh Token Configuration
+refresh:
+  expiration: 604800 # 7 days in seconds
+  cleanup.cron: "0 0 * * * *"
+
 # App-level config
 app:
   cors:
@@ -52,8 +57,6 @@ app:
   encryption:
     password: ${ENCRYPTION_PASSWORD}
     salt: ${ENCRYPTION_SALT}
-  cron:
-    secret: ${CRON_SECRET}
 
 logging:
   level:

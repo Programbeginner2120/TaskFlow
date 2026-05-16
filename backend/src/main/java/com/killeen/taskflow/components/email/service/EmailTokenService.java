@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import com.killeen.taskflow.components.email.exception.InvalidTokenException;
+import com.killeen.taskflow.components.email.exception.InvalidEmailTokenException;
 import com.killeen.taskflow.components.email.model.EmailToken;
 import com.killeen.taskflow.components.email.model.EmailTokenType;
 import com.killeen.taskflow.components.email.repository.EmailTokenRepository;
+import com.killeen.taskflow.util.HashUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmailTokenService {
 
     private final EmailTokenRepository emailTokenRepository;
+    private final HashUtils hashUtils;
     private final Environment env;
 
     @Value("${app.email.verification-token-ttl-hours}")
@@ -40,7 +42,7 @@ public class EmailTokenService {
      */
     public String createToken(Long userId, EmailTokenType type) {
         String rawToken = UUID.randomUUID().toString();
-        String hashedToken = sha256(rawToken);
+        String hashedToken = hashUtils.sha256(rawToken);
         int ttlHours = type == EmailTokenType.VERIFY_EMAIL ? verificationTtlHours : resetTtlHours;
 
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
@@ -62,39 +64,26 @@ public class EmailTokenService {
      * Throws IllegalArgumentException if the token is unknown, expired or already in use.
      */
     public EmailToken validateAndConsume(String rawToken, EmailTokenType expectedType) {
-        String hashedToken = sha256(rawToken);
+        String hashedToken = hashUtils.sha256(rawToken);
 
         // TODO: If we had millions of users, this would likely melt our servers. I wonder if there's a better way...
         EmailToken token = emailTokenRepository.findByToken(hashedToken)
-            .orElseThrow(() -> new InvalidTokenException(env.getProperty("email.token.invalid.or.unknown")));
+            .orElseThrow(() -> new InvalidEmailTokenException(env.getProperty("email.token.invalid.or.unknown")));
 
         if (token.getTokenType() != expectedType) {
-            throw new InvalidTokenException(env.getProperty("email.token.invalid.token.type"));
+            throw new InvalidEmailTokenException(env.getProperty("email.token.invalid.token.type"));
         }
 
         if (token.getUsedAt() != null) {
-            throw new InvalidTokenException(env.getProperty("email.token.already.been.used"));
+            throw new InvalidEmailTokenException(env.getProperty("email.token.already.been.used"));
         }
 
         if (token.getExpiresAt().isBefore(OffsetDateTime.now(ZoneOffset.UTC))) {
-            throw new InvalidTokenException(env.getProperty("email.token.has.expired"));
+            throw new InvalidEmailTokenException(env.getProperty("email.token.has.expired"));
         }
 
         emailTokenRepository.markUsed(token.getId());
         return token;
     }
 
-    private String sha256(String input) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
-            return HexFormat.of().formatHex(hash);
-        } catch (NoSuchAlgorithmException e) {
-            // SHA-256 is guaranteed by the JVM spec
-            throw new IllegalArgumentException(env.getProperty("security.sha.256.not.available"), e);
-        }
-    }
-
-
-    
 }
