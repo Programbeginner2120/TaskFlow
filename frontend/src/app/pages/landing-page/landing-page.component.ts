@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
-import { Sun, Calendar, LucideAngularModule, Plus, Ellipsis, Clock } from "lucide-angular";
+import { Sun, Calendar, LucideAngularModule, Plus, Ellipsis, Clock, ChartColumn } from "lucide-angular";
 import { Task, TaskListTemplate } from "../../interfaces/task.interface";
 import { TaskListStateService } from '../../services/task-list-state.service';
 import { LandingPageHeaderComponent } from "../../components/headers/landing-page-header/landing-page-header.component";
@@ -17,14 +17,27 @@ import { TaskListTemplateStateService } from "../../services/task-list-template-
 import { R } from "@angular/cdk/keycodes";
 import { TaskStateService } from "../../services/task-state.service";
 import { UpcomingComponent } from "../../components/upcoming/upcoming.component";
+import { DashboardComponent } from "../../components/dashboard/dashboard.component";
 
-export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'list';
+export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'dashboard' | 'list';
 
 @Component({
     selector: 'app-landing-page',
     templateUrl: './landing-page.component.html',
     styleUrls: ['./landing-page.component.scss'],
-    imports: [SidebarComponent, LucideAngularModule, LandingPageHeaderComponent, TaskDetailsPanelComponent, MyDayComponent, ListViewComponent, CalendarViewComponent, AutoFocusDirective, NewTemplateModalComponent, UpcomingComponent],
+    imports: [
+        SidebarComponent, 
+        LucideAngularModule, 
+        LandingPageHeaderComponent, 
+        TaskDetailsPanelComponent, 
+        MyDayComponent, 
+        ListViewComponent, 
+        CalendarViewComponent, 
+        AutoFocusDirective, 
+        NewTemplateModalComponent, 
+        UpcomingComponent, 
+        DashboardComponent
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingPageComponent {
@@ -43,7 +56,7 @@ export class LandingPageComponent {
 
     currentView = computed<AppView>(() => {
         const view = this.queryParamMap()?.get('view');
-        return (view === 'my-day' || view === 'upcoming' || view === 'calendar' || view === 'list')
+        return (view === 'my-day' || view === 'upcoming' || view === 'calendar' || view === 'dashboard' || view === 'list')
             ? (view as AppView)
             : 'my-day';
     });
@@ -74,6 +87,11 @@ export class LandingPageComponent {
             navItemLabel: 'Calendar',
             navItemIcon: Calendar,
             navItemRouteFn: () => this.navigateTo('calendar')
+        },
+        {
+            navItemLabel: 'Dashboard',
+            navItemIcon: ChartColumn,
+            navItemRouteFn: () => this.navigateTo('dashboard')
         }
     ]);
 

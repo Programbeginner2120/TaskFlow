@@ -10,6 +10,25 @@ import { TaskStateService } from './services/task-state.service';
 import { TaskListStateService } from './services/task-list-state.service';
 import { firstValueFrom, forkJoin, of, switchMap } from 'rxjs';
 import { TaskListTemplateStateService } from './services/task-list-template-state.service';
+import { provideEchartsCore } from 'ngx-echarts';
+import * as echarts from 'echarts/core';
+import { LineChart } from 'echarts/charts';
+import {
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+  TitleComponent,
+} from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
+
+echarts.use([
+  LineChart,
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+  TitleComponent,
+  CanvasRenderer
+]);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +36,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([UrlInterceptor, AuthInterceptor])),
+    provideEchartsCore({ echarts }),
     provideAppInitializer(() => {
       const authService = inject(AuthService);
       const taskStateService = inject(TaskStateService);
