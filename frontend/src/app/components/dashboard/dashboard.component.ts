@@ -1,15 +1,17 @@
 import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { MultiLineChartComponent } from "../charts/multi-line-chart/multi-line-chart.component";
-import { LineSeriesData } from "../../interfaces/charts.interface";
+import { BarSeriesData, LineSeriesData } from "../../interfaces/charts.interface";
+import { BarChartComponent } from "../charts/bar-chart/bar-chart.component";
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    imports: [MultiLineChartComponent],
+    imports: [MultiLineChartComponent, BarChartComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
+    /* Mutli line chart */
     // months = signal(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
 
     // revenueSeries = signal<LineSeriesData[]>([
@@ -31,5 +33,25 @@ export class DashboardComponent {
     //         data: [...s.data, Math.floor(Math.random() * 300) + 100],
     //     }))
     //     );
+    // }
+
+    /* Bar chart */
+    // quarters = signal(['Q1', 'Q2', 'Q3', 'Q4']);
+
+    // salesSeries = signal<BarSeriesData[]>([
+    //     { name: 'North', data: [320, 440, 390, 510] },
+    //     { name: 'South', data: [220, 310, 280, 390] },
+    //     { name: 'East',  data: [150, 200, 175, 260] },
+    // ]);
+
+    // // Reactively add a new group member
+    // addSeries() {
+    //     this.salesSeries.update(series => [
+    //     ...series,
+    //     {
+    //         name: `Region ${series.length + 1}`,
+    //         data: this.quarters().map(() => Math.floor(Math.random() * 400) + 100),
+    //     },
+    //     ]);
     // }
 }
