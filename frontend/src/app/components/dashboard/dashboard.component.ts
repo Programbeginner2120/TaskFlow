@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
 import { MultiLineChartComponent } from "../charts/multi-line-chart/multi-line-chart.component";
-import { BarSeriesData, LineSeriesData } from "../../interfaces/charts.interface";
+import { BarSeriesData, GaugeThreshold, LineSeriesData } from "../../interfaces/charts.interface";
 import { BarChartComponent } from "../charts/bar-chart/bar-chart.component";
+import { ProgressGaugeComponent } from "../charts/progress-gauge-chart/progress-gauge-chart.component";
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    imports: [MultiLineChartComponent, BarChartComponent],
+    imports: [MultiLineChartComponent, BarChartComponent, ProgressGaugeComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
@@ -53,5 +54,29 @@ export class DashboardComponent {
     //         data: this.quarters().map(() => Math.floor(Math.random() * 400) + 100),
     //     },
     //     ]);
+    // }
+
+    /* Progress Gauges */
+
+    // cpu  = signal(43);
+    // temp = signal(67);
+
+    // cpuThresholds: GaugeThreshold[] = [
+    //     // { value: 0.5, color: '#22c55e' }, // green   0–50%
+    //     // { value: 0.8, color: '#f59e0b' }, // amber  50–80%
+    //     // { value: 1.0, color: '#ef4444' }, // red    80–100%
+    //     { value: 1.0, color: '#cec1c1' }
+    // ];
+
+    // tempThresholds: GaugeThreshold[] = [
+    //     // { value: 0.33, color: '#22c55e' },
+    //     // { value: 0.66, color: '#f59e0b' },
+    //     // { value: 1.0,  color: '#ef4444' },
+    //     { value: 1.0, color: '#cec1c1' }
+    // ];
+
+    // randomize() {
+    //     this.cpu.set(Math.floor(Math.random() * 100));
+    //     this.temp.set(Math.floor(Math.random() * 120));
     // }
 }
