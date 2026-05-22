@@ -92,6 +92,17 @@
                         (taskSelected)="selectedTask.set($event)">
                     </app-calendar-view>
                 }
+                @case ('upcoming') {
+                    <app-upcoming>
+                        [searchQuery]="searchQuery()"
+                        (taskSelected)="selectedTask.set($any($event))"
+                    </app-upcoming>
+                }
+                @case ('dashboard') {
+                    <app-dashboard>
+                        
+                    </app-dashboard>
+                }
                 @case ('list') {
                     @if (selectedListId(); as listId) {
                         <app-list-view
@@ -100,12 +111,6 @@
                             (taskSelected)="selectedTask.set($event)">
                         </app-list-view>
                     }
-                }
-                @case ('upcoming') {
-                    <app-upcoming>
-                        [searchQuery]="searchQuery()"
-                        (taskSelected)="selectedTask.set($any($event))"
-                    </app-upcoming>
                 }
                 @default {
                     <div class="coming-soon">
