@@ -12,7 +12,7 @@ import { firstValueFrom, forkJoin, of, switchMap } from 'rxjs';
 import { TaskListTemplateStateService } from './services/task-list-template-state.service';
 import { provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
-import { LineChart, BarChart, GaugeChart } from 'echarts/charts';
+import { LineChart, BarChart, GaugeChart, PieChart } from 'echarts/charts';
 import {
   GridComponent,
   TooltipComponent,
@@ -25,6 +25,7 @@ echarts.use([
   LineChart,
   BarChart,
   GaugeChart,
+  PieChart,
   GridComponent,
   TooltipComponent,
   LegendComponent,

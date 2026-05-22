@@ -1,14 +1,15 @@
-import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, signal } from "@angular/core";
 import { MultiLineChartComponent } from "../charts/multi-line-chart/multi-line-chart.component";
-import { BarSeriesData, GaugeThreshold, LineSeriesData } from "../../interfaces/charts.interface";
+import { BarSeriesData, DonutSlice, GaugeThreshold, LineSeriesData } from "../../interfaces/charts.interface";
 import { BarChartComponent } from "../charts/bar-chart/bar-chart.component";
 import { ProgressGaugeComponent } from "../charts/progress-gauge-chart/progress-gauge-chart.component";
+import { DonutChartComponent } from "../charts/donut-chart/donut-chart.component";
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    imports: [MultiLineChartComponent, BarChartComponent, ProgressGaugeComponent],
+    imports: [MultiLineChartComponent, BarChartComponent, ProgressGaugeComponent, DonutChartComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
@@ -78,5 +79,35 @@ export class DashboardComponent {
     // randomize() {
     //     this.cpu.set(Math.floor(Math.random() * 100));
     //     this.temp.set(Math.floor(Math.random() * 120));
+    // }
+
+    /* Donut chart */
+
+    // regionData = signal<DonutSlice[]>([
+    //     { name: 'North',  value: 1048 },
+    //     { name: 'South',  value: 735  },
+    //     { name: 'East',   value: 580  },
+    //     { name: 'West',   value: 484  },
+    // ]);
+
+    // productData = signal<DonutSlice[]>([
+    //     { name: 'Product A', value: 320 },
+    //     { name: 'Product B', value: 210 },
+    //     { name: 'Product C', value: 175 },
+    //     { name: 'Product D', value: 95  },
+    // ]);
+
+    // // Derive total for the hole label reactively
+    // totalLabel = computed(() =>
+    //     this.productData().reduce((sum, d) => sum + d.value, 0).toLocaleString()
+    // );
+
+    // randomize() {
+    //     this.productData.update(slices =>
+    //     slices.map(s => ({
+    //         ...s,
+    //         value: Math.floor(Math.random() * 500) + 50,
+    //     }))
+    //     );
     // }
 }
