@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, HostBinding, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, input } from "@angular/core";
 import { LineSeriesData } from "../../../interfaces/charts.interface";
 import { EChartsOption } from "echarts/types/dist/shared";
 import { NgxEchartsDirective } from "ngx-echarts";
+import { ThemeService } from "../../../services/theme.service";
 
 @Component({
     selector: 'app-bar-chart',
@@ -22,8 +23,16 @@ export class BarChartComponent {
     height = input<string>('400px');
     width = input<string>('400px');
 
+    // Injected services
+    private readonly themeService = inject(ThemeService);
+
+    // Computed
+    readonly theme = computed(() =>
+        this.themeService.theme()
+    )
+
     chartOptions = computed<EChartsOption>(() => ({
-        title: this.title() ? { text: this.title() } : undefined,
+        title: this.title() ? { text: this.title(), textStyle: { color: this.theme() === 'dark' ? 'white' : 'black', } } : undefined,
         tooltip: {
             trigger: 'axis',
             axisPointer: { type: 'shadow' }

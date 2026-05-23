@@ -18,6 +18,11 @@ import { TaskTableComponent } from "./task-table/task-table.component";
 })
 export class DashboardComponent {
 
+    // filter state
+    readonly filterDuration = signal('LAST_7_DAYS');
+    readonly filterStatus = signal('ALL');
+    readonly filterListIds = signal<number[]>([]);
+
     // stats card info
     statisticsCards = signal<StatisticsCard[]>([
         { label: 'Total', value: 10, iconBackgroundColor: '#EFEFFD', icon: ListTodo },

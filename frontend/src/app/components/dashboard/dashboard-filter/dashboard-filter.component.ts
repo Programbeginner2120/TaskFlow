@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, Signal } from "@angular/core";
+import { Component, computed, inject, model, signal, Signal } from "@angular/core";
 import { SelectComponent } from "../../../shared/components/select/select.component";
 import { MultiSelectComponent } from "../../../shared/components/multi-select/multi-select.component";
 import { MultiSelectItemComponent } from "../../../shared/components/multi-select/multi-select-item/multi-select-item.component";
@@ -33,9 +33,8 @@ export class DashboardFilterComponent {
         this.taskListStateService.lists()
     );
 
-    // dummy values
-    durationSelection = signal('');
-    statusSelection = signal('');
-    listSelections = signal([]);
+    durationSelection = model('');
+    statusSelection = model('');
+    listSelections = model<number[]>([]);
 
 }

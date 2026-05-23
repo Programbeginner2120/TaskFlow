@@ -40,10 +40,10 @@
 
 .stats-card {
     height: 125px;
-    border: 1px solid lightgray;
+    box-shadow: var(--shadow-modal);
     border-radius: 10px;
-    background-color: white;
-    color: black;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
     display: flex;
     justify-content: center;
     align-items: space-between;
@@ -76,6 +76,10 @@
     align-items: flex-start;
 }
 
+.stats-card-icon {
+    color: var(--color-primary);
+}
+
 .stats-card-icon-background {
     padding: var(--space-2);
     width: 40px;
@@ -103,7 +107,8 @@
 .data-visualization-card {
     padding: var(--space-4);
     flex: 2;
-    border: 1px solid lightgray;
+    box-shadow: var(--shadow-modal);
+    background-color: var(--color-bg-secondary);
     border-radius: 10px;
     height: 100%;
     display: flex;
