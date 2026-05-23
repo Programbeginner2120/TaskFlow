@@ -1,0 +1,12 @@
+<div
+  class="multi-select-item"
+  [class.multi-select-item--selected]="isSelected()"
+  role="option"
+  [attr.aria-selected]="isSelected()">
+  <div class="multi-select-item-check">
+    @if (isSelected()) {
+      <lucide-icon [img]="checkIcon" [size]="16"></lucide-icon>
+    }
+  </div>
+  <ng-content></ng-content>
+</div>
