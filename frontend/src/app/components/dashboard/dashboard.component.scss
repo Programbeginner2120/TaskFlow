@@ -40,10 +40,49 @@
 
 .stats-card {
     height: 125px;
-    border: 1px solid black;
+    border: 1px solid lightgray;
     border-radius: 10px;
     background-color: white;
     color: black;
+    display: flex;
+    justify-content: center;
+    align-items: space-between;
+    padding: var(--space-8);
+}
+
+.stats-card-data-container, .stats-card-icon-container {
+    flex: 2;
+}
+
+.stats-card-data-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.stats-card-label {
+    font-size: 16px;
+}
+
+.stats-card-value {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.stats-card-icon-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.stats-card-icon-background {
+    padding: var(--space-2);
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
 }
 
 .data-visualizations-container {
@@ -64,7 +103,7 @@
 .data-visualization-card {
     padding: var(--space-4);
     flex: 2;
-    border: 1px solid blue;
+    border: 1px solid lightgray;
     border-radius: 10px;
     height: 100%;
     display: flex;

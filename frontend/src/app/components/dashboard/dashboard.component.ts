@@ -4,15 +4,27 @@ import { BarSeriesData, DonutSlice, GaugeThreshold, LineSeriesData } from "../..
 import { BarChartComponent } from "../charts/bar-chart/bar-chart.component";
 import { ProgressGaugeComponent } from "../charts/progress-gauge-chart/progress-gauge-chart.component";
 import { DonutChartComponent } from "../charts/donut-chart/donut-chart.component";
+import { DashboardFilterComponent } from "./dashboard-filter/dashboard-filter.component";
+import { StatisticsCard } from "../../interfaces/dashboard.interface";
+import { Activity, AlertTriangle, CheckCircle2, Clock, ListTodo, LucideAngularModule } from "lucide-angular";
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    imports: [MultiLineChartComponent, BarChartComponent, ProgressGaugeComponent, DonutChartComponent],
+    imports: [MultiLineChartComponent, BarChartComponent, ProgressGaugeComponent, DonutChartComponent, DashboardFilterComponent, LucideAngularModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
+
+    // stats card info
+    statisticsCards = signal<StatisticsCard[]>([
+        { label: 'Total', value: 10, iconBackgroundColor: '#EFEFFD', icon: ListTodo },
+        { label: 'Completed', value: 1, iconBackgroundColor: '#E8F9EE', icon: CheckCircle2 },
+        { label: 'Active', value: 9, iconBackgroundColor: '#EFEFFD', icon: Activity },
+        { label: 'Overdue', value: 0, iconBackgroundColor: '#FDECEC', icon: AlertTriangle },
+        { label: 'Due Today', value: 2,iconBackgroundColor: '#FDF5E6', icon: Clock }
+    ]);
 
     // progress gauge info
 

@@ -4,15 +4,21 @@
             <h1 class="title">Insights</h1>
             <p class="subtitle">Track your productivity across lists and time.</p>
         </div>
-        <div class="filter-container">
-            <div class="filter-placeholder"></div>
-        </div>
+        <app-dashboard-filter></app-dashboard-filter>
     </div>
 
     <div class="stats-cards-container">
-        @for (statCard of [1, 2, 3, 4, 5]; track $index) {
+        @for (statsCard of statisticsCards(); track $index) {
             <div class="stats-card">
-                Stats Card {{ statCard }}
+                <div class="stats-card-data-container">
+                    <div class="stats-card-label">{{ statsCard.label }}</div>
+                    <div class="stats-card-value">{{ statsCard.value }}</div>
+                </div>
+                <div class="stats-card-icon-container">
+                    <div class="stats-card-icon-background" [style.background-color]="statsCard.iconBackgroundColor">
+                        <lucide-icon class="stats-card-icon" [img]="statsCard.icon" [size]="20"></lucide-icon>
+                    </div>
+                </div>
             </div>
         }
     </div>
