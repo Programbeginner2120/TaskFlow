@@ -5,14 +5,15 @@ import { BarChartComponent } from "../charts/bar-chart/bar-chart.component";
 import { ProgressGaugeComponent } from "../charts/progress-gauge-chart/progress-gauge-chart.component";
 import { DonutChartComponent } from "../charts/donut-chart/donut-chart.component";
 import { DashboardFilterComponent } from "./dashboard-filter/dashboard-filter.component";
-import { StatisticsCard } from "../../interfaces/dashboard.interface";
+import { StatisticsCard, TaskTableRow } from "../../interfaces/dashboard.interface";
 import { Activity, AlertTriangle, CheckCircle2, Clock, ListTodo, LucideAngularModule } from "lucide-angular";
+import { TaskTableComponent } from "./task-table/task-table.component";
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    imports: [MultiLineChartComponent, BarChartComponent, ProgressGaugeComponent, DonutChartComponent, DashboardFilterComponent, LucideAngularModule],
+    imports: [MultiLineChartComponent, BarChartComponent, ProgressGaugeComponent, DonutChartComponent, DashboardFilterComponent, LucideAngularModule, TaskTableComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
@@ -57,6 +58,43 @@ export class DashboardComponent {
         { name: 'Product A', data: [120, 200, 150,  80,  70, 110] },
         { name: 'Product B', data: [220, 182, 191, 234, 290, 330] },
         { name: 'Product C', data: [150, 232, 201, 154, 190, 330] },
+    ]);
+
+    // task table info
+
+    taskTableRows = signal<TaskTableRow[]>([
+        { title: 'Fix login page bug',             listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Prepare sprint retrospective',   listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-26'), status: 'Active' },
+        { title: 'Buy groceries',                  listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-24'), status: 'Active' },
+        { title: 'Deploy staging environment',     listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-28'), status: 'Active' },
+        { title: 'Review Q2 roadmap presentation', listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Order new running shoes',        listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Schedule dentist appointment',   listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-25'), status: 'Active' },
+        { title: 'Plan weekend hiking trip',       listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Fix login page bug',             listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Prepare sprint retrospective',   listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-26'), status: 'Active' },
+        { title: 'Buy groceries',                  listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-24'), status: 'Active' },
+        { title: 'Deploy staging environment',     listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-28'), status: 'Active' },
+        { title: 'Review Q2 roadmap presentation', listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Order new running shoes',        listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Schedule dentist appointment',   listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-25'), status: 'Active' },
+        { title: 'Plan weekend hiking trip',       listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Fix login page bug',             listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Prepare sprint retrospective',   listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-26'), status: 'Active' },
+        { title: 'Buy groceries',                  listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-24'), status: 'Active' },
+        { title: 'Deploy staging environment',     listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-28'), status: 'Active' },
+        { title: 'Review Q2 roadmap presentation', listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Order new running shoes',        listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Schedule dentist appointment',   listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-25'), status: 'Active' },
+        { title: 'Plan weekend hiking trip',       listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Fix login page bug',             listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Prepare sprint retrospective',   listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-26'), status: 'Active' },
+        { title: 'Buy groceries',                  listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-24'), status: 'Active' },
+        { title: 'Deploy staging environment',     listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-28'), status: 'Active' },
+        { title: 'Review Q2 roadmap presentation', listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Order new running shoes',        listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Schedule dentist appointment',   listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-25'), status: 'Active' },
+        { title: 'Plan weekend hiking trip',       listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-30'), status: 'Active' },
     ]);
 
 }

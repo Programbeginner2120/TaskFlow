@@ -81,4 +81,10 @@
             </div>
         </div>
     </div>
+
+    <app-task-table
+        title="Recent activity"
+        subtitle="Latest tasks matching your filters"
+        [rows]="taskTableRows()"
+    ></app-task-table>
 </div>

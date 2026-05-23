@@ -1,0 +1,81 @@
+<div class="task-table-card">
+    <div class="task-table-header">
+        <h3 class="task-table-title">{{ title() }}</h3>
+        @if (subtitle()) {
+            <p class="task-table-subtitle">{{ subtitle() }}</p>
+        }
+    </div>
+
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th class="col-task">Task</th>
+                <th class="col-list">List</th>
+                <th class="col-due">Due</th>
+                <th class="col-status">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (row of paginatedRows(); track $index) {
+                <tr class="task-row">
+                    <td class="cell-task">{{ row.title }}</td>
+                    <td class="cell-list">
+                        @if (row.listName) {
+                            <span class="list-dot" [style.background-color]="row.listColor"></span>
+                            <span class="list-name" [style.color]="row.listColor">{{ row.listName }}</span>
+                        } @else {
+                            <span class="cell-empty">—</span>
+                        }
+                    </td>
+                    <td class="cell-due">
+                        @if (row.dueDate) {
+                            {{ row.dueDate | date:'MMM d, yyyy' }}
+                        } @else {
+                            <span class="cell-empty">—</span>
+                        }
+                    </td>
+                    <td class="cell-status">
+                        <span class="status-badge status-badge--{{ row.status.toLowerCase() }}">
+                            {{ row.status }}
+                        </span>
+                    </td>
+                </tr>
+            } @empty {
+                <tr>
+                    <td class="cell-empty-state" colspan="4">No tasks to display.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (totalPages() > 1) {
+        <div class="pagination">
+            <button
+                class="pagination-btn"
+                (click)="previousPage()"
+                [disabled]="currentPage() === 0">
+                ← Previous
+            </button>
+            <div class="pagination-pages">
+                @for (item of paginationItems(); track $index) {
+                    @if (item !== null) {
+                        <button
+                            class="pagination-page-btn"
+                            [class.active]="item === currentPage()"
+                            (click)="goToPage(item)">
+                            {{ item + 1 }}
+                        </button>
+                    } @else {
+                        <span class="pagination-ellipsis">…</span>
+                    }
+                }
+            </div>
+            <button
+                class="pagination-btn"
+                (click)="nextPage()"
+                [disabled]="currentPage() === totalPages() - 1">
+                Next →
+            </button>
+        </div>
+    }
+</div>
