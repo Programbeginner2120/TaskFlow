@@ -1,4 +1,4 @@
-import { Component, computed, input } from "@angular/core";
+import { Component, HostBinding, computed, input } from "@angular/core";
 import { NgxEchartsDirective } from "ngx-echarts";
 import { GaugeThreshold } from "../../../interfaces/charts.interface";
 import { EChartsOption } from "echarts/types/dist/shared";
@@ -10,6 +10,9 @@ import { EChartsOption } from "echarts/types/dist/shared";
     styleUrls: ['./progress-gauge-chart.component.scss']
 })
 export class ProgressGaugeComponent {
+
+    @HostBinding('style.height') get hostHeight() { return this.height(); }
+    @HostBinding('style.width')  get hostWidth()  { return this.width(); }
 
     // input signals
     value = input.required<number>();

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, HostBinding, input } from "@angular/core";
 import { LineSeriesData } from "../../../interfaces/charts.interface";
 import { EChartsOption } from "echarts/types/dist/shared";
 import { NgxEchartsDirective } from "ngx-echarts";
@@ -11,6 +11,9 @@ import { NgxEchartsDirective } from "ngx-echarts";
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarChartComponent {
+
+    @HostBinding('style.height') get hostHeight() { return this.height(); }
+    @HostBinding('style.width')  get hostWidth()  { return this.width(); }
     
     // Input signals
     title = input<string>('');

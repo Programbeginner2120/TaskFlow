@@ -13,101 +13,38 @@ import { DonutChartComponent } from "../charts/donut-chart/donut-chart.component
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
-    /* Mutli line chart */
-    // months = signal(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
 
-    // revenueSeries = signal<LineSeriesData[]>([
-    //     { name: 'Product A', data: [120, 200, 150,  80,  70, 110] },
-    //     { name: 'Product B', data: [220, 182, 191, 234, 290, 330] },
-    //     { name: 'Product C', data: [150, 232, 201, 154, 190, 330] },
-    // ]);
+    // progress gauge info
 
-    // // Example: reactively add a new data point to all series
-    // addDataPoint() {
-    //     const nextMonths = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    //     const idx = this.months().length - 6; // offset into nextMonths
+    cpu = signal(43);
 
-    //     this.months.update(m => [...m, nextMonths[idx]]);
+    // donut chart info
 
-    //     this.revenueSeries.update(series =>
-    //     series.map(s => ({
-    //         ...s,
-    //         data: [...s.data, Math.floor(Math.random() * 300) + 100],
-    //     }))
-    //     );
-    // }
+    regionData = signal<DonutSlice[]>([
+        { name: 'North',  value: 1048 },
+        { name: 'South',  value: 735  },
+        { name: 'East',   value: 580  },
+        { name: 'West',   value: 484  },
+    ]);
 
-    /* Bar chart */
-    // quarters = signal(['Q1', 'Q2', 'Q3', 'Q4']);
+    // bar chart info
 
-    // salesSeries = signal<BarSeriesData[]>([
-    //     { name: 'North', data: [320, 440, 390, 510] },
-    //     { name: 'South', data: [220, 310, 280, 390] },
-    //     { name: 'East',  data: [150, 200, 175, 260] },
-    // ]);
+    quarters = signal(['Q1', 'Q2', 'Q3', 'Q4']);
 
-    // // Reactively add a new group member
-    // addSeries() {
-    //     this.salesSeries.update(series => [
-    //     ...series,
-    //     {
-    //         name: `Region ${series.length + 1}`,
-    //         data: this.quarters().map(() => Math.floor(Math.random() * 400) + 100),
-    //     },
-    //     ]);
-    // }
+    salesSeries = signal<BarSeriesData[]>([
+        { name: 'North', data: [320, 440, 390, 510] },
+        { name: 'South', data: [220, 310, 280, 390] },
+        { name: 'East',  data: [150, 200, 175, 260] },
+    ]);
 
-    /* Progress Gauges */
+    // multi line chart info
 
-    // cpu  = signal(43);
-    // temp = signal(67);
+    months = signal(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
 
-    // cpuThresholds: GaugeThreshold[] = [
-    //     // { value: 0.5, color: '#22c55e' }, // green   0–50%
-    //     // { value: 0.8, color: '#f59e0b' }, // amber  50–80%
-    //     // { value: 1.0, color: '#ef4444' }, // red    80–100%
-    //     { value: 1.0, color: '#cec1c1' }
-    // ];
+    revenueSeries = signal<LineSeriesData[]>([
+        { name: 'Product A', data: [120, 200, 150,  80,  70, 110] },
+        { name: 'Product B', data: [220, 182, 191, 234, 290, 330] },
+        { name: 'Product C', data: [150, 232, 201, 154, 190, 330] },
+    ]);
 
-    // tempThresholds: GaugeThreshold[] = [
-    //     // { value: 0.33, color: '#22c55e' },
-    //     // { value: 0.66, color: '#f59e0b' },
-    //     // { value: 1.0,  color: '#ef4444' },
-    //     { value: 1.0, color: '#cec1c1' }
-    // ];
-
-    // randomize() {
-    //     this.cpu.set(Math.floor(Math.random() * 100));
-    //     this.temp.set(Math.floor(Math.random() * 120));
-    // }
-
-    /* Donut chart */
-
-    // regionData = signal<DonutSlice[]>([
-    //     { name: 'North',  value: 1048 },
-    //     { name: 'South',  value: 735  },
-    //     { name: 'East',   value: 580  },
-    //     { name: 'West',   value: 484  },
-    // ]);
-
-    // productData = signal<DonutSlice[]>([
-    //     { name: 'Product A', value: 320 },
-    //     { name: 'Product B', value: 210 },
-    //     { name: 'Product C', value: 175 },
-    //     { name: 'Product D', value: 95  },
-    // ]);
-
-    // // Derive total for the hole label reactively
-    // totalLabel = computed(() =>
-    //     this.productData().reduce((sum, d) => sum + d.value, 0).toLocaleString()
-    // );
-
-    // randomize() {
-    //     this.productData.update(slices =>
-    //     slices.map(s => ({
-    //         ...s,
-    //         value: Math.floor(Math.random() * 500) + 50,
-    //     }))
-    //     );
-    // }
 }
