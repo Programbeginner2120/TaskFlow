@@ -111,6 +111,7 @@
       <generatedKey column="id" sqlStatement="JDBC" identity="true"/>
       <columnOverride column="created_at" javaType="java.time.OffsetDateTime"/>
       <columnOverride column="updated_at" javaType="java.time.OffsetDateTime"/>
+      <columnOverride column="completed_at" javaType="java.time.OffsetDateTime"/>
     </table>
 
     <!-- Subtasks Table -->

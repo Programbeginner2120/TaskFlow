@@ -426,66 +426,6 @@ public class TaskDbExample {
             return (Criteria) this;
         }
 
-        public Criteria andCompletedIsNull() {
-            addCriterion("completed is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedIsNotNull() {
-            addCriterion("completed is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedEqualTo(Boolean value) {
-            addCriterion("completed =", value, "completed");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedNotEqualTo(Boolean value) {
-            addCriterion("completed <>", value, "completed");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedGreaterThan(Boolean value) {
-            addCriterion("completed >", value, "completed");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedGreaterThanOrEqualTo(Boolean value) {
-            addCriterion("completed >=", value, "completed");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedLessThan(Boolean value) {
-            addCriterion("completed <", value, "completed");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedLessThanOrEqualTo(Boolean value) {
-            addCriterion("completed <=", value, "completed");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedIn(List<Boolean> values) {
-            addCriterion("completed in", values, "completed");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedNotIn(List<Boolean> values) {
-            addCriterion("completed not in", values, "completed");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedBetween(Boolean value1, Boolean value2) {
-            addCriterion("completed between", value1, value2, "completed");
-            return (Criteria) this;
-        }
-
-        public Criteria andCompletedNotBetween(Boolean value1, Boolean value2) {
-            addCriterion("completed not between", value1, value2, "completed");
-            return (Criteria) this;
-        }
-
         public Criteria andDueDateIsNull() {
             addCriterion("due_date is null");
             return (Criteria) this;
@@ -723,6 +663,66 @@ public class TaskDbExample {
 
         public Criteria andPositionNotBetween(Long value1, Long value2) {
             addCriterion("position not between", value1, value2, "position");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtIsNull() {
+            addCriterion("completed_at is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtIsNotNull() {
+            addCriterion("completed_at is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtEqualTo(OffsetDateTime value) {
+            addCriterion("completed_at =", value, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtNotEqualTo(OffsetDateTime value) {
+            addCriterion("completed_at <>", value, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtGreaterThan(OffsetDateTime value) {
+            addCriterion("completed_at >", value, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtGreaterThanOrEqualTo(OffsetDateTime value) {
+            addCriterion("completed_at >=", value, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtLessThan(OffsetDateTime value) {
+            addCriterion("completed_at <", value, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtLessThanOrEqualTo(OffsetDateTime value) {
+            addCriterion("completed_at <=", value, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtIn(List<OffsetDateTime> values) {
+            addCriterion("completed_at in", values, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtNotIn(List<OffsetDateTime> values) {
+            addCriterion("completed_at not in", values, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtBetween(OffsetDateTime value1, OffsetDateTime value2) {
+            addCriterion("completed_at between", value1, value2, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andCompletedAtNotBetween(OffsetDateTime value1, OffsetDateTime value2) {
+            addCriterion("completed_at not between", value1, value2, "completedAt");
             return (Criteria) this;
         }
     }

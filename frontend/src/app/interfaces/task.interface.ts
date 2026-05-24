@@ -12,6 +12,7 @@ export interface Task {
     userId: number;
     title: string;
     completed: boolean;
+    completedAt: Date | null;
     dueDate: Date | null;
     listId: number | null;
     notes: string;
@@ -57,6 +58,7 @@ export interface TaskApiResponse {
     title: string;
     notes: string | null;
     completed: boolean;
+    completedAt: string | null;
     dueDate: string | null;         // "YYYY-MM-DD"
     subtasks: SubtaskApiResponse[];
     position: number;
