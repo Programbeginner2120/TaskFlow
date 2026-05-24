@@ -43,7 +43,6 @@ services:
       APP_BASE_URL: ${APP_BASE_URL:-https://taskflow.com}
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD:?ENCRYPTION_PASSWORD must be set}
       ENCRYPTION_SALT: ${ENCRYPTION_SALT:?ENCRYPTION_SALT must be set}
-      CRON_SECRET: ${CRON_SECRET:?CRON_SECRET must be set}
     ports:
       - "8080:8080"
 
