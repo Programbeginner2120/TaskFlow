@@ -123,6 +123,12 @@ frontend/bazel-out/
 frontend/frontend/bazel-out/
 
 # ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+
+# ============================================
 # Environment-specific configuration
 # ============================================
 backend/src/main/resources/application-*.yaml
