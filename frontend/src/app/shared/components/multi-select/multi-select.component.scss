@@ -1,0 +1,126 @@
+:host {
+  display: inline-block;
+  position: relative;
+}
+
+.multi-select-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  user-select: none;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: var(--color-border-hover);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.3);
+    outline-offset: 2px;
+  }
+
+  &--active {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: rgba(99, 102, 241, 0.06);
+  }
+
+  &--open {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.multi-select-trigger-label {
+  line-height: 1;
+}
+
+.multi-select-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.multi-select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  z-index: 1000;
+
+  &--left {
+    left: 0;
+  }
+
+  &--center {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &--right {
+    right: 0;
+  }
+  min-width: 200px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: slideDown 0.15s ease;
+}
+
+.multi-select-header {
+  padding: var(--space-3) var(--space-4);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.multi-select-list {
+  padding: var(--space-2) 0;
+}
+
+/* Scrollbar styling */
+.multi-select-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.multi-select-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.multi-select-dropdown::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: var(--radius-sm);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

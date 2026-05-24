@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from "@angular/core";
+import { Component, computed, HostBinding, inject, input } from "@angular/core";
 import { NgxEchartsDirective } from "ngx-echarts";
 import { DonutSlice } from "../../../interfaces/charts.interface";
 import { EChartsOption } from "echarts/types/dist/shared";
@@ -13,6 +13,10 @@ import { Theme } from "../../../interfaces/theme.interface";
   imports: [NgxEchartsDirective],
 })
 export class DonutChartComponent {
+
+  @HostBinding('style.height') get hostHeight() { return this.height(); }
+  @HostBinding('style.width')  get hostWidth()  { return this.width(); }
+
   // Required
   data = input.required<DonutSlice[]>();
 
@@ -41,11 +45,10 @@ export class DonutChartComponent {
       text: this.title(),
       subtext: this.subtitle(),
       left: 'center',
-      top: 'center',
+      top: '40%',
       textStyle: {
         fontSize: 20,
         fontWeight: 'bold',
-        lineHeight: 28,
         color: this.theme() === 'dark' ? 'white' : 'black',
       },
       subtextStyle: {
@@ -59,7 +62,7 @@ export class DonutChartComponent {
     },
     legend: {
       orient: 'horizontal',
-      top: '95%',
+      bottom: 0,
       data: this.data().map(d => d.name),
       textStyle: {
         color: this.theme() === 'dark' ? 'white' : 'black',
@@ -69,7 +72,7 @@ export class DonutChartComponent {
       {
         type: 'pie',
         radius: [this.innerRadius(), this.outerRadius()], // [inner, outer] = donut
-        center: ['50%', '50%'],
+        center: ['50%', '45%'],
         avoidLabelOverlap: true,
         itemStyle: {
           borderRadius: 6,       // rounded slice corners
@@ -80,7 +83,6 @@ export class DonutChartComponent {
           show: true,
           position: 'outside',
           formatter: '{b}\n{d}%',
-          lineHeight: 18,
           color: this.theme() === 'dark' ? 'white' : 'black',
         },
         labelLine: {

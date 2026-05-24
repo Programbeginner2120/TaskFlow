@@ -1,0 +1,33 @@
+<div class="multi-select">
+  <button
+    class="multi-select-trigger"
+    [class.multi-select-trigger--active]="selectedCount() > 0"
+    [class.multi-select-trigger--open]="isOpen()"
+    (click)="toggleDropdown($event)"
+    type="button"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-haspopup]="'listbox'">
+    <lucide-icon [img]="filterIcon" [size]="16"></lucide-icon>
+    <span class="multi-select-trigger-label">{{ label() }}</span>
+    @if (selectedCount() > 0) {
+      <span class="multi-select-badge">{{ selectedCount() }}</span>
+    }
+  </button>
+
+  @if (isOpen()) {
+    <div
+      class="multi-select-dropdown"
+      [class.multi-select-dropdown--left]="direction() === 'left'"
+      [class.multi-select-dropdown--center]="direction() === 'center'"
+      [class.multi-select-dropdown--right]="direction() === 'right'"
+      role="listbox"
+      [attr.aria-multiselectable]="true">
+      @if (title()) {
+        <div class="multi-select-header">{{ title() }}</div>
+      }
+      <div class="multi-select-list">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,26 @@
+<div class="dashboard-filter-container">
+    <app-select
+        [options]="durationSelectOptions()"
+        [(value)]="durationSelection"
+        aria-label="Duration Type Select">
+    </app-select>
+
+    <app-select
+        [options]="statusSelectOptions()"
+        [(value)]="statusSelection"
+        aria-label="Status Type Select">
+    </app-select>
+
+    <app-multi-select
+        label="Lists"
+        title="Task Lists"
+        [(selectedValues)]="listSelections"
+        aria-label="Task List Multi Select">
+        @for (list of taskLists(); track list.id) {
+            <app-multi-select-item [value]="list.id">
+                <span class="list-color-dot" [style.background-color]="list.color"></span>
+                {{ list.name }}
+            </app-multi-select-item>
+        }
+    </app-multi-select>
+</div>
