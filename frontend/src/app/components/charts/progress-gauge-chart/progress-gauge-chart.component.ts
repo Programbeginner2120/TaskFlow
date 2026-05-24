@@ -1,7 +1,8 @@
-import { Component, computed, input } from "@angular/core";
+import { Component, HostBinding, computed, inject, input } from "@angular/core";
 import { NgxEchartsDirective } from "ngx-echarts";
 import { GaugeThreshold } from "../../../interfaces/charts.interface";
 import { EChartsOption } from "echarts/types/dist/shared";
+import { ThemeService } from "../../../services/theme.service";
 
 @Component({
     selector: 'app-progress-gauge',
@@ -10,6 +11,9 @@ import { EChartsOption } from "echarts/types/dist/shared";
     styleUrls: ['./progress-gauge-chart.component.scss']
 })
 export class ProgressGaugeComponent {
+
+    @HostBinding('style.height') get hostHeight() { return this.height(); }
+    @HostBinding('style.width')  get hostWidth()  { return this.width(); }
 
     // input signals
     value = input.required<number>();
@@ -29,6 +33,14 @@ export class ProgressGaugeComponent {
     // gradientStart = input<string>('#67e0e3'); // cyan
     // gradientEnd   = input<string>('#fd666d'); // red
 
+    // Injected services
+    private readonly themeService = inject(ThemeService);
+
+    // Computed
+    readonly theme = computed(() =>
+        this.themeService.theme()
+    );
+
     chartOptions = computed<EChartsOption>(() => {
         const colorStops: [number, string][] = this.thresholds().length
             ? this.thresholds().map(t => [t.value, t.color])
@@ -36,7 +48,7 @@ export class ProgressGaugeComponent {
 
         return {
             title: this.title()
-                ? { text: this.title(), left: 'center', top: 'top' }
+                ? { text: this.title(), left: 'center', top: 'top', textStyle: { color: this.theme() === 'dark' ? 'white' : 'black', } }
                 : undefined,
             series: [
                 {

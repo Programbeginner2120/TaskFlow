@@ -1,0 +1,214 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.task-table-card {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    box-shadow: var(--shadow-modal);
+}
+
+.task-table-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.task-table-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.task-table-subtitle {
+    font-size: 14px;
+    color: var(--color-warning);
+    margin: 0;
+}
+
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border);
+
+    &:last-child {
+        text-align: right;
+    }
+}
+
+.col-status {
+    text-align: right;
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--color-border);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &:hover {
+        background-color: var(--color-bg-primary);
+    }
+}
+
+tbody td {
+    padding: var(--space-4);
+    font-size: 14px;
+}
+
+.cell-task {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.cell-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.list-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.list-name {
+    font-size: 14px;
+}
+
+.cell-due {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+}
+
+.cell-status {
+    text-align: right;
+}
+
+.cell-empty {
+    color: var(--color-text-muted);
+}
+
+.cell-empty-state {
+    text-align: center;
+    padding: var(--space-8);
+    color: var(--color-text-muted);
+    font-size: 14px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid;
+
+    &--active {
+        color: var(--color-text-primary);
+        border-color: var(--color-border-hover);
+        background-color: var(--color-bg-secondary);
+    }
+
+    &--completed {
+        color: var(--color-success);
+        border-color: #a7f3d0;
+        background-color: #ecfdf5;
+    }
+
+    &--overdue {
+        color: var(--color-error);
+        border-color: #fca5a5;
+        background-color: #fef2f2;
+    }
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    gap: var(--space-4);
+}
+
+.pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.pagination-btn {
+    font-size: 14px;
+    padding: var(--space-2) var(--space-3);
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--color-text-primary);
+    transition: background-color 0.15s;
+
+    &:hover:not(:disabled) {
+        background-color: var(--color-bg-primary);
+        border-color: var(--color-border-hover);
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+}
+
+.pagination-page-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s;
+
+    &:hover:not(.active) {
+        background-color: var(--color-bg-primary);
+    }
+
+    &.active {
+        background-color: rgba(99, 102, 241, 0.1);
+        border-color: rgba(99, 102, 241, 0.3);
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+}
+
+.pagination-ellipsis {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    font-size: 14px;
+}

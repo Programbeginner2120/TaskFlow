@@ -4,110 +4,102 @@ import { BarSeriesData, DonutSlice, GaugeThreshold, LineSeriesData } from "../..
 import { BarChartComponent } from "../charts/bar-chart/bar-chart.component";
 import { ProgressGaugeComponent } from "../charts/progress-gauge-chart/progress-gauge-chart.component";
 import { DonutChartComponent } from "../charts/donut-chart/donut-chart.component";
+import { DashboardFilterComponent } from "./dashboard-filter/dashboard-filter.component";
+import { StatisticsCard, TaskTableRow } from "../../interfaces/dashboard.interface";
+import { Activity, AlertTriangle, CheckCircle2, Clock, ListTodo, LucideAngularModule } from "lucide-angular";
+import { TaskTableComponent } from "./task-table/task-table.component";
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    imports: [MultiLineChartComponent, BarChartComponent, ProgressGaugeComponent, DonutChartComponent],
+    imports: [MultiLineChartComponent, BarChartComponent, ProgressGaugeComponent, DonutChartComponent, DashboardFilterComponent, LucideAngularModule, TaskTableComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
-    /* Mutli line chart */
-    // months = signal(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
 
-    // revenueSeries = signal<LineSeriesData[]>([
-    //     { name: 'Product A', data: [120, 200, 150,  80,  70, 110] },
-    //     { name: 'Product B', data: [220, 182, 191, 234, 290, 330] },
-    //     { name: 'Product C', data: [150, 232, 201, 154, 190, 330] },
-    // ]);
+    // filter state
+    readonly filterDuration = signal('LAST_7_DAYS');
+    readonly filterStatus = signal('ALL');
+    readonly filterListIds = signal<number[]>([]);
 
-    // // Example: reactively add a new data point to all series
-    // addDataPoint() {
-    //     const nextMonths = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    //     const idx = this.months().length - 6; // offset into nextMonths
+    // stats card info
+    statisticsCards = signal<StatisticsCard[]>([
+        { label: 'Total', value: 10, iconBackgroundColor: '#EFEFFD', icon: ListTodo },
+        { label: 'Completed', value: 1, iconBackgroundColor: '#E8F9EE', icon: CheckCircle2 },
+        { label: 'Active', value: 9, iconBackgroundColor: '#EFEFFD', icon: Activity },
+        { label: 'Overdue', value: 0, iconBackgroundColor: '#FDECEC', icon: AlertTriangle },
+        { label: 'Due Today', value: 2,iconBackgroundColor: '#FDF5E6', icon: Clock }
+    ]);
 
-    //     this.months.update(m => [...m, nextMonths[idx]]);
+    // progress gauge info
 
-    //     this.revenueSeries.update(series =>
-    //     series.map(s => ({
-    //         ...s,
-    //         data: [...s.data, Math.floor(Math.random() * 300) + 100],
-    //     }))
-    //     );
-    // }
+    cpu = signal(43);
 
-    /* Bar chart */
-    // quarters = signal(['Q1', 'Q2', 'Q3', 'Q4']);
+    // donut chart info
 
-    // salesSeries = signal<BarSeriesData[]>([
-    //     { name: 'North', data: [320, 440, 390, 510] },
-    //     { name: 'South', data: [220, 310, 280, 390] },
-    //     { name: 'East',  data: [150, 200, 175, 260] },
-    // ]);
+    regionData = signal<DonutSlice[]>([
+        { name: 'North',  value: 1048 },
+        { name: 'South',  value: 735  },
+        { name: 'East',   value: 580  },
+        { name: 'West',   value: 484  },
+    ]);
 
-    // // Reactively add a new group member
-    // addSeries() {
-    //     this.salesSeries.update(series => [
-    //     ...series,
-    //     {
-    //         name: `Region ${series.length + 1}`,
-    //         data: this.quarters().map(() => Math.floor(Math.random() * 400) + 100),
-    //     },
-    //     ]);
-    // }
+    // bar chart info
 
-    /* Progress Gauges */
+    quarters = signal(['Q1', 'Q2', 'Q3', 'Q4']);
 
-    // cpu  = signal(43);
-    // temp = signal(67);
+    salesSeries = signal<BarSeriesData[]>([
+        { name: 'North', data: [320, 440, 390, 510] },
+        { name: 'South', data: [220, 310, 280, 390] },
+        { name: 'East',  data: [150, 200, 175, 260] },
+    ]);
 
-    // cpuThresholds: GaugeThreshold[] = [
-    //     // { value: 0.5, color: '#22c55e' }, // green   0–50%
-    //     // { value: 0.8, color: '#f59e0b' }, // amber  50–80%
-    //     // { value: 1.0, color: '#ef4444' }, // red    80–100%
-    //     { value: 1.0, color: '#cec1c1' }
-    // ];
+    // multi line chart info
 
-    // tempThresholds: GaugeThreshold[] = [
-    //     // { value: 0.33, color: '#22c55e' },
-    //     // { value: 0.66, color: '#f59e0b' },
-    //     // { value: 1.0,  color: '#ef4444' },
-    //     { value: 1.0, color: '#cec1c1' }
-    // ];
+    months = signal(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
 
-    // randomize() {
-    //     this.cpu.set(Math.floor(Math.random() * 100));
-    //     this.temp.set(Math.floor(Math.random() * 120));
-    // }
+    revenueSeries = signal<LineSeriesData[]>([
+        { name: 'Product A', data: [120, 200, 150,  80,  70, 110] },
+        { name: 'Product B', data: [220, 182, 191, 234, 290, 330] },
+        { name: 'Product C', data: [150, 232, 201, 154, 190, 330] },
+    ]);
 
-    /* Donut chart */
+    // task table info
 
-    // regionData = signal<DonutSlice[]>([
-    //     { name: 'North',  value: 1048 },
-    //     { name: 'South',  value: 735  },
-    //     { name: 'East',   value: 580  },
-    //     { name: 'West',   value: 484  },
-    // ]);
+    taskTableRows = signal<TaskTableRow[]>([
+        { title: 'Fix login page bug',             listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Prepare sprint retrospective',   listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-26'), status: 'Active' },
+        { title: 'Buy groceries',                  listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-24'), status: 'Active' },
+        { title: 'Deploy staging environment',     listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-28'), status: 'Active' },
+        { title: 'Review Q2 roadmap presentation', listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Order new running shoes',        listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Schedule dentist appointment',   listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-25'), status: 'Active' },
+        { title: 'Plan weekend hiking trip',       listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Fix login page bug',             listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Prepare sprint retrospective',   listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-26'), status: 'Active' },
+        { title: 'Buy groceries',                  listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-24'), status: 'Active' },
+        { title: 'Deploy staging environment',     listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-28'), status: 'Active' },
+        { title: 'Review Q2 roadmap presentation', listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Order new running shoes',        listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Schedule dentist appointment',   listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-25'), status: 'Active' },
+        { title: 'Plan weekend hiking trip',       listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Fix login page bug',             listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Prepare sprint retrospective',   listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-26'), status: 'Active' },
+        { title: 'Buy groceries',                  listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-24'), status: 'Active' },
+        { title: 'Deploy staging environment',     listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-28'), status: 'Active' },
+        { title: 'Review Q2 roadmap presentation', listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Order new running shoes',        listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Schedule dentist appointment',   listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-25'), status: 'Active' },
+        { title: 'Plan weekend hiking trip',       listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Fix login page bug',             listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Prepare sprint retrospective',   listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-26'), status: 'Active' },
+        { title: 'Buy groceries',                  listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-24'), status: 'Active' },
+        { title: 'Deploy staging environment',     listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-28'), status: 'Active' },
+        { title: 'Review Q2 roadmap presentation', listName: 'Work',     listColor: '#6366F1', dueDate: new Date('2026-05-23'), status: 'Active' },
+        { title: 'Order new running shoes',        listName: 'Shopping', listColor: '#F59E0B', dueDate: new Date('2026-05-30'), status: 'Active' },
+        { title: 'Schedule dentist appointment',   listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-25'), status: 'Active' },
+        { title: 'Plan weekend hiking trip',       listName: 'Personal', listColor: '#10B981', dueDate: new Date('2026-05-30'), status: 'Active' },
+    ]);
 
-    // productData = signal<DonutSlice[]>([
-    //     { name: 'Product A', value: 320 },
-    //     { name: 'Product B', value: 210 },
-    //     { name: 'Product C', value: 175 },
-    //     { name: 'Product D', value: 95  },
-    // ]);
-
-    // // Derive total for the hole label reactively
-    // totalLabel = computed(() =>
-    //     this.productData().reduce((sum, d) => sum + d.value, 0).toLocaleString()
-    // );
-
-    // randomize() {
-    //     this.productData.update(slices =>
-    //     slices.map(s => ({
-    //         ...s,
-    //         value: Math.floor(Math.random() * 500) + 50,
-    //     }))
-    //     );
-    // }
 }
