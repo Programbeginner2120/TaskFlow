@@ -20,6 +20,7 @@ export function toTask(raw: TaskApiResponse): Task {
         title: raw.title,
         notes: raw.notes ?? '',
         completed: raw.completed,
+        completedAt: raw.completedAt ? new Date(raw.completedAt) : null,
         dueDate: raw.dueDate ? new Date(raw.dueDate + 'T00:00:00') : null,
         subtasks: raw.subtasks.map(toSubtask),
         position: raw.position,
