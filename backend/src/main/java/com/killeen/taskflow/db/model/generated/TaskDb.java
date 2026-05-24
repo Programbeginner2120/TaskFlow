@@ -1,7 +1,6 @@
 package com.killeen.taskflow.db.model.generated;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 public class TaskDb {
@@ -23,7 +22,7 @@ public class TaskDb {
 
     private Long position;
 
-    private LocalDateTime completedAt;
+    private OffsetDateTime completedAt;
 
     public Long getId() {
         return id;
@@ -97,11 +96,11 @@ public class TaskDb {
         this.position = position;
     }
 
-    public LocalDateTime getCompletedAt() {
+    public OffsetDateTime getCompletedAt() {
         return completedAt;
     }
 
-    public void setCompletedAt(LocalDateTime completedAt) {
+    public void setCompletedAt(OffsetDateTime completedAt) {
         this.completedAt = completedAt;
     }
 }

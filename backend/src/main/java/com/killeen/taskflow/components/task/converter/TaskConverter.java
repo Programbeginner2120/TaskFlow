@@ -15,5 +15,6 @@ public interface TaskConverter {
 
     TaskDb       toDb(Task dto);
 
+    @Mapping(target = "completed", expression = "java(task.getCompletedAt() != null)")
     TaskResponse toResponse(Task task);
 }

@@ -63,7 +63,7 @@ public class TaskService {
                 .listId(request.getListId())
                 .title(request.getTitle())
                 .notes(request.getNotes())
-                .completed(false)
+                .completedAt(null)
                 .dueDate(request.getDueDate())
                 .subtasks(List.of())
                 .position(taskPosition)
@@ -147,7 +147,11 @@ public class TaskService {
         existing.setNotes(request.getNotes());
         existing.setDueDate(request.getDueDate());
         existing.setListId(request.getListId());
-        existing.setCompleted(request.isCompleted());
+        if (request.isCompleted() && existing.getCompletedAt() == null) {
+                existing.setCompletedAt(OffsetDateTime.now(ZoneOffset.UTC));
+        } else if (!request.isCompleted()) {
+                existing.setCompletedAt(null);
+        }
         existing.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         taskRepository.update(encryptionHelper.encryptTask(existing));

@@ -1,7 +1,6 @@
 package com.killeen.taskflow.db.model.generated;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -677,52 +676,52 @@ public class TaskDbExample {
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtEqualTo(LocalDateTime value) {
+        public Criteria andCompletedAtEqualTo(OffsetDateTime value) {
             addCriterion("completed_at =", value, "completedAt");
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtNotEqualTo(LocalDateTime value) {
+        public Criteria andCompletedAtNotEqualTo(OffsetDateTime value) {
             addCriterion("completed_at <>", value, "completedAt");
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtGreaterThan(LocalDateTime value) {
+        public Criteria andCompletedAtGreaterThan(OffsetDateTime value) {
             addCriterion("completed_at >", value, "completedAt");
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtGreaterThanOrEqualTo(LocalDateTime value) {
+        public Criteria andCompletedAtGreaterThanOrEqualTo(OffsetDateTime value) {
             addCriterion("completed_at >=", value, "completedAt");
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtLessThan(LocalDateTime value) {
+        public Criteria andCompletedAtLessThan(OffsetDateTime value) {
             addCriterion("completed_at <", value, "completedAt");
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtLessThanOrEqualTo(LocalDateTime value) {
+        public Criteria andCompletedAtLessThanOrEqualTo(OffsetDateTime value) {
             addCriterion("completed_at <=", value, "completedAt");
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtIn(List<LocalDateTime> values) {
+        public Criteria andCompletedAtIn(List<OffsetDateTime> values) {
             addCriterion("completed_at in", values, "completedAt");
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtNotIn(List<LocalDateTime> values) {
+        public Criteria andCompletedAtNotIn(List<OffsetDateTime> values) {
             addCriterion("completed_at not in", values, "completedAt");
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andCompletedAtBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("completed_at between", value1, value2, "completedAt");
             return (Criteria) this;
         }
 
-        public Criteria andCompletedAtNotBetween(LocalDateTime value1, LocalDateTime value2) {
+        public Criteria andCompletedAtNotBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("completed_at not between", value1, value2, "completedAt");
             return (Criteria) this;
         }

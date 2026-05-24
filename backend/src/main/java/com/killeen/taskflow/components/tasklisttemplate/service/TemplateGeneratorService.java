@@ -74,7 +74,7 @@ public class TemplateGeneratorService {
                         .listId(listId)
                         .title(taskTemplate.getTitle())
                         .notes(taskTemplate.getNotes())
-                        .completed(false)
+                        .completedAt(null)
                         .dueDate(dueDate)
                         .subtasks(List.of())
                         .position((long) i)
