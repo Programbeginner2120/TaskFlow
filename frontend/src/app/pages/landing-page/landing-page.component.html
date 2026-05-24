@@ -93,9 +93,9 @@
                     </app-calendar-view>
                 }
                 @case ('upcoming') {
-                    <app-upcoming>
+                    <app-upcoming
                         [searchQuery]="searchQuery()"
-                        (taskSelected)="selectedTask.set($any($event))"
+                        (taskSelected)="selectedTask.set($any($event))">
                     </app-upcoming>
                 }
                 @case ('dashboard') {
