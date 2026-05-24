@@ -20,6 +20,7 @@ public class TaskResponse {
     private String                title;
     private String                notes;
     private boolean               completed;
+    private OffsetDateTime        completedAt;
     private LocalDate             dueDate;
     private List<SubtaskResponse> subtasks;
     private Long                  position;

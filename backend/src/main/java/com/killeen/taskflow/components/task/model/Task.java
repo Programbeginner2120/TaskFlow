@@ -19,7 +19,7 @@ public class Task {
     private Long          listId;
     private String        title;
     private String        notes;
-    private boolean       completed;
+    private OffsetDateTime completedAt;
     private LocalDate     dueDate;
     private List<Subtask> subtasks;
     private Long          position;

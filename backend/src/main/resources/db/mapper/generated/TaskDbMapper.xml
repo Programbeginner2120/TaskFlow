@@ -7,11 +7,11 @@
     <result column="list_id" jdbcType="BIGINT" property="listId" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
-    <result column="completed" jdbcType="BIT" property="completed" />
     <result column="due_date" jdbcType="DATE" property="dueDate" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
     <result column="position" jdbcType="BIGINT" property="position" />
+    <result column="completed_at" jdbcType="TIMESTAMP" property="completedAt" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,8 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, list_id, title, notes, completed, due_date, created_at, updated_at, 
-    position
+    id, user_id, list_id, title, notes, due_date, created_at, updated_at, position, completed_at
   </sql>
   <select id="selectByExample" parameterType="com.killeen.taskflow.db.model.generated.TaskDbExample" resultMap="BaseResultMap">
     select
@@ -107,12 +106,12 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.TaskDb" useGeneratedKeys="true">
     insert into tasks (user_id, list_id, title, 
-      notes, completed, due_date, 
-      created_at, updated_at, position
+      notes, due_date, created_at, 
+      updated_at, position, completed_at
       )
     values (#{userId,jdbcType=BIGINT}, #{listId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
-      #{notes,jdbcType=VARCHAR}, #{completed,jdbcType=BIT}, #{dueDate,jdbcType=DATE}, 
-      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, #{position,jdbcType=BIGINT}
+      #{notes,jdbcType=VARCHAR}, #{dueDate,jdbcType=DATE}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{updatedAt,jdbcType=TIMESTAMP}, #{position,jdbcType=BIGINT}, #{completedAt,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.TaskDb" useGeneratedKeys="true">
@@ -130,9 +129,6 @@
       <if test="notes != null">
         notes,
       </if>
-      <if test="completed != null">
-        completed,
-      </if>
       <if test="dueDate != null">
         due_date,
       </if>
@@ -144,6 +140,9 @@
       </if>
       <if test="position != null">
         position,
+      </if>
+      <if test="completedAt != null">
+        completed_at,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -159,9 +158,6 @@
       <if test="notes != null">
         #{notes,jdbcType=VARCHAR},
       </if>
-      <if test="completed != null">
-        #{completed,jdbcType=BIT},
-      </if>
       <if test="dueDate != null">
         #{dueDate,jdbcType=DATE},
       </if>
@@ -173,6 +169,9 @@
       </if>
       <if test="position != null">
         #{position,jdbcType=BIGINT},
+      </if>
+      <if test="completedAt != null">
+        #{completedAt,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -200,9 +199,6 @@
       <if test="row.notes != null">
         notes = #{row.notes,jdbcType=VARCHAR},
       </if>
-      <if test="row.completed != null">
-        completed = #{row.completed,jdbcType=BIT},
-      </if>
       <if test="row.dueDate != null">
         due_date = #{row.dueDate,jdbcType=DATE},
       </if>
@@ -214,6 +210,9 @@
       </if>
       <if test="row.position != null">
         position = #{row.position,jdbcType=BIGINT},
+      </if>
+      <if test="row.completedAt != null">
+        completed_at = #{row.completedAt,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="example != null">
@@ -227,11 +226,11 @@
       list_id = #{row.listId,jdbcType=BIGINT},
       title = #{row.title,jdbcType=VARCHAR},
       notes = #{row.notes,jdbcType=VARCHAR},
-      completed = #{row.completed,jdbcType=BIT},
       due_date = #{row.dueDate,jdbcType=DATE},
       created_at = #{row.createdAt,jdbcType=TIMESTAMP},
       updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
-      position = #{row.position,jdbcType=BIGINT}
+      position = #{row.position,jdbcType=BIGINT},
+      completed_at = #{row.completedAt,jdbcType=TIMESTAMP}
     <if test="example != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -251,9 +250,6 @@
       <if test="notes != null">
         notes = #{notes,jdbcType=VARCHAR},
       </if>
-      <if test="completed != null">
-        completed = #{completed,jdbcType=BIT},
-      </if>
       <if test="dueDate != null">
         due_date = #{dueDate,jdbcType=DATE},
       </if>
@@ -266,6 +262,9 @@
       <if test="position != null">
         position = #{position,jdbcType=BIGINT},
       </if>
+      <if test="completedAt != null">
+        completed_at = #{completedAt,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -275,11 +274,11 @@
       list_id = #{listId,jdbcType=BIGINT},
       title = #{title,jdbcType=VARCHAR},
       notes = #{notes,jdbcType=VARCHAR},
-      completed = #{completed,jdbcType=BIT},
       due_date = #{dueDate,jdbcType=DATE},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      position = #{position,jdbcType=BIGINT}
+      position = #{position,jdbcType=BIGINT},
+      completed_at = #{completedAt,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

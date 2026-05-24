@@ -14,8 +14,6 @@ public class TaskDb {
 
     private String notes;
 
-    private Boolean completed;
-
     private LocalDate dueDate;
 
     private OffsetDateTime createdAt;
@@ -23,6 +21,8 @@ public class TaskDb {
     private OffsetDateTime updatedAt;
 
     private Long position;
+
+    private OffsetDateTime completedAt;
 
     public Long getId() {
         return id;
@@ -64,14 +64,6 @@ public class TaskDb {
         this.notes = notes == null ? null : notes.trim();
     }
 
-    public Boolean getCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
-    }
-
     public LocalDate getDueDate() {
         return dueDate;
     }
@@ -102,5 +94,13 @@ public class TaskDb {
 
     public void setPosition(Long position) {
         this.position = position;
+    }
+
+    public OffsetDateTime getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(OffsetDateTime completedAt) {
+        this.completedAt = completedAt;
     }
 }
