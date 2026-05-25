@@ -17,7 +17,14 @@ public class DashboardAnalyticsService {
     private final TaskService taskService;
 
     public DashboardAnalyticsResponse retrieveDashboardAnalyticsData(Long userId, DashboardAnalyticsRequest dashboardAnalyticsRequest) {
-        return taskService.retrieveDashboardAnalyticsData(userId, dashboardAnalyticsRequest);
+        log.debug("Fetching dashboard analytics data for user {} with request: duration={}, status={}, lists={}",
+                userId,
+                dashboardAnalyticsRequest.getDurationSelection(),
+                dashboardAnalyticsRequest.getStatusSelection(),
+                dashboardAnalyticsRequest.getListSelections());
+        DashboardAnalyticsResponse response = taskService.retrieveDashboardAnalyticsData(userId, dashboardAnalyticsRequest);
+        log.debug("Returning {} tasks for user {}", response.getTasks().size(), userId);
+        return response;
     }
     
 }
