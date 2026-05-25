@@ -20,6 +20,7 @@ import {
 } from "../../interfaces/dashboard.interface";
 import { DashboardAnalyticsService } from "../../services/dashboard-analytics.service";
 import { TaskListStateService } from "../../services/task-list-state.service";
+import { PlatformService } from "../../services/platform.service";
 import { toDashboardTask } from "../../mappers/dashboard-analytics.mapper";
 
 @Component({
@@ -34,6 +35,7 @@ export class DashboardComponent {
     private readonly analyticsService     = inject(DashboardAnalyticsService);
     private readonly taskListStateService = inject(TaskListStateService);
     private readonly destroyRef           = inject(DestroyRef);
+    readonly platformService              = inject(PlatformService);
 
     // ─── Filter state ──────────────────────────────────────────────────────────
 

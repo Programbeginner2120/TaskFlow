@@ -19,6 +19,18 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+
+    &.--phone {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+    }
+}
+
+.titles-container {
+    &.--phone {
+        text-align: center;
+    }
 }
 
 .filter-container {
@@ -36,6 +48,12 @@
     grid-auto-flow: column;
     grid-auto-columns: 1fr;
     column-gap: var(--space-8);
+
+    &.--phone {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
 }
 
 .stats-card {

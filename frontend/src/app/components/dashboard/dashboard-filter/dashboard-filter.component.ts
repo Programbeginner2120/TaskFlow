@@ -5,6 +5,7 @@ import { MultiSelectItemComponent } from "../../../shared/components/multi-selec
 import { SelectOption } from "../../../shared/interfaces/select.interface";
 import { TaskListStateService } from "../../../services/task-list-state.service";
 import { TaskDataDuration, TaskDataStatus } from "../../../interfaces/dashboard.interface";
+import { PlatformService } from "../../../services/platform.service";
 
 @Component({
     selector: 'app-dashboard-filter',
@@ -16,6 +17,7 @@ export class DashboardFilterComponent {
 
     // Service injection
     private readonly taskListStateService = inject(TaskListStateService);
+    readonly platformService              = inject(PlatformService);
 
     readonly durationSelectOptions: Signal<SelectOption[]> = signal([
         { value: 'LAST_7_DAYS', label: 'Last 7 Days' },
