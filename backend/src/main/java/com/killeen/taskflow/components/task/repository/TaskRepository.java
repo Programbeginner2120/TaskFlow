@@ -1,5 +1,7 @@
 package com.killeen.taskflow.components.task.repository;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -7,12 +9,16 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import com.killeen.taskflow.components.analytics.constants.DashboardAnalyticsConstants.TaskDataDuration;
+import com.killeen.taskflow.components.analytics.constants.DashboardAnalyticsConstants.TaskDataStatus;
+import com.killeen.taskflow.components.analytics.model.DashboardAnalyticsRequest;
 import com.killeen.taskflow.components.task.converter.TaskConverter;
 import com.killeen.taskflow.components.task.model.Subtask;
 import com.killeen.taskflow.components.task.model.Task;
 import com.killeen.taskflow.db.mapper.generated.TaskDbMapper;
 import com.killeen.taskflow.db.model.generated.TaskDb;
 import com.killeen.taskflow.db.model.generated.TaskDbExample;
+import com.killeen.taskflow.db.model.generated.TaskDbExample.Criteria;
 
 import lombok.RequiredArgsConstructor;
 
@@ -74,6 +80,65 @@ public class TaskRepository {
             })
             .toList()
         );
+    }
+
+    public Optional<List<Task>> retrieveDashboardAnalyticsTaskData(Long userId, DashboardAnalyticsRequest dashboardAnalyticsRequest) {
+
+        TaskDataDuration taskDataDuration = dashboardAnalyticsRequest.getDurationSelection();
+        Integer createdAtDayOffset;
+        switch(taskDataDuration) {
+                case LAST_7_DAYS:
+                        createdAtDayOffset = 7;
+                        break;
+                case LAST_30_DAYS:
+                        createdAtDayOffset = 30;
+                        break;
+                case LAST_90_DAYS:
+                        createdAtDayOffset = 90;
+                        break;
+                default:
+                        createdAtDayOffset = null;
+                        break;
+        }
+
+        OffsetDateTime createdAtParameter = createdAtDayOffset != null 
+                ? OffsetDateTime.now(ZoneOffset.UTC).minusDays(createdAtDayOffset)
+                : OffsetDateTime.MIN;
+
+        TaskDbExample example = new TaskDbExample();
+        Criteria criteria = example.createCriteria().andUserIdEqualTo(userId)
+                .andCreatedAtGreaterThanOrEqualTo(createdAtParameter);
+
+        List<Long> listSelections = dashboardAnalyticsRequest.getListSelections();
+        if (listSelections != null && !listSelections.isEmpty()) {
+                criteria = criteria.andListIdIn(listSelections);
+        }
+
+        TaskDataStatus taskDataStatus = dashboardAnalyticsRequest.getStatusSelection();
+        if (TaskDataStatus.ACTIVE.equals(taskDataStatus)) {
+                criteria = criteria.andCompletedAtIsNull();
+        } else if (TaskDataStatus.COMPLETED.equals(taskDataStatus)) {
+                criteria = criteria.andCompletedAtIsNotNull();
+        }
+
+        example.setOrderByClause("created_at DESC");
+
+        List<TaskDb> taskDbs = this.taskDbMapper.selectByExample(example);
+
+        List<Long> taskIds = taskDbs.stream().map(TaskDb::getId).toList();
+        Map<Long, List<Subtask>> subtasksByTaskId = subtaskRepository
+                .findAllByTaskIdIn(taskIds).stream()
+                .collect(Collectors.groupingBy(Subtask::getTaskId));
+
+        return Optional.of(taskDbs
+            .stream()
+            .map(taskDb -> {
+                Task task = taskConverter.toDto(taskDb);
+                task.setSubtasks(subtasksByTaskId.getOrDefault(task.getId(), List.of()));
+                return task;
+            })
+            .toList());
+
     }
 
     public Long save(Task task) {

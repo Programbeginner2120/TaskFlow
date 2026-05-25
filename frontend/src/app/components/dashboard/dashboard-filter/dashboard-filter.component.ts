@@ -4,6 +4,7 @@ import { MultiSelectComponent } from "../../../shared/components/multi-select/mu
 import { MultiSelectItemComponent } from "../../../shared/components/multi-select/multi-select-item/multi-select-item.component";
 import { SelectOption } from "../../../shared/interfaces/select.interface";
 import { TaskListStateService } from "../../../services/task-list-state.service";
+import { TaskDataDuration, TaskDataStatus } from "../../../interfaces/dashboard.interface";
 
 @Component({
     selector: 'app-dashboard-filter',
@@ -33,8 +34,8 @@ export class DashboardFilterComponent {
         this.taskListStateService.lists()
     );
 
-    durationSelection = model('');
-    statusSelection = model('');
-    listSelections = model<number[]>([]);
+    durationSelection = model<TaskDataDuration>('LAST_7_DAYS');
+    statusSelection   = model<TaskDataStatus>('ALL');
+    listSelections    = model<number[]>([]);
 
 }
