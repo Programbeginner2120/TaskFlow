@@ -1,15 +1,17 @@
-<div class="dashboard-filter-container">
-    <app-select
-        [options]="durationSelectOptions()"
-        [(value)]="durationSelection"
-        aria-label="Duration Type Select">
-    </app-select>
+<div class="dashboard-filter-container" [class.--phone]="platformService.isPhone()">
+    <div class="filter-top-row">
+        <app-select
+            [options]="durationSelectOptions()"
+            [(value)]="durationSelection"
+            aria-label="Duration Type Select">
+        </app-select>
 
-    <app-select
-        [options]="statusSelectOptions()"
-        [(value)]="statusSelection"
-        aria-label="Status Type Select">
-    </app-select>
+        <app-select
+            [options]="statusSelectOptions()"
+            [(value)]="statusSelection"
+            aria-label="Status Type Select">
+        </app-select>
+    </div>
 
     <app-multi-select
         label="Lists"
