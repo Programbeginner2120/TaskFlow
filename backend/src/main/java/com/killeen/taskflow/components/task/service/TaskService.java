@@ -8,6 +8,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.killeen.taskflow.components.analytics.model.DashboardAnalyticsRequest;
+import com.killeen.taskflow.components.analytics.model.DashboardAnalyticsResponse;
 import com.killeen.taskflow.components.task.TaskEncryptionHelper;
 import com.killeen.taskflow.components.task.exception.SubtaskNotFoundException;
 import com.killeen.taskflow.components.task.exception.TaskNotFoundException;
@@ -181,6 +183,12 @@ public class TaskService {
         log.info("Deleted task {} for user {}", taskId, userId);
     }
 
+    public DashboardAnalyticsResponse retrieveDashboardAnalyticsData(Long userId, DashboardAnalyticsRequest dashboardAnalyticsRequest) {
+        return DashboardAnalyticsResponse.builder()
+                .tasks(this.taskRepository.retrieveDashboardAnalyticsTaskData(userId, dashboardAnalyticsRequest).get())
+                .build();
+    }
+
     // -------------------------------------------------------------------------
     // Subtasks
     // -------------------------------------------------------------------------
@@ -239,7 +247,4 @@ public class TaskService {
         log.info("Deleted subtask {} from task {}", subtaskId, taskId);
     }
 
-    // -------------------------------------------------------------------------
-    // (Encryption helpers delegated to TaskEncryptionHelper bean)
-    // -------------------------------------------------------------------------
 }
