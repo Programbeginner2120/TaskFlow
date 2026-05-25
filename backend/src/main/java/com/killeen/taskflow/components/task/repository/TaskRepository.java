@@ -107,8 +107,12 @@ public class TaskRepository {
 
         TaskDbExample example = new TaskDbExample();
         Criteria criteria = example.createCriteria().andUserIdEqualTo(userId)
-                .andCreatedAtGreaterThanOrEqualTo(createdAtParameter)
-                .andListIdIn(dashboardAnalyticsRequest.getListSelections());
+                .andCreatedAtGreaterThanOrEqualTo(createdAtParameter);
+
+        List<Long> listSelections = dashboardAnalyticsRequest.getListSelections();
+        if (listSelections != null && !listSelections.isEmpty()) {
+                criteria = criteria.andListIdIn(listSelections);
+        }
 
         TaskDataStatus taskDataStatus = dashboardAnalyticsRequest.getStatusSelection();
         if (TaskDataStatus.ACTIVE.equals(taskDataStatus)) {

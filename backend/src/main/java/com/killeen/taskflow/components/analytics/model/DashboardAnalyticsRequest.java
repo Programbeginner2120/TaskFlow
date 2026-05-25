@@ -5,7 +5,6 @@ import java.util.List;
 import com.killeen.taskflow.components.analytics.constants.DashboardAnalyticsConstants.TaskDataDuration;
 import com.killeen.taskflow.components.analytics.constants.DashboardAnalyticsConstants.TaskDataStatus;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -16,7 +15,6 @@ public class DashboardAnalyticsRequest {
     private TaskDataDuration durationSelection;
     @NotNull
     private TaskDataStatus statusSelection;
-    @NotEmpty
     private List<Long> listSelections;
 
 }

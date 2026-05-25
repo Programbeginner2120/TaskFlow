@@ -62,19 +62,13 @@ export class DashboardComponent {
             toObservable(this.filterDuration),
             toObservable(this.filterStatus),
             toObservable(this.filterListIds),
-            toObservable(this.taskListStateService.lists),
         ]).pipe(
-            switchMap(([duration, status, listIds, allLists]) => {
-                const allListIds      = allLists.map(l => l.id);
-                const effectiveListIds = listIds.length > 0 ? listIds : allListIds;
-                if (effectiveListIds.length === 0) {
-                    return of({ tasks: [] } as DashboardAnalyticsApiResponse);
-                }
+            switchMap(([duration, status, listIds]) => {
                 this.loading.set(true);
                 return this.analyticsService.getAnalytics({
                     durationSelection: duration,
                     statusSelection:   status,
-                    listSelections:    effectiveListIds,
+                    listSelections:    listIds,
                 }).pipe(catchError(() => of({ tasks: [] } as DashboardAnalyticsApiResponse)));
             }),
             takeUntilDestroyed(this.destroyRef),
