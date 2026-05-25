@@ -1,6 +1,6 @@
 <div class="dashboard-container">
-    <div class="header-container">
-        <div class="titles-container">
+    <div class="header-container" [class.--phone]="platformService.isPhone()">
+        <div class="titles-container" [class.--phone]="platformService.isPhone()">
             <h1 class="title">Insights</h1>
             <p class="subtitle">Track your productivity across lists and time.</p>
         </div>
@@ -11,7 +11,7 @@
             </app-dashboard-filter>
     </div>
 
-    <div class="stats-cards-container">
+    <div class="stats-cards-container" [class.--phone]="platformService.isPhone()">
         @for (statsCard of statisticsCards(); track $index) {
             <div class="stats-card">
                 <div class="stats-card-data-container">
@@ -27,6 +27,7 @@
         }
     </div>
 
+    @if (!platformService.isPhone()) {
     <div class="data-visualizations-container">
         <div class="data-visualizations-row-container">
             <div class="data-visualization-card">
@@ -85,10 +86,13 @@
             </div>
         </div>
     </div>
+    }
 
+    @if (!platformService.isPhone()) {
     <app-task-table
         title="Recent activity"
         subtitle="Latest tasks matching your filters"
         [rows]="taskTableRows()"
     ></app-task-table>
+    }
 </div>
