@@ -104,34 +104,48 @@ export class DashboardComponent {
         return Math.round(tasks.filter(t => t.completed).length / tasks.length * 100);
     });
 
-    // ─── Tasks by list (donut) ─────────────────────────────────────────────────
+    // ─── Due date horizon (donut) ─────────────────────────────────────────────
 
-    readonly tasksByList = computed<DonutSlice[]>(() => {
-        const tasks = this._tasks();
-        const lists = this.taskListStateService.lists();
-        const counts = new Map<number | null, number>();
-        for (const t of tasks) {
-            counts.set(t.listId, (counts.get(t.listId) ?? 0) + 1);
-        }
-        return Array.from(counts.entries()).map(([listId, value]) => ({
-            name:  lists.find(l => l.id === listId)?.name ?? 'No List',
-            value,
-        }));
+    readonly dueDateHorizon = computed<DonutSlice[]>(() => {
+        const activeTasks = this._tasks().filter(t => !t.completed);
+        const today       = this._todayStart;
+        const weekEnd     = new Date(today);
+        weekEnd.setDate(today.getDate() + 7);
+        weekEnd.setHours(23, 59, 59, 999);
+
+        const overdue     = activeTasks.filter(t => t.dueDate !== null && t.dueDate < today).length;
+        const dueToday    = activeTasks.filter(t => t.dueDate !== null && t.dueDate.toDateString() === this._todayStr).length;
+        const dueThisWeek = activeTasks.filter(t => t.dueDate !== null && t.dueDate.toDateString() !== this._todayStr && t.dueDate > today && t.dueDate <= weekEnd).length;
+        const dueLater    = activeTasks.filter(t => t.dueDate !== null && t.dueDate > weekEnd).length;
+        const noDueDate   = activeTasks.filter(t => t.dueDate === null).length;
+
+        return [
+            { name: 'Overdue',       value: overdue     },
+            { name: 'Due Today',     value: dueToday    },
+            { name: 'Due This Week', value: dueThisWeek },
+            { name: 'Due Later',     value: dueLater    },
+            { name: 'No Due Date',   value: noDueDate   },
+        ];
     });
 
-    // ─── Active vs Completed by list (bar) ────────────────────────────────────
+    // ─── Productivity by day of week (bar) ──────────────────────────────────────
 
-    readonly activeVsCompletedByList = computed<{ categories: string[]; series: BarSeriesData[] }>(() => {
-        const tasks       = this._tasks();
-        const lists       = this.taskListStateService.lists();
-        const categories  = lists.map(l => l.name);
-        const activeData    = lists.map(l => tasks.filter(t => t.listId === l.id && !t.completed).length);
-        const completedData = lists.map(l => tasks.filter(t => t.listId === l.id &&  t.completed).length);
+    readonly productivityByDayOfWeek = computed<{ categories: string[]; series: BarSeriesData[] }>(() => {
+        const createdCounts   = [0, 0, 0, 0, 0, 0, 0]; // Mon–Sun
+        const completedCounts = [0, 0, 0, 0, 0, 0, 0];
+        for (const t of this._tasks()) {
+            const createdDay = (t.createdAt.getDay() + 6) % 7; // JS Sun=0 → Mon=0
+            createdCounts[createdDay]++;
+            if (t.completedAt !== null) {
+                const completedDay = (t.completedAt.getDay() + 6) % 7;
+                completedCounts[completedDay]++;
+            }
+        }
         return {
-            categories,
+            categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             series: [
-                { name: 'Active',    data: activeData    },
-                { name: 'Completed', data: completedData },
+                { name: 'Created',   data: createdCounts   },
+                { name: 'Completed', data: completedCounts },
             ],
         };
     });
@@ -174,9 +188,9 @@ function buildTimeSeries(
     const now     = new Date();
     const buckets: Bucket[] = [];
 
-    if (duration === 'LAST_7_DAYS' || duration === 'LAST_30_DAYS') {
-        const days = duration === 'LAST_7_DAYS' ? 7 : 30;
-        for (let i = days - 1; i >= 0; i--) {
+    if (duration === 'LAST_7_DAYS') {
+        // One bucket per day for the past 7 days (i=6 is oldest, i=0 is today)
+        for (let i = 6; i >= 0; i--) {
             const start = new Date(now);
             start.setDate(now.getDate() - i);
             start.setHours(0, 0, 0, 0);
@@ -184,28 +198,45 @@ function buildTimeSeries(
             end.setHours(23, 59, 59, 999);
             buckets.push({ label: start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), start, end });
         }
-    } else if (duration === 'LAST_90_DAYS') {
-        for (let i = 12; i >= 0; i--) {
-            const end = new Date(now);
-            end.setDate(now.getDate() - i * 7);
-            end.setHours(23, 59, 59, 999);
-            const start = new Date(end);
-            start.setDate(end.getDate() - 6);
+    } else if (duration === 'LAST_30_DAYS') {
+        // Weekly (7-day) buckets from oldest to newest; the newest bucket may be shorter
+        // if 30 is not divisible by 7 (it's not: 30 % 7 = 2 — last bucket covers 2 days)
+        for (let daysFromNow = 29; daysFromNow >= 0; daysFromNow -= 7) {
+            const start = new Date(now);
+            start.setDate(now.getDate() - daysFromNow);
             start.setHours(0, 0, 0, 0);
+            const end = new Date(now);
+            end.setDate(now.getDate() - Math.max(0, daysFromNow - 6));
+            end.setHours(23, 59, 59, 999);
+            buckets.push({ label: start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), start, end });
+        }
+    } else if (duration === 'LAST_90_DAYS') {
+        // 3-week (21-day) buckets from oldest to newest; the newest bucket may be shorter
+        // if 90 is not divisible by 21 (it's not: 90 % 21 = 6 — last bucket covers 6 days)
+        for (let daysFromNow = 89; daysFromNow >= 0; daysFromNow -= 21) {
+            const start = new Date(now);
+            start.setDate(now.getDate() - daysFromNow);
+            start.setHours(0, 0, 0, 0);
+            const end = new Date(now);
+            end.setDate(now.getDate() - Math.max(0, daysFromNow - 20));
+            end.setHours(23, 59, 59, 999);
             buckets.push({ label: start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), start, end });
         }
     } else {
+        // ALL_TIME: one bucket per calendar month from the earliest task's month up to now
         if (tasks.length === 0) return { categories: [], series: [] };
         const earliest = tasks.reduce((min, t) => (t.createdAt < min ? t.createdAt : min), tasks[0].createdAt);
         let cursor = new Date(earliest.getFullYear(), earliest.getMonth(), 1);
         while (cursor <= now) {
             const start = new Date(cursor);
+            // Last day of the month at 23:59:59 — day 0 of next month rolls back to last day of current month
             const end   = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0, 23, 59, 59, 999);
             buckets.push({ label: start.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }), start, end });
             cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
         }
     }
 
+    // Map each bucket to a count of tasks whose createdAt / completedAt falls within [start, end]
     const categories    = buckets.map(b => b.label);
     const createdData   = buckets.map(b => tasks.filter(t => t.createdAt >= b.start && t.createdAt <= b.end).length);
     const completedData = buckets.map(b =>

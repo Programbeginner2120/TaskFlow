@@ -44,13 +44,13 @@
             </div>
             <div class="data-visualization-card">
                 <div class="data-visualization-card-title-container">
-                    <h3 class="data-visualization-card-title">Tasks by List</h3>
-                    <p class="data-visualization-card-subtitle">Distribution of tasks across lists.</p>
+                    <h3 class="data-visualization-card-title">Due Date Horizon</h3>
+                    <p class="data-visualization-card-subtitle">Active tasks by urgency window.</p>
                 </div>
                 <app-donut-chart
-                    title="Tasks"
-                    subtitle="by list"
-                    [data]="tasksByList()"
+                    title="Active"
+                    subtitle="tasks"
+                    [data]="dueDateHorizon()"
                     height="100%"
                     width="100%"
                 />
@@ -59,13 +59,13 @@
         <div class="data-visualizations-row-container">
             <div class="data-visualization-card">
                 <div class="data-visualization-card-title-container">
-                    <h3 class="data-visualization-card-title">Active vs Completed by List</h3>
-                    <p class="data-visualization-card-subtitle">Active and completed task counts per list.</p>
+                    <h3 class="data-visualization-card-title">Productivity by Day</h3>
+                    <p class="data-visualization-card-subtitle">Tasks created and completed per day of the week.</p>
                 </div>
                 <app-bar-chart
-                    title="Active vs Completed by List"
-                    [categories]="activeVsCompletedByList().categories"
-                    [series]="activeVsCompletedByList().series"
+                    title="Productivity by Day"
+                    [categories]="productivityByDayOfWeek().categories"
+                    [series]="productivityByDayOfWeek().series"
                     height="100%"
                     width="100%"
                 />

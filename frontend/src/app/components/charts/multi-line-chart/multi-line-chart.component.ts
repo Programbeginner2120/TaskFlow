@@ -22,6 +22,7 @@ export class MultiLineChartComponent {
     series = input<LineSeriesData[]>([]);
     height = input<string>('400px');
     width = input<string>('400px');
+    labelInterval = input<number>(0);
 
     // Injected services
     private readonly themeService = inject(ThemeService);
@@ -49,7 +50,10 @@ export class MultiLineChartComponent {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: this.categories()
+            data: this.categories(),
+            axisLabel: {
+                interval: this.labelInterval()
+            }
         },
         yAxis: {
             type: 'value'
