@@ -15,6 +15,7 @@ import { AutoFocusDirective } from "../../shared/directives/auto-focus.directive
 import { NewTemplateModalComponent } from "../../components/new-template-modal/new-template-modal.component";
 import { TaskListTemplateStateService } from "../../services/task-list-template-state.service";
 import { R } from "@angular/cdk/keycodes";
+import { CdkScrollable } from "@angular/cdk/scrolling";
 import { TaskStateService } from "../../services/task-state.service";
 import { UpcomingComponent } from "../../components/upcoming/upcoming.component";
 import { DashboardComponent } from "../../components/dashboard/dashboard.component";
@@ -36,7 +37,8 @@ export type AppView = 'my-day' | 'upcoming' | 'calendar' | 'dashboard' | 'list';
         AutoFocusDirective, 
         NewTemplateModalComponent, 
         UpcomingComponent, 
-        DashboardComponent
+        DashboardComponent,
+        CdkScrollable
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })

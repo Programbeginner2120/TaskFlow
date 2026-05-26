@@ -24,7 +24,7 @@
     </div>
 
     <!-- Task list -->
-    <ul cdkDropList [cdkDropListDisabled]="!dragAndDropEnabled()" (cdkDropListDropped)="drop($event)" class="task-list" aria-label="Tasks">
+    <ul cdkDropList [cdkDropListAutoScrollStep]="10" [cdkDropListDisabled]="!dragAndDropEnabled()" (cdkDropListDropped)="drop($event)" class="task-list" aria-label="Tasks">
         @for (task of sortedTasks(); track task.id) {
             @let list = getListForTask(task.listId);
             @let progress = getSubtaskProgress(task);

@@ -78,7 +78,7 @@
             </div>
         </app-sidebar>
 
-        <main class="main-content" id="main-content" aria-live="polite">
+        <main class="main-content" id="main-content" aria-live="polite" cdkScrollable>
             @switch (currentView()) {
                 @case ('my-day') {
                     <app-my-day
