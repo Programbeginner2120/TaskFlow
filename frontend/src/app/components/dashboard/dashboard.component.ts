@@ -14,7 +14,6 @@ import {
     DashboardAnalyticsApiResponse,
     StatisticsCard,
     TaskDataDuration,
-    TaskDataStatus,
     TaskStatus,
     TaskTableRow,
 } from "../../interfaces/dashboard.interface";
@@ -40,7 +39,6 @@ export class DashboardComponent {
     // ─── Filter state ──────────────────────────────────────────────────────────
 
     readonly filterDuration = signal<TaskDataDuration>('LAST_7_DAYS');
-    readonly filterStatus   = signal<TaskDataStatus>('ALL');
     readonly filterListIds  = signal<number[]>([]);
 
     // ─── Raw fetched tasks ─────────────────────────────────────────────────────
@@ -62,14 +60,13 @@ export class DashboardComponent {
     constructor() {
         combineLatest([
             toObservable(this.filterDuration),
-            toObservable(this.filterStatus),
             toObservable(this.filterListIds),
         ]).pipe(
-            switchMap(([duration, status, listIds]) => {
+            switchMap(([duration, listIds]) => {
                 this.loading.set(true);
                 return this.analyticsService.getAnalytics({
                     durationSelection: duration,
-                    statusSelection:   status,
+                    statusSelection:   'ALL',
                     listSelections:    listIds,
                 }).pipe(catchError(() => of({ tasks: [] } as DashboardAnalyticsApiResponse)));
             }),
@@ -106,27 +103,39 @@ export class DashboardComponent {
         return Math.round(tasks.filter(t => t.completed).length / tasks.length * 100);
     });
 
-    // ─── Due date horizon (donut) ─────────────────────────────────────────────
+    // ─── Task age breakdown (donut) ──────────────────────────────────────────
 
-    readonly dueDateHorizon = computed<DonutSlice[]>(() => {
+    readonly taskAgeBreakdown = computed<DonutSlice[]>(() => {
         const activeTasks = this._tasks().filter(t => !t.completed);
-        const today       = this._todayStart;
-        const weekEnd     = new Date(today);
-        weekEnd.setDate(today.getDate() + 7);
-        weekEnd.setHours(23, 59, 59, 999);
+        const todayMs     = this._todayStart.getTime();
+        const msPerDay    = 1000 * 60 * 60 * 24;
+        const ageDays     = (t: Task) => {
+            const d = new Date(t.createdAt);
+            d.setHours(0, 0, 0, 0);
+            return (todayMs - d.getTime()) / msPerDay;
+        };
 
-        const overdue     = activeTasks.filter(t => t.dueDate !== null && t.dueDate < today).length;
-        const dueToday    = activeTasks.filter(t => t.dueDate !== null && t.dueDate.toDateString() === this._todayStr).length;
-        const dueThisWeek = activeTasks.filter(t => t.dueDate !== null && t.dueDate.toDateString() !== this._todayStr && t.dueDate > today && t.dueDate <= weekEnd).length;
-        const dueLater    = activeTasks.filter(t => t.dueDate !== null && t.dueDate > weekEnd).length;
-        const noDueDate   = activeTasks.filter(t => t.dueDate === null).length;
+        if (this.filterDuration() === 'LAST_7_DAYS') {
+            const today     = activeTasks.filter(t => ageDays(t) === 0).length;
+            const yesterday = activeTasks.filter(t => ageDays(t) === 1).length;
+            const thisWeek  = activeTasks.filter(t => { const d = ageDays(t); return d >= 2 && d <= 6; }).length;
+            return [
+                { name: 'Today',               value: today     },
+                { name: 'Yesterday',            value: yesterday },
+                { name: 'This Week (2–6 days)', value: thisWeek  },
+            ];
+        }
+
+        const fresh  = activeTasks.filter(t => ageDays(t) === 0).length;
+        const recent = activeTasks.filter(t => { const d = ageDays(t); return d >= 1  && d <= 7;  }).length;
+        const aging  = activeTasks.filter(t => { const d = ageDays(t); return d >= 8  && d <= 30; }).length;
+        const stale  = activeTasks.filter(t => ageDays(t) > 30).length;
 
         return [
-            { name: 'Overdue',       value: overdue     },
-            { name: 'Due Today',     value: dueToday    },
-            { name: 'Due This Week', value: dueThisWeek },
-            { name: 'Due Later',     value: dueLater    },
-            { name: 'No Due Date',   value: noDueDate   },
+            { name: 'Fresh (today)',     value: fresh  },
+            { name: 'Recent (1–7 days)', value: recent },
+            { name: 'Aging (8–30 days)', value: aging  },
+            { name: 'Stale (30+ days)',  value: stale  },
         ];
     });
 

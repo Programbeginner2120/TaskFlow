@@ -6,7 +6,6 @@
         </div>
         <app-dashboard-filter
                 [(durationSelection)]="filterDuration"
-                [(statusSelection)]="filterStatus"
                 [(listSelections)]="filterListIds">
             </app-dashboard-filter>
     </div>
@@ -45,13 +44,13 @@
             </div>
             <div class="data-visualization-card">
                 <div class="data-visualization-card-title-container">
-                    <h3 class="data-visualization-card-title">Due Date Horizon</h3>
-                    <p class="data-visualization-card-subtitle">Active tasks by urgency window.</p>
+                    <h3 class="data-visualization-card-title">Backlog Age</h3>
+                    <p class="data-visualization-card-subtitle">Active tasks by how long they've been open.</p>
                 </div>
                 <app-donut-chart
                     title="Active"
                     subtitle="tasks"
-                    [data]="dueDateHorizon()"
+                    [data]="taskAgeBreakdown()"
                     height="100%"
                     width="100%"
                 />
