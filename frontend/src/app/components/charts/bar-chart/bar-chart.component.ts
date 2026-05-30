@@ -38,7 +38,8 @@ export class BarChartComponent {
             axisPointer: { type: 'shadow' }
         },
         legend: {
-            data: this.series().map(s => s.name)
+            data: this.series().map(s => s.name),
+            textStyle: { color: this.theme() === 'dark' ? 'white' : 'black' }
         },
         grid: {
             left: '3%',
@@ -50,10 +51,12 @@ export class BarChartComponent {
         xAxis: {
             type: 'category',
             boundaryGap: true,
-            data: this.categories()
+            data: this.categories(),
+            axisLabel: { color: this.theme() === 'dark' ? 'white' : 'black' }
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLabel: { color: this.theme() === 'dark' ? 'white' : 'black' }
         },
         series: this.series().map(s => ({
             name: s.name,

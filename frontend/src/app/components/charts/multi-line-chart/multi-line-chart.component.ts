@@ -38,7 +38,8 @@ export class MultiLineChartComponent {
             trigger: 'axis'
         },
         legend: {
-            data: this.series().map(s => s.name)
+            data: this.series().map(s => s.name),
+            textStyle: { color: this.theme() === 'dark' ? 'white' : 'black' }
         },
         grid: {
             left: '3%',
@@ -52,11 +53,13 @@ export class MultiLineChartComponent {
             boundaryGap: false,
             data: this.categories(),
             axisLabel: {
-                interval: this.labelInterval()
+                interval: this.labelInterval(),
+                color: this.theme() === 'dark' ? 'white' : 'black'
             }
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLabel: { color: this.theme() === 'dark' ? 'white' : 'black' }
         },
         series: this.series().map(s => ({
             name: s.name,
