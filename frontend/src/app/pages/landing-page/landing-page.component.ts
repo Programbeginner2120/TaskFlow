@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { NavItem } from "../../shared/interfaces/sidebar.interface";
 import { Sun, Calendar, LucideAngularModule, Plus, Ellipsis, Clock, ChartColumn } from "lucide-angular";
-import { Task, TaskListTemplate } from "../../interfaces/task.interface";
+import { Task, TaskList, TaskListTemplate, TaskListTemplateColor } from "../../interfaces/task.interface";
 import { TaskListStateService } from '../../services/task-list-state.service';
 import { LandingPageHeaderComponent } from "../../components/headers/landing-page-header/landing-page-header.component";
 import { TaskDetailsPanelComponent } from "../../components/task-details-panel/task-details-panel.component";
@@ -74,6 +74,15 @@ export class LandingPageComponent {
     addingTemplate = signal<boolean>(false);
     selectedTemplate = signal<TaskListTemplate | null>(null);
 
+    editingListId = signal<number | null>(null);
+    editingListName = signal<string>('');
+    editingListColor = signal<string>(TaskListTemplateColor.BLUE);
+    newListColor = signal<string>(TaskListTemplateColor.BLUE);
+
+    readonly listColors = Object.values(TaskListTemplateColor);
+
+    private _editCancelled = false;
+
     navItems = computed<NavItem[]>(() => [
         {
             navItemLabel: 'My Day',
@@ -120,19 +129,46 @@ export class LandingPageComponent {
     }
 
     startAddingList(): void {
+        this.newListColor.set(TaskListTemplateColor.BLUE);
         this.addingList.set(true);
     }
 
     confirmAddList(name: string): void {
         const trimmed = name.trim();
         if (trimmed) {
-            this.taskListService.addList({ name: trimmed });
+            this.taskListService.addList({ name: trimmed, color: this.newListColor() });
         }
         this.addingList.set(false);
     }
 
     cancelAddList(): void {
         this.addingList.set(false);
+    }
+
+    startEditingList(event: Event, list: TaskList): void {
+        event.stopPropagation();
+        this._editCancelled = false;
+        this.editingListId.set(list.id);
+        this.editingListName.set(list.name);
+        this.editingListColor.set(list.color);
+    }
+
+    confirmEditList(): void {
+        if (this._editCancelled) {
+            this._editCancelled = false;
+            return;
+        }
+        const id = this.editingListId();
+        const name = this.editingListName().trim();
+        if (id !== null && name) {
+            this.taskListService.updateList(id, { name, color: this.editingListColor() });
+        }
+        this.editingListId.set(null);
+    }
+
+    cancelEditList(): void {
+        this._editCancelled = true;
+        this.editingListId.set(null);
     }
     
     startAddingTemplate(): void {

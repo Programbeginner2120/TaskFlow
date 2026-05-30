@@ -14,16 +14,52 @@
                 <div class="projected-items-section-title">Lists</div>
                 <ul class="projected-items" aria-label="Task lists">
                     @for (list of lists(); track list.id) {
-                        <li>
-                            <button
-                                class="projected-item"
-                                type="button"
-                                [attr.aria-label]="'View ' + list.name + ' list'"
-                                (click)="selectListView(list.id)">
-                                <span class="projected-item-dot" [style.backgroundColor]="list.color" aria-hidden="true"></span>
-                                <span class="projected-item-name">{{ list.name }}</span>
-                                <lucide-icon class="projected-item-ellipsis" [img]="ellipsis" [size]="16" aria-hidden="true"></lucide-icon>
-                            </button>
+                        <li class="projected-item-row">
+                            @if (editingListId() === list.id) {
+                                <div class="edit-list-form" (keydown.escape)="cancelEditList()">
+                                    <div class="edit-list-name-row">
+                                        <span class="projected-item-dot" [style.backgroundColor]="editingListColor()" aria-hidden="true"></span>
+                                        <input
+                                            autoFocus
+                                            type="text"
+                                            class="new-projected-item-input"
+                                            [value]="editingListName()"
+                                            (input)="editingListName.set($any($event.target).value)"
+                                            (keydown.enter)="confirmEditList()"
+                                            (keydown.escape)="cancelEditList()"
+                                            (blur)="confirmEditList()">
+                                    </div>
+                                    <div class="color-swatches-row">
+                                        @for (color of listColors; track color) {
+                                            <button
+                                                type="button"
+                                                class="color-swatch"
+                                                [attr.aria-label]="'Select color ' + color"
+                                                [style.backgroundColor]="color"
+                                                [class.color-swatch-selected]="editingListColor() === color"
+                                                (mousedown)="$event.preventDefault()"
+                                                (click)="editingListColor.set(color)">
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            } @else {
+                                <button
+                                    class="projected-item"
+                                    type="button"
+                                    [attr.aria-label]="'View ' + list.name + ' list'"
+                                    (click)="selectListView(list.id)">
+                                    <span class="projected-item-dot" [style.backgroundColor]="list.color" aria-hidden="true"></span>
+                                    <span class="projected-item-name">{{ list.name }}</span>
+                                </button>
+                                <button
+                                    class="projected-item-ellipsis-btn"
+                                    type="button"
+                                    [attr.aria-label]="'Edit ' + list.name + ' list'"
+                                    (click)="startEditingList($event, list)">
+                                    <lucide-icon [img]="ellipsis" [size]="16" aria-hidden="true"></lucide-icon>
+                                </button>
+                            }
                         </li>
                     }
                     @if (lists().length === 0) {
@@ -31,16 +67,31 @@
                     }
                 </ul>
                 @if (addingList()) {
-                    <div class="new-projected-item-input-wrapper">
-                        <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
-                        <input autoFocus
-                            type="text"
-                            class="new-projected-item-input"
-                            placeholder="List name"
-                            autocomplete="off"
-                            (keydown.enter)="confirmAddList($any($event.target).value)"
-                            (keydown.escape)="cancelAddList()"
-                            (blur)="cancelAddList()">
+                    <div class="new-list-form">
+                        <div class="new-projected-item-input-wrapper">
+                            <lucide-icon [img]="plus" [size]="16" aria-hidden="true"></lucide-icon>
+                            <input autoFocus
+                                type="text"
+                                class="new-projected-item-input"
+                                placeholder="List name"
+                                autocomplete="off"
+                                (keydown.enter)="confirmAddList($any($event.target).value)"
+                                (keydown.escape)="cancelAddList()"
+                                (blur)="cancelAddList()">
+                        </div>
+                        <div class="color-swatches-row">
+                            @for (color of listColors; track color) {
+                                <button
+                                    type="button"
+                                    class="color-swatch"
+                                    [attr.aria-label]="'Select color ' + color"
+                                    [style.backgroundColor]="color"
+                                    [class.color-swatch-selected]="newListColor() === color"
+                                    (mousedown)="$event.preventDefault()"
+                                    (click)="newListColor.set(color)">
+                                </button>
+                            }
+                        </div>
                     </div>
                 } @else {
                     <button class="add-projected-item-btn" type="button" aria-label="Add new list"
