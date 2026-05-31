@@ -4,7 +4,7 @@
 
 app:
   cors:
-    allowed-origins: "http://localhost:4200,http://127.0.0.1:4200,http://localhost,http://127.0.0.1"
+    allowed-origins: "http://52.73.236.177,https://52.73.236.177"
   email:
     base-url: ${APP_BASE_URL:http://qa.taskflow.com}
 
