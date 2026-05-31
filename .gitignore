@@ -131,7 +131,6 @@ __pycache__/
 # ============================================
 # Environment-specific configuration
 # ============================================
-backend/src/main/resources/application-*.yaml
 backend/src/main/resources/generator.properties
 
 # ============================================

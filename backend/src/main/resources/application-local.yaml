@@ -1,0 +1,28 @@
+# Profile: local — development on local machine running inside Docker Compose.
+# Activate with: SPRING_PROFILES_ACTIVE=local
+# Run with:      docker compose -f docker-compose.yml -f docker-compose.local.yml up
+
+spring:
+  datasource:
+    # Connect to the 'db' Docker Compose service (not localhost)
+    url: jdbc:postgresql://db:5432/${POSTGRES_DB:-taskflow}
+    username: ${POSTGRES_USER:-taskflow}
+    password: ${POSTGRES_PASSWORD:-changeme}
+
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+app:
+  cors:
+    allowed-origins: "http://localhost:4200,http://127.0.0.1:4200,http://localhost,http://127.0.0.1"
+  email:
+    base-url: ${APP_BASE_URL:http://localhost:4200}
+
+logging:
+  level:
+    root: INFO
+    com.killeen: DEBUG
+    org.springframework.web: DEBUG

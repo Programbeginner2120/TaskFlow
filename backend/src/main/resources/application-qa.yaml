@@ -1,0 +1,21 @@
+# Profile: qa — QA / test environment.
+# Activate with: SPRING_PROFILES_ACTIVE=qa
+# Run with:      docker compose -f docker-compose.yml -f docker-compose.qa.yml up
+
+app:
+  cors:
+    allowed-origins: "http://localhost:4200,http://127.0.0.1:4200,http://localhost,http://127.0.0.1"
+  email:
+    base-url: ${APP_BASE_URL:http://qa.taskflow.com}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    root: INFO
+    com.killeen: INFO
+    org.springframework.web: INFO
