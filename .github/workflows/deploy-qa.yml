@@ -1,0 +1,28 @@
+name: Deploy to QA
+
+on:
+  push:
+    branches: [qa]
+
+jobs:
+  deploy:
+    name: SSH deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.QA_HOST }}
+          username: ${{ secrets.QA_USER }}
+          key: ${{ secrets.QA_SSH_KEY }}
+          script: |
+            cd /opt/taskflow
+            git fetch origin qa
+            git reset --hard origin/qa
+            docker compose \
+              -f docker-compose.yml \
+              -f docker-compose.qa.yml \
+              --env-file .env.qa \
+              up --build -d
+            docker image prune -f
