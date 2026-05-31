@@ -4,7 +4,7 @@
 
 app:
   cors:
-    allowed-origins: "http://52.73.236.177.nip.io,https://52.73.236.177.nip.io"
+    allowed-origins: "http://52.73.236.177,https://52.73.236.177,https://52.73.236.177.nip.io"
   email:
     base-url: ${APP_BASE_URL:http://qa.taskflow.com}
 
