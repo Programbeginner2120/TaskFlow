@@ -37,7 +37,7 @@ A full-stack task management application built with Spring Boot and Angular.
 
 | Layer | Technology |
 |---|---|
-| **Backend** | Java 25, Spring Boot 4.0.5, Spring Security (stateless JWT), MyBatis, Liquibase |
+| **Backend** | Java 25, Spring Boot 4.0.5, Spring Security (JWT + refresh tokens), MyBatis, Liquibase |
 | **Database** | PostgreSQL 17 |
 | **Frontend** | Angular 21.2 (standalone, zoneless), TypeScript ~5.9, SCSS, RxJS |
 | **Build** | Gradle (backend), npm 11 (frontend) |
@@ -54,19 +54,29 @@ TaskFlow/
 │   └── src/main/java/com/killeen/taskflow/
 │       ├── components/
 │       │   ├── user/         # Auth controller, service, repository, models
-│       │   └── email/        # Email & token service, repository, models
-│       ├── config/           # Security, JWT, CORS, retry configuration
-│       ├── db/               # MyBatis mappers & generated models
-│       └── exception/        # Global exception handler & error response
+│       │   ├── email/        # Email & token service, repository, models
+│       │   ├── refreshtoken/ # Refresh token service, repository, scheduler
+│       │   ├── task/         # Task & subtask controller, service, repository, models
+│       │   ├── tasklist/     # Task list controller, service, repository, models
+│       │   ├── tasklisttemplate/ # Task list template controller, service, repository, scheduler
+│       │   └── analytics/    # Dashboard analytics controller, service, models
+│       ├── config/           # Security, JWT, encryption, CORS, retry, data seeding
+│       ├── db/               # MyBatis-generated mappers & DB models
+│       ├── exception/        # Global exception handler & error response
+│       └── util/             # AuthUtils, HashUtils
 ├── frontend/                 # Angular application
 │   └── src/app/
-│       ├── components/       # Auth forms (login, register, forgot-password), header
-│       ├── pages/            # Page-level route components
-│       ├── services/         # Auth, theme, platform services
+│       ├── components/       # UI components (auth, calendar, charts, dashboard, tasks, etc.)
+│       ├── pages/            # Page-level route components (auth, landing-page)
+│       ├── services/         # Auth, theme, platform, task, task-list, template, analytics services
 │       ├── guards/           # Auth route guard
 │       ├── interceptors/     # URL prefix & Bearer token interceptors
 │       ├── interfaces/       # Shared TypeScript interfaces
-│       └── shared/           # Reusable UI components and styles
+│       ├── mappers/          # API response → domain model mappers
+│       ├── shared/           # Reusable UI components and styles
+│       └── utils/            # Date, JWT, and rrule utility functions
+├── agent-reports/            # AI agent audit reports (ACID, test coverage)
+├── scripts/                  # Python utility scripts
 ├── product-information/      # Product docs: purpose, plans, roadmap, requirements
 ├── docker-compose.yml        # Base / production Compose file
 ├── docker-compose.local.yml  # Local development override
@@ -94,6 +104,7 @@ cp env.example .env
 |---|---|---|---|
 | `POSTGRES_PASSWORD` | Yes | — | PostgreSQL password |
 | `JWT_SECRET` | Yes | — | HS256 signing secret (min 32 chars) |
+| `ENCRYPTION_KEY` | Yes | — | AES encryption key for task data |
 | `MAIL_USERNAME` | QA/Prod | — | SMTP username |
 | `MAIL_PASSWORD` | QA/Prod | — | SMTP password |
 | `POSTGRES_DB` | No | `taskflow` | Database name |
@@ -140,11 +151,18 @@ The backend follows a component-based layered architecture under `com.killeen.ta
 
 ```
 components/
-  user/   → AuthController, UserService, UserRepository
-  email/  → EmailService (with @Retryable), EmailTokenService, EmailTokenRepository
-config/   → SecurityConfig, JwtService, JwtAuthenticationFilter, WebConfig, RetryConfig
-db/       → MyBatis-generated mappers and DB models
-exception/→ GlobalExceptionHandler (@RestControllerAdvice), ErrorResponse
+  user/             → AuthController, UserService, UserRepository
+  email/            → EmailService (with @Retryable), EmailTokenService, EmailTokenRepository
+  refreshtoken/     → RefreshTokenService, RefreshTokenRepository, expiry scheduler
+  task/             → TaskController, TaskService, TaskRepository (tasks + subtasks)
+  tasklist/         → TaskListController, TaskListService, TaskListRepository
+  tasklisttemplate/ → TaskListTemplateController, TaskListTemplateService, generation scheduler
+  analytics/        → DashboardAnalyticsController, DashboardAnalyticsService
+config/             → SecurityConfig, JwtService, JwtAuthenticationFilter, EncryptionService,
+                      WebConfig, RetryConfig, DataSeeder
+db/                 → MyBatis-generated mappers and DB models
+exception/          → GlobalExceptionHandler (@RestControllerAdvice), ErrorResponse
+util/               → AuthUtils, HashUtils
 ```
 
 **MyBatis** handles all SQL interactions. Generated mappers are produced by the `mybatisGenerator` Gradle task from `mybatis-generator-config.xml`. Custom mapper XML files live alongside the generated ones under `src/main/resources/db/mapper/`.
@@ -153,22 +171,65 @@ exception/→ GlobalExceptionHandler (@RestControllerAdvice), ErrorResponse
 
 ### REST API
 
-All endpoints are under `/auth`. Every endpoint not listed as public requires a valid JWT Bearer token.
+Every endpoint requires a valid JWT Bearer token unless marked Public.
+
+#### Auth (`/auth`)
 
 | Method | Path | Auth | Description |
 |---|---|---|---|
 | `POST` | `/auth/register` | Public | Register a new user; sends a verification email |
-| `POST` | `/auth/login` | Public | Authenticate and receive a JWT |
+| `POST` | `/auth/login` | Public | Authenticate; returns JWT + refresh token |
+| `POST` | `/auth/refresh` | Public | Rotate a refresh token; returns new JWT + refresh token |
+| `POST` | `/auth/logout` | Public | Revoke a single refresh token |
+| `DELETE` | `/auth/sessions` | JWT | Revoke all refresh tokens for the authenticated user |
 | `GET` | `/auth/me` | JWT | Return the authenticated user's profile |
 | `POST` | `/auth/verify-email?token=` | Public | Verify email address via token |
 | `POST` | `/auth/resend-verification` | Public | Resend the email verification link |
 | `POST` | `/auth/forgot-password` | Public | Send a password-reset email |
 | `POST` | `/auth/reset-password` | Public | Reset password via token |
 
+#### Task Lists (`/task-lists`)
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/task-lists` | Get all task lists for the authenticated user |
+| `POST` | `/task-lists` | Create a task list |
+| `PUT` | `/task-lists/{id}` | Update a task list |
+| `DELETE` | `/task-lists/{id}` | Delete a task list |
+
+#### Tasks (`/tasks`)
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/tasks` | Get all tasks (with embedded subtasks) for the authenticated user |
+| `POST` | `/tasks` | Create a task |
+| `PUT` | `/tasks/{id}` | Update a task |
+| `DELETE` | `/tasks/{id}` | Delete a task |
+| `POST` | `/tasks/{taskId}/subtasks` | Add a subtask |
+| `PUT` | `/tasks/{taskId}/subtasks/{id}` | Update a subtask |
+| `DELETE` | `/tasks/{taskId}/subtasks/{id}` | Delete a subtask |
+
+#### Task List Templates (`/task-list-templates`)
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/task-list-templates` | Get all templates for the authenticated user |
+| `POST` | `/task-list-templates` | Create a template with nested task templates |
+| `PUT` | `/task-list-templates/{id}` | Update a template |
+| `DELETE` | `/task-list-templates/{id}` | Delete a template and all its children |
+
+#### Dashboard Analytics (`/dashboard-analytics`)
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/dashboard-analytics` | Retrieve aggregated analytics data for the given date range |
+
 ### Security
 
-- **Stateless JWT** — no server-side sessions. Tokens use HS256 with a 24-hour expiry.
+- **JWT** — short-lived access tokens (HS256, 24-hour expiry).
+- **Refresh tokens** — long-lived tokens stored using a selector/validator split. Only the SHA-256 hash of the validator is persisted; the raw token is never stored. A scheduled job purges expired tokens.
 - **Password hashing** — BCrypt.
+- **Data encryption** — task and task list field values are encrypted at rest using AES via `EncryptionService`.
 - **Email tokens** — raw UUID issued to the user; SHA-256 hash stored in the database. Verification tokens expire after 24 hours; password-reset tokens after 1 hour.
 - **Email sending** — annotated with `@Retryable` (up to 3 attempts, exponential backoff starting at 2 s) to handle transient SMTP failures.
 - **CORS** — configured via `app.cors.allowed-origins` in the application YAML (profile-specific).
@@ -182,6 +243,9 @@ All endpoints are under `/auth`. Every endpoint not listed as public requires a 
 | `UserNotFoundException` | 404 Not Found |
 | `EmailNotVerifiedException` | 403 Forbidden |
 | `InvalidTokenException` | 400 Bad Request |
+| `TaskListNotFoundException` | 404 Not Found |
+| `TaskNotFoundException` | 404 Not Found |
+| `InvalidRefreshTokenException` | 401 Unauthorized |
 | Validation failure | 400 Bad Request |
 
 ### Database
@@ -207,7 +271,60 @@ All endpoints are under `/auth`. Every endpoint not listed as public requires a 
 | `token_type` | `email_token_type` | `VERIFY_EMAIL` or `RESET_PASSWORD` |
 | `created_at` / `expires_at` / `used_at` | `TIMESTAMP` | |
 
-Indexes: `idx_email_tokens_token`, `idx_email_tokens_user_type`.
+**`refresh_tokens`**
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `BIGSERIAL` | Primary key |
+| `user_id` | `BIGINT` | FK → `users(id)` ON DELETE CASCADE |
+| `selector` | `VARCHAR` | Lookup key (16 random bytes, hex-encoded) |
+| `validator_hash` | `VARCHAR` | SHA-256 hash of the validator portion |
+| `created_at` / `expires_at` | `TIMESTAMP` | |
+
+**`task_lists`**
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `BIGSERIAL` | Primary key |
+| `user_id` | `BIGINT` | FK → `users(id)` ON DELETE CASCADE |
+| `name` | `VARCHAR` | Encrypted |
+| `color` | `VARCHAR` | |
+| `created_at` / `updated_at` | `TIMESTAMP` | |
+
+**`tasks`**
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `BIGSERIAL` | Primary key |
+| `user_id` | `BIGINT` | FK → `users(id)` ON DELETE CASCADE |
+| `list_id` | `BIGINT` | FK → `task_lists(id)` ON DELETE SET NULL |
+| `title` | `VARCHAR` | Encrypted |
+| `notes` | `TEXT` | Encrypted |
+| `completed` | `BOOLEAN` | Default `false` |
+| `due_date` | `TIMESTAMP` | UTC |
+| `position` | `INTEGER` | Sort order within the list |
+| `created_at` / `updated_at` | `TIMESTAMP` | |
+
+**`subtasks`**
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `BIGSERIAL` | Primary key |
+| `task_id` | `BIGINT` | FK → `tasks(id)` ON DELETE CASCADE |
+| `title` | `VARCHAR` | Encrypted |
+| `completed` | `BOOLEAN` | Default `false` |
+| `created_at` / `updated_at` | `TIMESTAMP` | |
+
+**`task_list_templates`**
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `BIGSERIAL` | Primary key |
+| `user_id` | `BIGINT` | FK → `users(id)` ON DELETE CASCADE |
+| `name` | `VARCHAR` | Encrypted |
+| `color` | `VARCHAR` | |
+| `rrule` | `VARCHAR` | iCalendar RRULE string |
+| `timezone` | `VARCHAR` | IANA timezone identifier |
+| `generation_title` | `VARCHAR` | Title pattern for generated task lists |
+| `next_generate` | `TIMESTAMP` | UTC timestamp of next scheduled generation |
+| `created_at` / `updated_at` | `TIMESTAMP` | |
+
+**`task_templates`** and **`subtask_templates`** mirror the task/subtask structure but belong to a template instead of a live task list.
 
 ### Configuration Profiles
 
@@ -230,15 +347,22 @@ On startup, `provideAppInitializer` calls `AuthService.loadCurrentUser()` to hyd
 
 HTTP requests are processed by two functional interceptors (applied in order):
 1. **`UrlInterceptor`** — prepends `environment.api_url` to every request.
-2. **`AuthInterceptor`** — attaches `Authorization: Bearer <token>`; calls `authService.logout()` on a 401 response.
+2. **`AuthInterceptor`** — attaches `Authorization: Bearer <token>`; handles 401 responses by attempting a refresh token rotation and retrying the request, falling back to logout if the refresh fails.
 
 ### Services
 
 | Service | Responsibility |
 |---|---|
-| `AuthService` | JWT storage (`localStorage`), all auth API calls, `isAuthenticated` computed signal, `logout$` observable |
+| `AuthService` | JWT + refresh token storage (`localStorage`), all auth API calls, `isAuthenticated` computed signal |
 | `ThemeService` | `light`/`dark` theme preference persisted in `localStorage`; respects `prefers-color-scheme`; applies `data-theme` attribute via Angular `effect()` |
 | `PlatformService` | Responsive breakpoint signals (`phone`, `tablet`, `laptop`, `desktop`) and computed helpers (`isMobile`, `isLargeScreen`) via `matchMedia` |
+| `TaskService` | HTTP calls for tasks and subtasks (`/tasks`) |
+| `TaskListService` | HTTP calls for task lists (`/task-lists`) |
+| `TaskListTemplateService` | HTTP calls for task list templates (`/task-list-templates`) |
+| `TaskStateService` | Client-side signal-based task state (CRUD, ordering) |
+| `TaskListStateService` | Client-side signal-based task list state |
+| `TaskListTemplateStateService` | Client-side signal-based template state |
+| `DashboardAnalyticsService` | HTTP calls for dashboard analytics (`/dashboard-analytics`) |
 
 ### Routing & Guards
 
@@ -248,6 +372,7 @@ HTTP requests are processed by two functional interceptors (applied in order):
 | `/login` | `AuthComponent` | Lazy-loaded; hosts LOGIN / REGISTER / FORGOT_PASSWORD modes |
 | `/verify-email` | `VerifyEmailComponent` | Lazy-loaded |
 | `/reset-password` | `ResetPasswordComponent` | Lazy-loaded |
+| `/landing-page` | `LandingPageComponent` | Lazy-loaded; protected by `authGuard` |
 
 `authGuard` (`CanActivateFn`) protects authenticated routes and redirects unauthenticated users to `/login`.
 
