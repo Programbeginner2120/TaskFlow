@@ -5,13 +5,12 @@
 
 services:
   backend:
+    image: matthewkilleen99/taskflow-backend:qa
     environment:
       SPRING_PROFILES_ACTIVE: qa
 
   frontend:
-    build:
-      args:
-        NG_CONFIG: qa
+    image: matthewkilleen99/taskflow-frontend:qa
     ports:
       - "80:80"
       - "443:443"
