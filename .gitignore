@@ -141,6 +141,7 @@ HELP.md
 
 # env files
 *.env
+*.env.*
 
 ### Anguar directory ###
 */.angular
