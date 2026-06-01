@@ -1,24 +1,22 @@
 import { Directive, ElementRef, OnInit, OnDestroy } from '@angular/core';
 
 @Directive({
-  selector: 'input[type="number"][disableScroll]',
+  selector: 'input[disableScroll]',
   standalone: true
 })
 export class DisableScrollInputDirective implements OnInit, OnDestroy {
-  private wheelListener = (event: WheelEvent) => {
-    // This stops the input field from changing value
-    event.preventDefault(); 
-  };
+    private wheelListener = () => {
+        this.el.nativeElement.blur();
+    };
 
-  constructor(private el: ElementRef<HTMLInputElement>) {}
+    constructor(private el: ElementRef<HTMLInputElement>) {}
 
-  ngOnInit() {
-    // Register natively with passive: false to preserve general page scroll
-    this.el.nativeElement.addEventListener('wheel', this.wheelListener, { passive: false });
-  }
+    ngOnInit() {
+    this.el.nativeElement.addEventListener('wheel', this.wheelListener, { passive: true });
+    }
 
-  ngOnDestroy() {
-    // Clean up to prevent memory leaks
-    this.el.nativeElement.removeEventListener('wheel', this.wheelListener);
-  }
+    ngOnDestroy() {
+        // Clean up to prevent memory leaks
+        this.el.nativeElement.removeEventListener('wheel', this.wheelListener);
+    }
 }
