@@ -36,7 +36,8 @@
       [attr.max]="max()"
       (input)="onInput($event)"
       (focus)="onFocus($event)"
-      (blur)="onBlur($event)">
+      (blur)="onBlur($event)"
+      disableScroll>
     
     @if (iconAfter()) {
       <lucide-icon 

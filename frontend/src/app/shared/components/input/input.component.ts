@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input, model, output, sig
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, LucideIconData } from 'lucide-angular';
 import { InputType, InputSize, InputVariant } from '../../interfaces/input.interface';
+import { DisableScrollInputDirective } from '../../directives/disable-scroll.directive';
 
 @Component({
   selector: 'app-input',
