@@ -8,7 +8,7 @@ import { DisableScrollInputDirective } from '../../directives/disable-scroll.dir
   selector: 'app-input',
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss'],
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, DisableScrollInputDirective],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
