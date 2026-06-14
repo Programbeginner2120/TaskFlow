@@ -13,7 +13,7 @@
             <div class="projected-items-container" sidebar-content>
                 <div class="projected-items-section-title">Lists</div>
                 <ul class="projected-items" aria-label="Task lists">
-                    @for (list of lists(); track list.id) {
+                    @for (list of sortedLists(); track list.id) {
                         <li class="projected-item-row">
                             @if (editingListId() === list.id) {
                                 <div class="edit-list-form" (keydown.escape)="cancelEditList()">
