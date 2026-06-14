@@ -106,6 +106,10 @@ export class LandingPageComponent {
         }
     ]);
 
+    readonly sortedLists = computed(() => 
+        this.lists().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())    
+    );
+
     readonly sidebarComponent = viewChild.required<SidebarComponent>('sidebar');
 
     readonly plus = Plus;
