@@ -12,6 +12,7 @@
     <app-multi-select
         label="Lists"
         title="Task Lists"
+        [maxLength]="multiSelectLength()"
         [(selectedValues)]="listSelections"
         aria-label="Task List Multi Select">
         @for (list of taskLists(); track list.id) {

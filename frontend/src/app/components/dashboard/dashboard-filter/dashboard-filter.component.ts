@@ -30,6 +30,11 @@ export class DashboardFilterComponent {
         this.taskListStateService.lists()
     );
 
+    readonly multiSelectLength = computed(() => 
+        ['desktop', 'laptop', 'desktop'].includes(this.platformService.platform())
+            ? '400px' : '200px'
+    );
+
     durationSelection = model<TaskDataDuration>('LAST_7_DAYS');
     listSelections    = model<number[]>([]);
 
