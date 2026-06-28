@@ -33,7 +33,7 @@ export class MultiSelectComponent implements MultiSelectHost {
   label = input<string>('');
   title = input<string>('');
   direction = input<'left' | 'center' | 'right'>('right');
-  maxLength = input<string>('25%');
+  maxLength = input<string>('400px');
   selectedValues = model<(string | number)[]>([]);
 
   isOpen = signal(false);
