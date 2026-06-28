@@ -25,7 +25,10 @@
       @if (title()) {
         <div class="multi-select-header">{{ title() }}</div>
       }
-      <div class="multi-select-list">
+      <div 
+        class="multi-select-list"
+        [style.height]="maxLength()"
+      >
         <ng-content></ng-content>
       </div>
     </div>
