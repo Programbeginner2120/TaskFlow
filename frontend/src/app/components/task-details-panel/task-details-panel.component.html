@@ -30,14 +30,14 @@
 
             <!-- Task Title -->
             <div class="field">
-                <input
+                <textarea
                     class="title-input"
                     type="text"
                     [value]="t.title"
                     (blur)="onTitleChange($event)"
                     (keydown.enter)="$any($event.target).blur()"
                     aria-label="Task title"
-                />
+                ></textarea>
             </div>
 
             <!-- Due Date -->
