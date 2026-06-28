@@ -78,11 +78,9 @@ app-sidebar {
     align-items: center;
     border-radius: var(--radius-md);
 
-    &:hover {
-        background-color: var(--color-nav-item-hover);
-
-        .projected-item-ellipsis-btn {
-            opacity: 1;
+    @media (hover: hover) {
+        &:hover {
+            background-color: var(--color-nav-item-hover);
         }
     }
 }
@@ -120,7 +118,6 @@ app-sidebar {
     cursor: pointer;
     color: var(--color-text-muted);
     border-radius: var(--radius-sm);
-    opacity: 0;
     flex-shrink: 0;
     transition: opacity 0.15s ease, background-color 0.15s ease;
 
