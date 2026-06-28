@@ -115,9 +115,13 @@
     font-family: inherit;
     color: var(--color-text-primary);
     background: transparent;
-    padding: var(--space-1) 0;
+    padding: var(--space-1);
     border-bottom: 2px solid transparent;
     transition: border-color 0.2s ease;
+    resize: none;
+    line-height: 1.4;
+    overflow-y: auto;
+    text-align: center;
 
     &:focus {
         border-bottom-color: var(--color-primary);
