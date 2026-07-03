@@ -8,6 +8,13 @@ services:
     image: matthewkilleen99/taskflow-backend:qa
     environment:
       SPRING_PROFILES_ACTIVE: qa
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-1
+        awslogs-group: taskflow-qa
+        awslogs-stream: backend
+        awslogs-create-group: "true"
 
   frontend:
     image: matthewkilleen99/taskflow-frontend:qa
@@ -16,3 +23,20 @@ services:
       - "443:443"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-1
+        awslogs-group: taskflow-qa
+        awslogs-stream: frontend
+        awslogs-create-group: "true"
+
+  db:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-1
+        awslogs-group: taskflow-qa
+        awslogs-stream: db
+        awslogs-create-group: "true"
+
