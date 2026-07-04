@@ -66,7 +66,14 @@ export class LandingPageComponent {
     selectedListId = computed<number | null>(() => {
         const raw = this.queryParamMap()?.get('listId');
         const id = raw ? parseInt(raw, 10) : NaN;
-        return this.currentView() === 'list' && !isNaN(id) ? id : null;
+        const idNum = !isNaN(id) ? id : null;
+        if (this.currentView() === 'list') {
+            if (idNum === null || this.lists().find(list => id === list.id) === undefined) {
+                return null;
+            }
+            return idNum;
+        }
+        return null;
     });
     searchQuery = signal<string>('');
     selectedTask = signal<Task | null>(null);
