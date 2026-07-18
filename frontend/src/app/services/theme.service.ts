@@ -18,9 +18,7 @@ export class ThemeService {
   }
 
   toggleTheme() {
-    document.documentElement.classList.add('theme-transitioning');
     this.theme.update(currentTheme => currentTheme === 'light' ? 'dark' : 'light');
-    setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 300);
   }
 
   setTheme(theme: Theme) {
