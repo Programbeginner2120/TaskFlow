@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.killeen.taskflow.components.task.TaskEncryptionHelper;
 import com.killeen.taskflow.components.task.model.Subtask;
 import com.killeen.taskflow.components.task.model.Task;
+import com.killeen.taskflow.components.task.model.TaskSource;
 import com.killeen.taskflow.components.task.repository.SubtaskRepository;
 import com.killeen.taskflow.components.task.repository.TaskRepository;
 import com.killeen.taskflow.components.tasklist.TaskListEncryptionHelper;
@@ -78,6 +79,7 @@ public class TemplateGeneratorService {
                         .dueDate(dueDate)
                         .subtasks(List.of())
                         .position((long) i)
+                        .source(TaskSource.SYSTEM)
                         .createdAt(now)
                         .updatedAt(now)
                         .build();

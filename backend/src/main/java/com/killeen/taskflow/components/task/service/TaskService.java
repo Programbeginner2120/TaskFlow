@@ -16,6 +16,7 @@ import com.killeen.taskflow.components.task.model.CreateSubtaskRequest;
 import com.killeen.taskflow.components.task.model.CreateTaskRequest;
 import com.killeen.taskflow.components.task.model.Subtask;
 import com.killeen.taskflow.components.task.model.Task;
+import com.killeen.taskflow.components.task.model.TaskSource;
 import com.killeen.taskflow.components.task.model.UpdateSubtaskRequest;
 import com.killeen.taskflow.components.task.model.UpdateTaskRequest;
 import com.killeen.taskflow.components.task.repository.SubtaskRepository;
@@ -68,6 +69,7 @@ public class TaskService {
                 .dueDate(request.getDueDate())
                 .subtasks(List.of())
                 .position(taskPosition)
+                .source(TaskSource.USER)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();

@@ -24,6 +24,7 @@ public class TaskResponse {
     private LocalDate             dueDate;
     private List<SubtaskResponse> subtasks;
     private Long                  position;
+    private TaskSource            source;
     private OffsetDateTime        createdAt;
     private OffsetDateTime        updatedAt;
 }
