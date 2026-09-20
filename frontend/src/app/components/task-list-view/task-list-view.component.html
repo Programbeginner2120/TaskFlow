@@ -29,7 +29,7 @@
             @let list = getListForTask(task.listId);
             @let progress = getSubtaskProgress(task);
 
-            <li cdkDrag [cdkDragStartDelay]="{mouse: 0, touch: 500}" class="task-row" [class.completed]="task.completed">
+            <li cdkDrag [cdkDragStartDelay]="{mouse: 0, touch: 250}" class="task-row" [class.completed]="task.completed">
 
                 <!-- Completion toggle -->
                 <button
