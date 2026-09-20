@@ -20,11 +20,13 @@ export interface TaskTableRow {
 
 export type TaskDataDuration = 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'LAST_90_DAYS' | 'ALL_TIME';
 export type TaskDataStatus   = 'ACTIVE' | 'COMPLETED' | 'ALL';
+export type TaskDataSource   = 'USER' | 'SYSTEM' | 'ALL';
 
 export interface DashboardAnalyticsRequest {
     durationSelection: TaskDataDuration;
     statusSelection:   TaskDataStatus;
     listSelections:    number[];
+    sourceSelection:   TaskDataSource;
 }
 
 export interface DashboardAnalyticsApiResponse {

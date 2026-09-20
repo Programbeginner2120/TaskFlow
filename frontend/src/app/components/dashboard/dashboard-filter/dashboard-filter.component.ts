@@ -4,7 +4,7 @@ import { MultiSelectComponent } from "../../../shared/components/multi-select/mu
 import { MultiSelectItemComponent } from "../../../shared/components/multi-select/multi-select-item/multi-select-item.component";
 import { SelectOption } from "../../../shared/interfaces/select.interface";
 import { TaskListStateService } from "../../../services/task-list-state.service";
-import { TaskDataDuration } from "../../../interfaces/dashboard.interface";
+import { TaskDataDuration, TaskDataSource } from "../../../interfaces/dashboard.interface";
 import { PlatformService } from "../../../services/platform.service";
 
 @Component({
@@ -26,6 +26,12 @@ export class DashboardFilterComponent {
         { value: 'ALL_TIME', label: 'All Time' }
     ]);
 
+    readonly sourceSelectOptions: Signal<SelectOption[]> = signal([
+        { value: 'USER', label: 'Created by Me' },
+        { value: 'SYSTEM', label: 'Auto-Generated' },
+        { value: 'ALL', label: 'All Tasks' }
+    ]);
+
     readonly taskLists = computed(() =>
         this.taskListStateService.lists()
     );
@@ -37,5 +43,6 @@ export class DashboardFilterComponent {
 
     durationSelection = model<TaskDataDuration>('LAST_7_DAYS');
     listSelections    = model<number[]>([]);
+    sourceSelection   = model<TaskDataSource>('USER');
 
 }

@@ -23,6 +23,7 @@ public class Task {
     private LocalDate     dueDate;
     private List<Subtask> subtasks;
     private Long          position;
+    private TaskSource    source;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 }
