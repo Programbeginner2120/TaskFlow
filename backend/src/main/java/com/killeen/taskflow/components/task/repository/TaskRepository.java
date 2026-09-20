@@ -10,11 +10,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import com.killeen.taskflow.components.analytics.constants.DashboardAnalyticsConstants.TaskDataDuration;
+import com.killeen.taskflow.components.analytics.constants.DashboardAnalyticsConstants.TaskDataSource;
 import com.killeen.taskflow.components.analytics.constants.DashboardAnalyticsConstants.TaskDataStatus;
 import com.killeen.taskflow.components.analytics.model.DashboardAnalyticsRequest;
 import com.killeen.taskflow.components.task.converter.TaskConverter;
 import com.killeen.taskflow.components.task.model.Subtask;
 import com.killeen.taskflow.components.task.model.Task;
+import com.killeen.taskflow.components.task.model.TaskSource;
 import com.killeen.taskflow.db.mapper.generated.TaskDbMapper;
 import com.killeen.taskflow.db.model.generated.TaskDb;
 import com.killeen.taskflow.db.model.generated.TaskDbExample;
@@ -119,6 +121,13 @@ public class TaskRepository {
                 criteria = criteria.andCompletedAtIsNull();
         } else if (TaskDataStatus.COMPLETED.equals(taskDataStatus)) {
                 criteria = criteria.andCompletedAtIsNotNull();
+        }
+
+        TaskDataSource taskDataSource = dashboardAnalyticsRequest.getSourceSelection();
+        if (TaskDataSource.USER.equals(taskDataSource)) {
+                criteria = criteria.andSourceEqualTo(TaskSource.USER.name());
+        } else if (TaskDataSource.SYSTEM.equals(taskDataSource)) {
+                criteria = criteria.andSourceEqualTo(TaskSource.SYSTEM.name());
         }
 
         example.setOrderByClause("created_at DESC");

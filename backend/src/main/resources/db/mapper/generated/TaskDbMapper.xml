@@ -12,6 +12,7 @@
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
     <result column="position" jdbcType="BIGINT" property="position" />
     <result column="completed_at" jdbcType="TIMESTAMP" property="completedAt" />
+    <result column="source" jdbcType="VARCHAR" property="source" typeHandler="com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -33,6 +34,25 @@
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
                     #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+            <foreach collection="criteria.sourceCriteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler} and #{criterion.secondValue,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler}
                   </foreach>
                 </when>
               </choose>
@@ -66,13 +86,32 @@
                 </when>
               </choose>
             </foreach>
+            <foreach collection="criteria.sourceCriteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler} and #{criterion.secondValue,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
           </trim>
         </if>
       </foreach>
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, list_id, title, notes, due_date, created_at, updated_at, position, completed_at
+    id, user_id, list_id, title, notes, due_date, created_at, updated_at, position, completed_at, source
   </sql>
   <select id="selectByExample" parameterType="com.killeen.taskflow.db.model.generated.TaskDbExample" resultMap="BaseResultMap">
     select
@@ -107,11 +146,13 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.TaskDb" useGeneratedKeys="true">
     insert into tasks (user_id, list_id, title, 
       notes, due_date, created_at, 
-      updated_at, position, completed_at
+      updated_at, position, completed_at, 
+      source
       )
     values (#{userId,jdbcType=BIGINT}, #{listId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
       #{notes,jdbcType=VARCHAR}, #{dueDate,jdbcType=DATE}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{updatedAt,jdbcType=TIMESTAMP}, #{position,jdbcType=BIGINT}, #{completedAt,jdbcType=TIMESTAMP}
+      #{updatedAt,jdbcType=TIMESTAMP}, #{position,jdbcType=BIGINT}, #{completedAt,jdbcType=TIMESTAMP}, 
+      #{source,jdbcType=VARCHAR,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler}
       )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.killeen.taskflow.db.model.generated.TaskDb" useGeneratedKeys="true">
@@ -144,6 +185,9 @@
       <if test="completedAt != null">
         completed_at,
       </if>
+      <if test="source != null">
+        source,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -172,6 +216,9 @@
       </if>
       <if test="completedAt != null">
         #{completedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler},
       </if>
     </trim>
   </insert>
@@ -214,6 +261,9 @@
       <if test="row.completedAt != null">
         completed_at = #{row.completedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="row.source != null">
+        source = #{row.source,jdbcType=VARCHAR,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler},
+      </if>
     </set>
     <if test="example != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -230,7 +280,8 @@
       created_at = #{row.createdAt,jdbcType=TIMESTAMP},
       updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
       position = #{row.position,jdbcType=BIGINT},
-      completed_at = #{row.completedAt,jdbcType=TIMESTAMP}
+      completed_at = #{row.completedAt,jdbcType=TIMESTAMP},
+      source = #{row.source,jdbcType=VARCHAR,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler}
     <if test="example != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -265,6 +316,9 @@
       <if test="completedAt != null">
         completed_at = #{completedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="source != null">
+        source = #{source,jdbcType=VARCHAR,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -278,7 +332,8 @@
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       updated_at = #{updatedAt,jdbcType=TIMESTAMP},
       position = #{position,jdbcType=BIGINT},
-      completed_at = #{completedAt,jdbcType=TIMESTAMP}
+      completed_at = #{completedAt,jdbcType=TIMESTAMP},
+      source = #{source,jdbcType=VARCHAR,typeHandler=com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

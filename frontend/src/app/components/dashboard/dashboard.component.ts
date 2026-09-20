@@ -14,6 +14,7 @@ import {
     DashboardAnalyticsApiResponse,
     StatisticsCard,
     TaskDataDuration,
+    TaskDataSource,
     TaskStatus,
     TaskTableRow,
 } from "../../interfaces/dashboard.interface";
@@ -40,6 +41,7 @@ export class DashboardComponent {
 
     readonly filterDuration = signal<TaskDataDuration>('LAST_7_DAYS');
     readonly filterListIds  = signal<number[]>([]);
+    readonly filterSource   = signal<TaskDataSource>('USER');
 
     // ─── Raw fetched tasks ─────────────────────────────────────────────────────
 
@@ -61,13 +63,15 @@ export class DashboardComponent {
         combineLatest([
             toObservable(this.filterDuration),
             toObservable(this.filterListIds),
+            toObservable(this.filterSource),
         ]).pipe(
-            switchMap(([duration, listIds]) => {
+            switchMap(([duration, listIds, source]) => {
                 this.loading.set(true);
                 return this.analyticsService.getAnalytics({
                     durationSelection: duration,
                     statusSelection:   'ALL',
                     listSelections:    listIds,
+                    sourceSelection:   source,
                 }).pipe(catchError(() => of({ tasks: [] } as DashboardAnalyticsApiResponse)));
             }),
             takeUntilDestroyed(this.destroyRef),
