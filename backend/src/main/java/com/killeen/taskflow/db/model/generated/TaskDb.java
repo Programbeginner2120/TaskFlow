@@ -24,6 +24,8 @@ public class TaskDb {
 
     private OffsetDateTime completedAt;
 
+    private String source;
+
     public Long getId() {
         return id;
     }
@@ -102,5 +104,13 @@ public class TaskDb {
 
     public void setCompletedAt(OffsetDateTime completedAt) {
         this.completedAt = completedAt;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

@@ -13,6 +13,10 @@ public class DashboardAnalyticsConstants {
         ACTIVE, COMPLETED, ALL;
     }
 
+    public enum TaskDataSource {
+        USER, SYSTEM, ALL;
+    }
+
 
 
 }

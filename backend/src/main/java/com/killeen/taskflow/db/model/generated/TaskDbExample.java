@@ -68,21 +68,36 @@ public class TaskDbExample {
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
 
+        protected List<Criterion> sourceCriteria;
+
+        protected List<Criterion> allCriteria;
+
         protected GeneratedCriteria() {
             super();
             criteria = new ArrayList<>();
+            sourceCriteria = new ArrayList<>();
         }
 
         public boolean isValid() {
-            return criteria.size() > 0;
+            return criteria.size() > 0
+                || sourceCriteria.size() > 0;
         }
 
         public List<Criterion> getAllCriteria() {
-            return criteria;
+            if (allCriteria == null) {
+                allCriteria = new ArrayList<>();
+                allCriteria.addAll(criteria);
+                allCriteria.addAll(sourceCriteria);
+            }
+            return allCriteria;
         }
 
         public List<Criterion> getCriteria() {
             return criteria;
+        }
+
+        public List<Criterion> getSourceCriteria() {
+            return sourceCriteria;
         }
 
         protected void addCriterion(String condition) {
@@ -90,6 +105,7 @@ public class TaskDbExample {
                 throw new RuntimeException("Value for condition cannot be null");
             }
             criteria.add(new Criterion(condition));
+            allCriteria = null;
         }
 
         protected void addCriterion(String condition, Object value, String property) {
@@ -97,6 +113,23 @@ public class TaskDbExample {
                 throw new RuntimeException("Value for " + property + " cannot be null");
             }
             criteria.add(new Criterion(condition, value));
+            allCriteria = null;
+        }
+
+        protected void addSourceCriterion(String condition, Object value, String property) {
+            if (value == null) {
+                throw new RuntimeException("Value for " + property + " cannot be null");
+            }
+            sourceCriteria.add(new Criterion(condition, value, "com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler"));
+            allCriteria = null;
+        }
+
+        protected void addSourceCriterion(String condition, String value1, String value2, String property) {
+            if (value1 == null || value2 == null) {
+                throw new RuntimeException("Between values for " + property + " cannot be null");
+            }
+            sourceCriteria.add(new Criterion(condition, value1, value2, "com.killeen.taskflow.db.typehandler.PostgresEnumTypeHandler"));
+            allCriteria = null;
         }
 
         protected void addCriterion(String condition, Object value1, Object value2, String property) {
@@ -104,6 +137,7 @@ public class TaskDbExample {
                 throw new RuntimeException("Between values for " + property + " cannot be null");
             }
             criteria.add(new Criterion(condition, value1, value2));
+            allCriteria = null;
         }
 
         public Criteria andIdIsNull() {
@@ -723,6 +757,76 @@ public class TaskDbExample {
 
         public Criteria andCompletedAtNotBetween(OffsetDateTime value1, OffsetDateTime value2) {
             addCriterion("completed_at not between", value1, value2, "completedAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceIsNull() {
+            addCriterion("source is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceIsNotNull() {
+            addCriterion("source is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceEqualTo(String value) {
+            addSourceCriterion("source =", value, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceNotEqualTo(String value) {
+            addSourceCriterion("source <>", value, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceGreaterThan(String value) {
+            addSourceCriterion("source >", value, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceGreaterThanOrEqualTo(String value) {
+            addSourceCriterion("source >=", value, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceLessThan(String value) {
+            addSourceCriterion("source <", value, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceLessThanOrEqualTo(String value) {
+            addSourceCriterion("source <=", value, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceLike(String value) {
+            addSourceCriterion("source like", value, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceNotLike(String value) {
+            addSourceCriterion("source not like", value, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceIn(List<String> values) {
+            addSourceCriterion("source in", values, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceNotIn(List<String> values) {
+            addSourceCriterion("source not in", values, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceBetween(String value1, String value2) {
+            addSourceCriterion("source between", value1, value2, "source");
+            return (Criteria) this;
+        }
+
+        public Criteria andSourceNotBetween(String value1, String value2) {
+            addSourceCriterion("source not between", value1, value2, "source");
             return (Criteria) this;
         }
     }

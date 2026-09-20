@@ -7,6 +7,8 @@ export interface Subtask {
     updatedAt: Date | null;
 }
 
+export type TaskSource = 'USER' | 'SYSTEM';
+
 export interface Task {
     id: number;
     userId: number;
@@ -18,6 +20,7 @@ export interface Task {
     notes: string;
     subtasks: Subtask[];
     position: number;
+    source: TaskSource;
     createdAt: Date;
     updatedAt: Date | null;
 }
@@ -62,6 +65,7 @@ export interface TaskApiResponse {
     dueDate: string | null;         // "YYYY-MM-DD"
     subtasks: SubtaskApiResponse[];
     position: number;
+    source: TaskSource;
     createdAt: string;
     updatedAt: string | null;
 }
