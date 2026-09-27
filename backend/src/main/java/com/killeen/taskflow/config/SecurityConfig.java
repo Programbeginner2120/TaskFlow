@@ -31,15 +31,16 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/auth/register", 
+                    "/auth/register",
                     "/auth/login",
                     "/auth/verify-email",
                     "/auth/resend-verification",
                     "/auth/forgot-password",
-                    "/auth/reset-password"
+                    "/auth/reset-password",
+                    "/auth/refresh",
+                    "/auth/logout"
                 ).permitAll()
-                .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/internal/generate-templates").permitAll()
+                .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex
