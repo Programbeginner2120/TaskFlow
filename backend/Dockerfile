@@ -15,7 +15,8 @@ EXPOSE 8080
 # chmod ensures gradlew is executable even when volume-mounted from a Windows host.
 # Spring DevTools (already on classpath via developmentOnly) will restart the app
 # whenever compiled .class files change.
-ENTRYPOINT ["sh", "-c", "chmod +x gradlew && ./gradlew bootRun --no-daemon"]
+ENTRYPOINT ["sh", "-c", "chmod +x gradlew && exec ./gradlew \"$@\"", "--"]
+CMD ["bootRun", "--no-daemon"]
 
 # ---- Build Stage ----
 FROM eclipse-temurin:25-jdk-alpine AS builder

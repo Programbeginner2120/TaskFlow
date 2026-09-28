@@ -201,7 +201,25 @@ public class AuthControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "1")
+    void refresh_validTokenWithoutAccessToken_returns200() throws Exception {
+        RefreshToken stored = RefreshToken.builder().userId(1L).build();
+        when(refreshTokenService.findByToken("sel.val")).thenReturn(stored);
+        when(refreshTokenService.isTokenExpired(stored)).thenReturn(false);
+        when(userService.getUserById(1L))
+            .thenReturn(User.builder().id(1L).email("user@example.com").displayName("Alice").build());
+        when(jwtService.generateToken(any())).thenReturn("new-access");
+        when(jwtService.getExpirationMs()).thenReturn(60_000L);
+        when(refreshTokenService.createRefreshToken(1L)).thenReturn("new.refresh");
+
+        mockMvc.perform(post("/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"refreshToken\":\"sel.val\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").value("new-access"))
+            .andExpect(jsonPath("$.refreshToken").value("new.refresh"));
+    }
+
+    @Test
     void refresh_expiredToken_returns401AndDeletesToken() throws Exception {
     RefreshRequest req = RefreshRequest.builder()
         .refreshToken("sel.val")
