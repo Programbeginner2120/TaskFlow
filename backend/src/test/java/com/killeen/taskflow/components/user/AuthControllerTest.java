@@ -30,6 +30,7 @@ import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException
 import com.killeen.taskflow.components.user.model.LoginRequest;
 import com.killeen.taskflow.components.user.model.LoginResponse;
 import com.killeen.taskflow.components.user.model.RefreshRequest;
+import com.killeen.taskflow.components.user.model.RefreshResponse;
 import com.killeen.taskflow.components.user.model.RegisterRequest;
 import com.killeen.taskflow.components.user.model.User;
 import com.killeen.taskflow.components.user.service.UserService;
@@ -186,12 +187,19 @@ public class AuthControllerTest {
         .token("hashed")
         .build();
 
+    RefreshResponse response = RefreshResponse.builder()
+        .token("new-jwt")
+        .expiresIn(3_600_000L)
+        .refreshToken("new.selector.validator")
+        .build();
+
     when(refreshTokenService.findByToken(anyString())).thenReturn(stored);
     when(refreshTokenService.isTokenExpired(any())).thenReturn(false);
     when(userService.getUserById(anyLong())).thenReturn(User.builder().id(1L).email("user@example.com").displayName("Alice").build());
     when(jwtService.generateToken(any())).thenReturn("new-jwt");
     when(jwtService.getExpirationMs()).thenReturn(3_600_000L);
     when(refreshTokenService.createRefreshToken(anyLong())).thenReturn("new.selector.validator");
+    when(userService.refresh(req)).thenReturn(response);
 
     mockMvc.perform(post("/auth/refresh")
             .with(csrf())
@@ -209,6 +217,8 @@ public class AuthControllerTest {
                 .build();
         when(refreshTokenService.findByToken(anyString()))
                 .thenThrow(new InvalidRefreshTokenException("Invalid token"));
+        when(userService.refresh(req))
+                .thenThrow(new InvalidRefreshTokenException("Invalid token"));
 
         mockMvc.perform(post("/auth/refresh")
                 .with(csrf())
@@ -224,6 +234,8 @@ public class AuthControllerTest {
                 .refreshToken("missing.token")
                 .build();
         when(refreshTokenService.findByToken(anyString()))
+                .thenThrow(new RefreshTokenNotFoundException("Not found"));
+        when(userService.refresh(req))
                 .thenThrow(new RefreshTokenNotFoundException("Not found"));
 
         mockMvc.perform(post("/auth/refresh")

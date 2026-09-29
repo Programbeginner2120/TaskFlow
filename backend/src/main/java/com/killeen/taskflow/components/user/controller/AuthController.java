@@ -27,8 +27,6 @@ import lombok.RequiredArgsConstructor;
 import com.killeen.taskflow.components.user.model.RefreshRequest;
 import com.killeen.taskflow.components.user.model.RefreshResponse;
 import com.killeen.taskflow.components.refreshtoken.service.RefreshTokenService;
-import com.killeen.taskflow.components.refreshtoken.model.RefreshToken;
-import com.killeen.taskflow.config.JwtService;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,7 +35,6 @@ public class AuthController {
 
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
-    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -64,30 +61,15 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<RefreshResponse> refresh(@Valid @RequestBody RefreshRequest request) {
-        RefreshToken stored = refreshTokenService.findByToken(request.getRefreshToken());
-        if (refreshTokenService.isTokenExpired(stored)) {
-            // remove expired token and reject
-            refreshTokenService.deleteByToken(request.getRefreshToken());
+    public ResponseEntity<RefreshResponse> refresh(
+            @Valid @RequestBody RefreshRequest request) {
+        RefreshResponse response = userService.refresh(request);
+        if (response == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        // issue new JWT and rotate refresh token
-        User user = userService.getUserById(stored.getUserId());
-        String jwt = jwtService.generateToken(user);
-        long expiresIn = jwtService.getExpirationMs();
-
-        String newRefresh = refreshTokenService.createRefreshToken(user.getId());
-        refreshTokenService.deleteByToken(request.getRefreshToken());
-
-        RefreshResponse resp = RefreshResponse.builder()
-            .token(jwt)
-            .expiresIn(expiresIn)
-            .refreshToken(newRefresh)
-            .build();
-
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@Valid @RequestBody RefreshRequest request) {

@@ -37,10 +37,10 @@ public class RefreshTokenRepository {
             .map(converter::toDto);
     }
 
-    public void deleteBySelector(String selector) {
+    public int deleteBySelector(String selector) {
         RefreshTokenDbExample example = new RefreshTokenDbExample();
         example.createCriteria().andSelectorEqualTo(selector);
-        mapper.deleteByExample(example);
+        return mapper.deleteByExample(example);
     }
 
     public void deleteByUserId(Long userId) {

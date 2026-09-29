@@ -108,12 +108,13 @@ public class RefreshTokenService {
         if (rawToken == null || rawToken.isBlank()) {
             return;
         }
-        if (!rawToken.contains(".")) {
-            throw new InvalidRefreshTokenException(env.getProperty("refreshtoken.token.invalid.or.unknown"));
-        }
 
-        String selector = rawToken.split("\\.", 2)[0];
-        refreshTokenRepository.deleteBySelector(selector);
+        RefreshToken stored = findByToken(rawToken);
+        if (refreshTokenRepository.deleteBySelector(stored.getSelector()) != -1) {
+            throw new InvalidRefreshTokenException(
+                env.getProperty("refreshtoken.token.already.consumed")
+            );
+        }
     }
 
     /**
