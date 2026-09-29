@@ -19,6 +19,8 @@ import com.killeen.taskflow.components.user.exception.InvalidCredentialsExceptio
 import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException;
 import com.killeen.taskflow.components.user.exception.UserNotFoundException;
 import com.killeen.taskflow.config.EncryptionException;
+import com.killeen.taskflow.components.refreshtoken.exception.InvalidRefreshTokenException;
+import com.killeen.taskflow.components.refreshtoken.exception.RefreshTokenNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -88,6 +90,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleEncryption(EncryptionException ex) {
         log.error("Encryption error", ex);
         return response(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("encryption.failed"));
+    }
+
+    @ExceptionHandler({
+        InvalidRefreshTokenException.class,
+        RefreshTokenNotFoundException.class
+    })
+    public ResponseEntity<ErrorResponse> handleRefreshCredential(RuntimeException ex) {
+        log.warn("Invalid or expired refresh token: {}", ex.getMessage());
+        return response(HttpStatus.UNAUTHORIZED, "Invalid or expired refresh token");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
