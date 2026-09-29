@@ -24,6 +24,8 @@ import com.killeen.taskflow.components.refreshtoken.model.RefreshToken;
 import com.killeen.taskflow.components.refreshtoken.service.RefreshTokenService;
 import com.killeen.taskflow.components.user.controller.AuthController;
 import com.killeen.taskflow.components.user.exception.InvalidCredentialsException;
+import com.killeen.taskflow.components.refreshtoken.exception.InvalidRefreshTokenException;
+import com.killeen.taskflow.components.refreshtoken.exception.RefreshTokenNotFoundException;
 import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException;
 import com.killeen.taskflow.components.user.model.LoginRequest;
 import com.killeen.taskflow.components.user.model.LoginResponse;
@@ -198,6 +200,51 @@ public class AuthControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").value("new-jwt"))
         .andExpect(jsonPath("$.refreshToken").value("new.selector.validator"));
+    }
+
+    @Test
+    void refresh_invalidToken_returns401() throws Exception {
+        RefreshRequest req = RefreshRequest.builder()
+                .refreshToken("bad.token")
+                .build();
+        when(refreshTokenService.findByToken(anyString()))
+                .thenThrow(new InvalidRefreshTokenException("Invalid token"));
+
+        mockMvc.perform(post("/auth/refresh")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Invalid or expired refresh token"));
+    }
+
+    @Test
+    void refresh_tokenNotFound_returns401() throws Exception {
+        RefreshRequest req = RefreshRequest.builder()
+                .refreshToken("missing.token")
+                .build();
+        when(refreshTokenService.findByToken(anyString()))
+                .thenThrow(new RefreshTokenNotFoundException("Not found"));
+
+        mockMvc.perform(post("/auth/refresh")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Invalid or expired refresh token"));
+    }
+
+    @Test
+    void logout_validRefreshToken_returns200() throws Exception {
+        RefreshRequest req = RefreshRequest.builder()
+                .refreshToken("sel.val")
+                .build();
+
+        mockMvc.perform(post("/auth/logout")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk());
     }
 
     @Test
