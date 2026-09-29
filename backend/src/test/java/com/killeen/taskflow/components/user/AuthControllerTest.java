@@ -24,10 +24,13 @@ import com.killeen.taskflow.components.refreshtoken.model.RefreshToken;
 import com.killeen.taskflow.components.refreshtoken.service.RefreshTokenService;
 import com.killeen.taskflow.components.user.controller.AuthController;
 import com.killeen.taskflow.components.user.exception.InvalidCredentialsException;
+import com.killeen.taskflow.components.refreshtoken.exception.InvalidRefreshTokenException;
+import com.killeen.taskflow.components.refreshtoken.exception.RefreshTokenNotFoundException;
 import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException;
 import com.killeen.taskflow.components.user.model.LoginRequest;
 import com.killeen.taskflow.components.user.model.LoginResponse;
 import com.killeen.taskflow.components.user.model.RefreshRequest;
+import com.killeen.taskflow.components.user.model.RefreshResponse;
 import com.killeen.taskflow.components.user.model.RegisterRequest;
 import com.killeen.taskflow.components.user.model.User;
 import com.killeen.taskflow.components.user.service.UserService;
@@ -184,12 +187,19 @@ public class AuthControllerTest {
         .token("hashed")
         .build();
 
+    RefreshResponse response = RefreshResponse.builder()
+        .token("new-jwt")
+        .expiresIn(3_600_000L)
+        .refreshToken("new.selector.validator")
+        .build();
+
     when(refreshTokenService.findByToken(anyString())).thenReturn(stored);
     when(refreshTokenService.isTokenExpired(any())).thenReturn(false);
     when(userService.getUserById(anyLong())).thenReturn(User.builder().id(1L).email("user@example.com").displayName("Alice").build());
     when(jwtService.generateToken(any())).thenReturn("new-jwt");
     when(jwtService.getExpirationMs()).thenReturn(3_600_000L);
     when(refreshTokenService.createRefreshToken(anyLong())).thenReturn("new.selector.validator");
+    when(userService.refresh(req)).thenReturn(response);
 
     mockMvc.perform(post("/auth/refresh")
             .with(csrf())
@@ -198,6 +208,55 @@ public class AuthControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").value("new-jwt"))
         .andExpect(jsonPath("$.refreshToken").value("new.selector.validator"));
+    }
+
+    @Test
+    void refresh_invalidToken_returns401() throws Exception {
+        RefreshRequest req = RefreshRequest.builder()
+                .refreshToken("bad.token")
+                .build();
+        when(refreshTokenService.findByToken(anyString()))
+                .thenThrow(new InvalidRefreshTokenException("Invalid token"));
+        when(userService.refresh(req))
+                .thenThrow(new InvalidRefreshTokenException("Invalid token"));
+
+        mockMvc.perform(post("/auth/refresh")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Invalid or expired refresh token"));
+    }
+
+    @Test
+    void refresh_tokenNotFound_returns401() throws Exception {
+        RefreshRequest req = RefreshRequest.builder()
+                .refreshToken("missing.token")
+                .build();
+        when(refreshTokenService.findByToken(anyString()))
+                .thenThrow(new RefreshTokenNotFoundException("Not found"));
+        when(userService.refresh(req))
+                .thenThrow(new RefreshTokenNotFoundException("Not found"));
+
+        mockMvc.perform(post("/auth/refresh")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Invalid or expired refresh token"));
+    }
+
+    @Test
+    void logout_validRefreshToken_returns200() throws Exception {
+        RefreshRequest req = RefreshRequest.builder()
+                .refreshToken("sel.val")
+                .build();
+
+        mockMvc.perform(post("/auth/logout")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk());
     }
 
     @Test
