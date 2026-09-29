@@ -2,13 +2,18 @@ package com.killeen.taskflow.components.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalUnit;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,11 +29,15 @@ import com.killeen.taskflow.components.email.exception.EmailNotVerifiedException
 import com.killeen.taskflow.components.email.model.EmailTokenType;
 import com.killeen.taskflow.components.email.service.EmailService;
 import com.killeen.taskflow.components.email.service.EmailTokenService;
+import com.killeen.taskflow.components.refreshtoken.exception.InvalidRefreshTokenException;
+import com.killeen.taskflow.components.refreshtoken.model.RefreshToken;
 import com.killeen.taskflow.components.refreshtoken.service.RefreshTokenService;
 import com.killeen.taskflow.components.user.exception.InvalidCredentialsException;
 import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException;
 import com.killeen.taskflow.components.user.exception.UserNotFoundException;
 import com.killeen.taskflow.components.user.model.LoginResponse;
+import com.killeen.taskflow.components.user.model.RefreshRequest;
+import com.killeen.taskflow.components.user.model.RefreshResponse;
 import com.killeen.taskflow.components.user.model.User;
 import com.killeen.taskflow.components.user.repository.UserRepository;
 import com.killeen.taskflow.components.user.service.UserService;
@@ -134,6 +143,65 @@ public class UserServiceTest {
         assertThatThrownBy(() -> userService.authenticate("u@e.com", "Pass1!"))
                 .isInstanceOf(EmailNotVerifiedException.class)
                 .hasMessage("Email not verified");
+    }
+
+    // -------------------------------------------------------------------------
+    // refresh
+    // -------------------------------------------------------------------------
+
+    @Test
+    void refresh_validToken_notExpired_returnsRefreshResponse() {
+        RefreshRequest request = RefreshRequest.builder()
+            .refreshToken("sel.val").build();
+        RefreshToken storedToken = RefreshToken.builder()
+            .userId(1L).expiresAt(OffsetDateTime.now(ZoneOffset.UTC).plusHours(24)).build();
+        User user = User.builder()
+            .id(1L).build();
+        String replacement = "thisIsAReplacementToken";
+        String access = "thisIsAJwtAccessToken";
+        RefreshResponse expectedResponse = RefreshResponse.builder()
+            .token(access)
+            .expiresIn(jwtService.getExpirationMs())
+            .refreshToken(replacement)
+            .build();
+
+        when(refreshTokenService.findByToken(any())).thenReturn(storedToken);
+        when(refreshTokenService.isTokenExpired(storedToken)).thenReturn(false);
+        doNothing().when(refreshTokenService).deleteByToken(request.getRefreshToken());
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(refreshTokenService.createRefreshToken(anyLong())).thenReturn(replacement);
+        when(jwtService.generateToken(user)).thenReturn(access);
+
+        RefreshResponse actualResponse = userService.refresh(request);
+
+        assertThat(actualResponse).isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void refresh_validToken_isExpired_returnsNull() {
+        RefreshRequest request = RefreshRequest.builder()
+            .refreshToken("sel.val").build();
+        RefreshToken storedToken = RefreshToken.builder()
+            .userId(1L).expiresAt(OffsetDateTime.now(ZoneOffset.UTC).minusHours(24)).build();
+
+        when(refreshTokenService.findByToken(any())).thenReturn(storedToken);
+        when(refreshTokenService.isTokenExpired(storedToken)).thenReturn(true);
+        
+        RefreshResponse actualResponse = userService.refresh(request);
+
+        assertNull(actualResponse);
+    }
+
+    @Test 
+    void refresh_invalidToken_throwsInvalidRefreshTokenException() {
+        RefreshRequest request = RefreshRequest.builder().build();
+
+        when(refreshTokenService.findByToken(null))
+            .thenThrow(new InvalidRefreshTokenException("Given token is null or blank"));
+
+        assertThatThrownBy(() -> userService.refresh(request))
+            .isInstanceOf(InvalidRefreshTokenException.class)
+            .hasMessage("Given token is null or blank");
     }
 
     // -------------------------------------------------------------------------

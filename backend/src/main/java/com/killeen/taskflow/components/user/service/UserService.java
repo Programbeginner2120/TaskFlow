@@ -14,8 +14,11 @@ import com.killeen.taskflow.components.email.service.EmailTokenService;
 import com.killeen.taskflow.components.user.exception.InvalidCredentialsException;
 import com.killeen.taskflow.components.user.exception.UserAlreadyExistsException;
 import com.killeen.taskflow.components.user.exception.UserNotFoundException;
+import com.killeen.taskflow.components.refreshtoken.model.RefreshToken;
 import com.killeen.taskflow.components.refreshtoken.service.RefreshTokenService;
 import com.killeen.taskflow.components.user.model.LoginResponse;
+import com.killeen.taskflow.components.user.model.RefreshRequest;
+import com.killeen.taskflow.components.user.model.RefreshResponse;
 import com.killeen.taskflow.components.user.model.User;
 import com.killeen.taskflow.components.user.repository.UserRepository;
 import com.killeen.taskflow.config.JwtService;
@@ -130,5 +133,26 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(env.getProperty("user.not.found")));
+    }
+
+    @Transactional
+    public RefreshResponse refresh(RefreshRequest request) {
+        RefreshToken stored = refreshTokenService.findByToken(request.getRefreshToken());
+        if (refreshTokenService.isTokenExpired(stored)) {
+            refreshTokenService.deleteByToken(request.getRefreshToken());
+            // null return value signifies expired token
+            return null;
+        }
+
+        User user = getUserById(stored.getUserId());
+        refreshTokenService.deleteByToken(request.getRefreshToken());
+        String replacement = refreshTokenService.createRefreshToken(user.getId());
+        String access = jwtService.generateToken(user);
+
+        return RefreshResponse.builder()
+            .token(access)
+            .expiresIn(jwtService.getExpirationMs())
+            .refreshToken(replacement)
+            .build();
     }
 }
