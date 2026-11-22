@@ -416,4 +416,5 @@ In production/QA the frontend container serves Angular via Nginx with the follow
 
 - `try_files` fallback to `index.html` for client-side SPA routing.
 - `/api/` requests are proxied to `http://backend:8080/api/`.
+- Per-IP rate limiting returns `429`: `/api/` allows 10 requests/s (burst 20); `/api/auth/login` and `/api/auth/register` allow 10 requests/min (burst 10).
 - Security headers: `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `X-XSS-Protection`.
