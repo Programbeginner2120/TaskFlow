@@ -389,8 +389,8 @@ API base URLs per environment:
 | Environment | `api_url` |
 |---|---|
 | Development | `http://localhost:8080` |
-| QA | `http://qa.taskflow.com` |
-| Production | `https://api.taskflow.com` |
+| QA | `/api` (same origin, proxied by Nginx) |
+| Production | `/api` (same origin, proxied by Nginx) |
 
 ---
 
@@ -400,8 +400,8 @@ API base URLs per environment:
 
 | Service | Image | Port | Notes |
 |---|---|---|---|
-| `db` | `postgres:17-alpine` | 5432 | Named volume `postgres_data`; healthcheck via `pg_isready` |
-| `backend` | Built from `./backend` | 8080 | Depends on `db` (healthy) |
+| `db` | `postgres:17-alpine` | 5432 (published locally only) | Named volume `postgres_data`; healthcheck via `pg_isready` |
+| `backend` | Built from `./backend` | 8080 (published locally only) | Depends on `db` (healthy); in prod/QA reachable only through Nginx |
 | `frontend` | Built from `./frontend` | 80 (prod/QA) / 4200 (local) | Depends on `backend` |
 
 Both the backend and frontend Dockerfiles use **multi-stage builds**:
@@ -415,6 +415,6 @@ Both the backend and frontend Dockerfiles use **multi-stage builds**:
 In production/QA the frontend container serves Angular via Nginx with the following configuration:
 
 - `try_files` fallback to `index.html` for client-side SPA routing.
-- `/api/` requests are proxied to `http://backend:8080/api/`.
+- `/api/` requests are proxied to `http://backend:8080/` with the `/api` prefix stripped (e.g. `/api/auth/login` → `/auth/login`).
 - Per-IP rate limiting returns `429`: `/api/` allows 10 requests/s (burst 20); `/api/auth/login` and `/api/auth/register` allow 10 requests/min (burst 10).
 - Security headers: `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `X-XSS-Protection`.
