@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    // TODO: replace with your actual QA API URL
-    api_url: 'http://qa.taskflow.com',
+    // Same-origin: Nginx proxies /api/ to the backend
+    api_url: '/api',
     environment_name: 'qa'
 };

@@ -11,8 +11,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    # No published ports: only the backend reaches the DB. docker-compose.local.yml publishes 5432 for local tools.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-taskflow} -d ${POSTGRES_DB:-taskflow}"]
       interval: 10s
@@ -43,8 +42,7 @@ services:
       APP_BASE_URL: ${APP_BASE_URL:-https://taskflow.com}
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD:?ENCRYPTION_PASSWORD must be set}
       ENCRYPTION_SALT: ${ENCRYPTION_SALT:?ENCRYPTION_SALT must be set}
-    ports:
-      - "8080:8080"
+    # No published ports: traffic must go through Nginx (rate limits, headers). docker-compose.local.yml publishes 8080.
 
   frontend:
     build:
