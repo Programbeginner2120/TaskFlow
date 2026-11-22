@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    // TODO: replace with your actual production API URL
-    api_url: 'https://api.taskflow.com',
+    // Same-origin: Nginx proxies /api/ to the backend
+    api_url: '/api',
     environment_name: 'prod'
 };
